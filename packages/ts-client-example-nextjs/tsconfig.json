@@ -1,0 +1,11 @@
+{
+  "extends": "tsconfig/node-library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./build",
+    "isolatedModules": false,
+    "allowJs": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
