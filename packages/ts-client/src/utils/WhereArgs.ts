@@ -91,7 +91,6 @@ export class WhereOperandsClass {
             operands: operands,
         }
     }
-
     static WITHIN_GEO_RANGE(path: string[] | string, value: WhereGeoRangeInpObj) {
         return {
             operator: WhereOperatorEnum.WithinGeoRange,
