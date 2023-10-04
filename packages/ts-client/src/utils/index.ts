@@ -1,2 +1,1 @@
-export * from './query.utils'
-export * from './WhereOperands.class'
+export * from './HttpClient'
