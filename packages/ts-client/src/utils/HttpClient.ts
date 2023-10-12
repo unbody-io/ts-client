@@ -25,7 +25,7 @@ export class HttpClient {
   }
 
   private handleResponse = ({ data }: AxiosResponse) => {
-    if (data.errors.length) return Promise.reject(data.errors)
+    if (data?.errors?.length) return Promise.reject(data.errors)
     return data.data
   }
 
