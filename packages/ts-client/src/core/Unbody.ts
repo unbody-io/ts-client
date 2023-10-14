@@ -1,6 +1,9 @@
 import { HttpClient } from '../utils'
 import { AxiosInstance } from 'axios'
 import { IUnbodyOptions } from './UnbodyOptions.interface'
+import { QueryBuilder } from './query-builder'
+import { QueryType } from './query-builder/enums'
+import { DocumentType, IGoogleDoc } from './documents'
 
 export class Unbody {
   public httpClient: AxiosInstance
@@ -10,5 +13,15 @@ export class Unbody {
     if (!projectId) throw new Error('Unbody client: projectId is required')
     const httpClient = new HttpClient(apiKey, projectId)
     this.httpClient = httpClient.instance
+  }
+
+  get get() {
+    return {
+      googleDoc: new QueryBuilder<IGoogleDoc>({
+        httpClient: this.httpClient,
+        queryType: QueryType.Get,
+        documentType: DocumentType.GoogleDoc,
+      }),
+    }
   }
 }

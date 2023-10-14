@@ -11,4 +11,6 @@ export enum WhereOperator {
   LessThanEqual = 'LessThanEqual',
   Or = 'Or',
   Equal = 'Equal',
+  ContainsAny = 'ContainsAny',
+  ContainsAll = 'ContainsAll',
 }
