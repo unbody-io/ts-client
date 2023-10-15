@@ -4,5 +4,5 @@ export interface INearTextMoveObj {
     id?: string
     beacon?: string
   }>
-  force?: number
+  force: number
 }

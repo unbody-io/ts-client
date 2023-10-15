@@ -5,5 +5,5 @@ export interface INearText {
   certainty?: number
   distance?: number
   moveAwayFrom?: INearTextMoveObj
-  concepts?: string[]
+  concepts: string[]
 }
