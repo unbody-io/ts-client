@@ -93,8 +93,8 @@ export class QueryBuilder<TDocumentType extends IDocument> {
     type?: keyof typeof GroupType,
   ): Omit<TThis, 'group'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.group = {
+    const { query } = this
+    query.__args.group = {
       force,
       ...(type ? { type: new EnumType(type) } : {}),
     }
@@ -109,24 +109,24 @@ export class QueryBuilder<TDocumentType extends IDocument> {
     objectsPerGroup: number,
   ): Omit<TThis, 'groupBy'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.groupBy = { path, groups, objectsPerGroup }
+    const { query } = this
+    query.__args.groupBy = { path, groups, objectsPerGroup }
     excludeProperty('groupBy', this)
     return this
   }
 
   hybrid<TThis>(this: TThis, params: IHybrid): Omit<TThis, 'hybrid'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.hybrid = params
+    const { query } = this
+    query.__args.hybrid = params
     excludeProperty('hybrid', this)
     return this
   }
 
   nearText<TThis>(this: TThis, params: INearText): Omit<TThis, 'nearText'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.nearText = params
+    const { query } = this
+    query.__args.nearText = params
     excludeProperty('nearText', this)
     return this
   }
@@ -136,8 +136,8 @@ export class QueryBuilder<TDocumentType extends IDocument> {
     params: INearObject,
   ): Omit<TThis, 'nearObject'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.nearObject = params
+    const { query } = this
+    query.__args.nearObject = params
     excludeProperty('nearObject', this)
     return this
   }
@@ -147,8 +147,8 @@ export class QueryBuilder<TDocumentType extends IDocument> {
     params: INearVector,
   ): Omit<TThis, 'nearVector'> {
     // @ts-ignore
-    const { query: thisQuery } = this
-    thisQuery.__args.nearVector = params
+    const { query } = this
+    query.__args.nearVector = params
     excludeProperty('nearVector', this)
     return this
   }
