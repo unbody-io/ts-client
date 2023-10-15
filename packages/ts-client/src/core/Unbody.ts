@@ -3,7 +3,14 @@ import { AxiosInstance } from 'axios'
 import { IUnbodyOptions } from './UnbodyOptions.interface'
 import { QueryBuilder } from './query-builder'
 import { QueryType } from './query-builder/enums'
-import { DocumentType, IGoogleDoc } from './documents'
+import {
+  DocumentType,
+  IAudioFile,
+  IGoogleCalendarEvent,
+  IGoogleDoc,
+  IImageBlock,
+  ITextBlock,
+} from './documents'
 
 export class Unbody {
   public httpClient: AxiosInstance
@@ -16,12 +23,43 @@ export class Unbody {
   }
 
   get get() {
+    const { httpClient } = this
     return {
-      googleDoc: new QueryBuilder<IGoogleDoc>({
-        httpClient: this.httpClient,
-        queryType: QueryType.Get,
-        documentType: DocumentType.GoogleDoc,
-      }),
+      get googleDoc(): QueryBuilder<IGoogleDoc> {
+        return new QueryBuilder<IGoogleDoc>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.GoogleDoc,
+        })
+      },
+      get imageBlock(): QueryBuilder<IImageBlock> {
+        return new QueryBuilder<IImageBlock>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.ImageBlock,
+        })
+      },
+      get audioFile(): QueryBuilder<IAudioFile> {
+        return new QueryBuilder<IAudioFile>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.AudioFile,
+        })
+      },
+      get textBlock(): QueryBuilder<ITextBlock> {
+        return new QueryBuilder<ITextBlock>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.TextBlock,
+        })
+      },
+      get googleCalendarEvent(): QueryBuilder<IGoogleCalendarEvent> {
+        return new QueryBuilder<IGoogleCalendarEvent>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.GoogleCalendarEvent,
+        })
+      },
     }
   }
 }

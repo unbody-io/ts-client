@@ -1,7 +1,8 @@
 import { DocumentType } from '../enums'
 import { IImageBlock } from './ImageBlock.interface'
+import { IDocument } from './Document.interface'
 
-export interface IGoogleCalendarEvent {
+export interface IGoogleCalendarEvent extends IDocument {
   __typename: DocumentType.GoogleCalendarEvent
   createdAt: string
   creatorDisplayName: string
