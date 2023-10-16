@@ -1,6 +1,6 @@
 import { HttpClient } from '../utils'
 import { AxiosInstance } from 'axios'
-import { IUnbodyOptions } from './UnbodyOptions.interface'
+import { IUnbodyOptions } from './query-builder/interfaces'
 import { QueryBuilder } from './query-builder'
 import { QueryType } from './query-builder/enums'
 import {
