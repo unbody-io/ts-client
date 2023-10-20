@@ -1,4 +1,4 @@
-export interface IBm25 {
-  properties?: string[]
+export interface IBm25<TDocumentType> {
+  properties?: Array<keyof TDocumentType>
   query: string
 }

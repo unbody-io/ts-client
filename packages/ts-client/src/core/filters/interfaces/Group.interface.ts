@@ -1,6 +1,6 @@
 import { GroupType } from '../enums'
 
-export interface Group {
+export interface IGroup {
   force: number
-  type: GroupType
+  type: keyof typeof GroupType
 }
