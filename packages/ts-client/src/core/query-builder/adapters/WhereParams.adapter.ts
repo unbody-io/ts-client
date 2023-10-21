@@ -17,22 +17,18 @@ export class WhereParamsAdapter<TDocumentType> {
         operands: params.operands.map((params) => this.adapt(params)),
       }
     }
-    const operations = Object.entries(params).map(([key, value]) => {
-      if (CROSS_REFERENCE_PROPS.includes(key))
-        return this.composeCrossReferenceParam({ key, value })
-      if (value instanceof WhereCompareOperator)
-        return this.composeParam({ key, ...value })
-      return this.composeParam({
-        key,
-        ...WhereOperators.prototype.Equal(value),
-      })
-    })
-    return operations.length === 1
-      ? operations[0]
-      : new WhereLogicalOperator({
-          operator: new EnumType(WhereOperator.And),
-          operands: operations,
+    return this.composeOperands(
+      Object.entries(params).map(([key, value]) => {
+        if (CROSS_REFERENCE_PROPS.includes(key))
+          return this.composeCrossReferenceParam({ key, value })
+        if (value instanceof WhereCompareOperator)
+          return this.composeParam({ key, ...value })
+        return this.composeParam({
+          key,
+          ...WhereOperators.prototype.Equal(value),
         })
+      }),
+    )
   }
 
   private adaptValue(val: string | Date | number | boolean | IWhereGeoRange) {
@@ -61,15 +57,20 @@ export class WhereParamsAdapter<TDocumentType> {
   }
 
   private composeCrossReferenceParam(param: { key: any; value: any }) {
-    const operands = Object.entries(param.value).map(([prop, params]) => {
-      const adapted = this.adapt(params as any)
-      if (adapted instanceof WhereLogicalOperator)
-        adapted.operands.forEach(
-          (operation) => (operation.path = [param.key, prop, operation.path]),
-        )
-      else adapted.path = [param.key, prop, adapted.path]
-      return adapted
-    })
+    return this.composeOperands(
+      Object.entries(param.value).map(([prop, params]) => {
+        const adapted = this.adapt(params as any)
+        if (adapted instanceof WhereLogicalOperator)
+          adapted.operands.forEach(
+            (operation) => (operation.path = [param.key, prop, operation.path]),
+          )
+        else adapted.path = [param.key, prop, adapted.path]
+        return adapted
+      }),
+    )
+  }
+
+  private composeOperands(operands: any[]) {
     if (operands.length === 1) return operands[0]
     else
       return new WhereLogicalOperator({
