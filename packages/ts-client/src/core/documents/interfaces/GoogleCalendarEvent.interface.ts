@@ -1,33 +1,37 @@
-import { DocumentType } from '../enums'
 import { IImageBlock } from './ImageBlock.interface'
-import { IDocument } from './Document.interface'
+import {
+  StringArrayField,
+  StringField,
+  NumberField,
+  DateField,
+  BooleanField,
+} from '../types'
 
-export interface IGoogleCalendarEvent extends IDocument {
-  __typename: DocumentType.GoogleCalendarEvent
-  createdAt: string
-  creatorDisplayName: string
-  creatorEmail: string
-  creatorId: string
-  creatorSelf: boolean
-  descriptionHtml: string
-  descriptionText: string
-  end: string
-  htmlLink: string
-  location: string
-  organizerDisplayName: string
-  organizerEmail: string
-  organizerId: string
-  organizerSelf: boolean
-  recurrence: string[]
-  slug: string
-  remoteId: string
-  sequence: number
-  sourceId: string
-  start: string
-  status: string
-  summary: string
-  title: string
-  updatedAt: string
-  modifiedAt: string
+export interface IGoogleCalendarEvent {
+  createdAt: DateField
+  creatorDisplayName: StringField
+  creatorEmail: StringField
+  creatorId: StringField
+  creatorSelf: BooleanField
+  descriptionHtml: StringField
+  descriptionText: StringField
+  end: DateField
+  htmlLink: StringField
+  location: StringField
+  organizerDisplayName: StringField
+  organizerEmail: StringField
+  organizerId: StringField
+  organizerSelf: BooleanField
+  recurrence: StringArrayField
+  slug: StringField
+  remoteId: StringField
+  sequence: NumberField
+  sourceId: StringField
+  start: DateField
+  status: StringField
+  summary: StringField
+  title: StringField
+  updatedAt: DateField
+  modifiedAt: DateField
   attachments: Array<IImageBlock>
 }

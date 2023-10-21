@@ -1,16 +1,16 @@
 import { IGoogleDoc } from './GoogleDoc.interface'
-import { IDocumentWithRef } from './DocumentWithRef.interface'
-import { DocumentType } from '../enums'
 import { IFootnote } from './fields'
 import { IBeacon } from './Beacon.interface'
-export interface ITextBlock extends IDocumentWithRef<IGoogleDoc | IBeacon> {
-  __typename: DocumentType.TextBlock
-  footnotes: string | Array<IFootnote>
-  html: string
-  order: number
-  remoteId: string
-  sourceId: string
-  tagName: string
-  text: string
-  classNames: string[]
+import { StringArrayField, StringField, NumberField } from '../types'
+
+export interface ITextBlock {
+  document?: { GoogleDoc?: IGoogleDoc; Beacon?: IBeacon }
+  footnotes?: StringArrayField<IFootnote>
+  html?: StringField
+  order?: NumberField
+  remoteId?: StringField
+  sourceId?: StringField
+  tagName?: StringField
+  text?: StringField
+  classNames?: StringArrayField
 }

@@ -1,4 +1,4 @@
-import { DocumentType, IGoogleDoc } from '../documents'
+import { DocumentType } from '../documents'
 import {
   IAsk,
   IBm25,
@@ -9,52 +9,52 @@ import {
   INearText,
   INearVector,
   SortType,
-  WhereOperator,
+  WhereOperators,
 } from '../filters'
 import { excludeProperty } from '../../utils'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
-import { IDocument } from '../documents'
 import { AxiosInstance } from 'axios'
 import { QueryBuilderOptions } from './interfaces'
-import { WhereLogicalOperator } from './WhereLogicalOperator'
-import { WhereOperators } from './WhereOperators'
+import { WhereParamsAdapter } from './adapters'
 
-export class QueryBuilder<TDocumentType extends IDocument> {
+export class QueryBuilder<TDocumentType> {
   protected query: { [key: string]: any } = { __args: {} }
   protected queryType: string
   protected documentType: DocumentType
   protected httpClient: AxiosInstance
+  protected whereParamsAdapter: WhereParamsAdapter<TDocumentType>
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     this.httpClient = httpClient
     this.queryType = queryType
     this.documentType = documentType
+    this.whereParamsAdapter = new WhereParamsAdapter<TDocumentType>()
   }
 
-  where<TThis>(this: TThis, params: IGoogleDoc): Omit<TThis, 'where'>
+  where<TThis>(this: TThis, params: TDocumentType): Omit<TThis, 'where'>
   where<TThis>(
     this: TThis,
-    callback: (
-      operator: typeof WhereOperators,
-    ) => IGoogleDoc | WhereLogicalOperator,
-  ): Omit<TThis, 'where'>
-  where<TThis>(
-    this: TThis,
-    params:
-      | IGoogleDoc
+    callback:
+      | TDocumentType
       | ((
-          operators: typeof WhereOperators,
-        ) => IGoogleDoc | WhereLogicalOperator),
-  ): Omit<TThis, 'where'> {
+          operator: WhereOperators<TDocumentType>,
+        ) =>
+          | TDocumentType
+          | ReturnType<
+              | WhereOperators<TDocumentType>['And']
+              | WhereOperators<TDocumentType>['Or']
+            >),
+  ): Omit<TThis, 'where'>
+  where<TThis>(this: TThis, params: TDocumentType): Omit<TThis, 'where'> {
     // @ts-ignore
-    const { query } = this
-    if (typeof params === 'function')
-      query.__args.where = params(WhereOperators)
-    else
-      query.__args.where = {
-        operator: new EnumType(WhereOperator.Equal),
-        params,
-      }
+    const { query, whereParamsAdapter } = this
+    if (typeof params === 'function') {
+      const callback = params as Function
+      const { prototype } = WhereOperators<TDocumentType>
+      query.__args.where = whereParamsAdapter.adapt(callback(prototype))
+    } else {
+      query.__args.where = whereParamsAdapter.adapt(params)
+    }
     excludeProperty('where', this)
     return this
   }
