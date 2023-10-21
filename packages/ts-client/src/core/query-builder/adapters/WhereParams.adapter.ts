@@ -12,7 +12,10 @@ import { CROSS_REFERENCE_PROPS } from '../../../constants'
 export class WhereParamsAdapter<TDocumentType> {
   adapt(params: TDocumentType | WhereLogicalOperator<TDocumentType>): any {
     if (params instanceof WhereLogicalOperator) {
-      return { ...params, operands: params.operands.map(this.adapt) }
+      return {
+        ...params,
+        operands: params.operands.map((params) => this.adapt(params)),
+      }
     }
     const operations = Object.entries(params).map(([key, value]) => {
       if (CROSS_REFERENCE_PROPS.includes(key))
