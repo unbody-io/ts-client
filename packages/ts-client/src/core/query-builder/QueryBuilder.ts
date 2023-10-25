@@ -16,6 +16,7 @@ import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AxiosInstance } from 'axios'
 import { QueryBuilderOptions } from './interfaces'
 import { WhereParamsAdapter } from './adapters'
+import { ObjectPath } from './types'
 
 export class QueryBuilder<TDocumentType> {
   protected query: { [key: string]: any } = { __args: {} }
@@ -241,11 +242,35 @@ export class QueryBuilder<TDocumentType> {
 
   select<TThis>(
     this: TThis,
-    fields: Array<keyof TDocumentType>,
+    ...args: ObjectPath<TDocumentType>[]
   ): Omit<TThis, 'select'> {
     // @ts-ignore
     const { query } = this
-    fields.forEach((field: keyof TDocumentType) => (query[field] = true))
+    const documentTypes = Object.values(DocumentType) as string[]
+    args.forEach((path) => {
+      let parentKey: string = null,
+        select: { [key: string]: any } = {}
+      const pathArray = path.split('.')
+      if (pathArray.length === 1) query[pathArray[0]] = true
+      pathArray.reduce((select, key, currentIndex) => {
+        if (!parentKey) select[key] = true
+        else if (documentTypes.includes(key)) {
+          select[parentKey] = {
+            __on: {
+              __typeName: key,
+              ...Object.fromEntries(
+                pathArray
+                  .splice(++currentIndex, pathArray.length)
+                  .map((key) => [key, true]),
+              ),
+            },
+          }
+        } else select[parentKey] = { [key]: true }
+        parentKey = key
+        return select
+      }, select)
+      Object.assign(query, select)
+    })
     excludeProperty('select', this)
     return this
   }
