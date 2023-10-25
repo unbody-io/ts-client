@@ -1,10 +1,9 @@
-import { IDocument } from './Document.interface'
 import { IMention, IToc } from './fields'
 import { IImageBlock } from './ImageBlock.interface'
 import { ITextBlock } from './TextBlock.interface'
 import { StringArrayField, StringField, NumberField, DateField } from '../types'
 
-export interface IGoogleDoc extends IDocument {
+export interface IGoogleDoc {
   blocks?: { ImageBlock?: IImageBlock; TextBlock?: ITextBlock }
   createdAt?: DateField
   html?: StringField

@@ -33,5 +33,5 @@ export interface IGoogleCalendarEvent {
   title: StringField
   updatedAt: DateField
   modifiedAt: DateField
-  attachments: Array<IImageBlock>
+  attachments: StringArrayField<IImageBlock>
 }
