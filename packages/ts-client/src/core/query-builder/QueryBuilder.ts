@@ -64,6 +64,11 @@ export class QueryBuilder<TDocumentType> {
   ask<TThis>(this: TThis, params: IAsk<TDocumentType>): Omit<TThis, 'ask'>
   ask<TThis>(
     this: TThis,
+    question: IAsk<TDocumentType>['question'],
+    properties?: IAsk<TDocumentType>['properties'],
+  ): Omit<TThis, 'ask'>
+  ask<TThis>(
+    this: TThis,
     question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
     properties?: IAsk<TDocumentType>['properties'],
   ): Omit<TThis, 'ask'> {
@@ -90,6 +95,11 @@ export class QueryBuilder<TDocumentType> {
   bm25<TThis>(this: TThis, params: IBm25<TDocumentType>): Omit<TThis, 'bm25'>
   bm25<TThis>(
     this: TThis,
+    query: IBm25<TDocumentType>['query'],
+    properties?: IBm25<TDocumentType>['properties'],
+  ): Omit<TThis, 'bm25'>
+  bm25<TThis>(
+    this: TThis,
     query: IBm25<TDocumentType>['query'] | IBm25<TDocumentType>,
     properties?: IBm25<TDocumentType>['properties'],
   ): Omit<TThis, 'bm25'> {
@@ -110,6 +120,11 @@ export class QueryBuilder<TDocumentType> {
   group<TThis>(this: TThis, params: IGroup): Omit<TThis, 'group'>
   group<TThis>(
     this: TThis,
+    force: IGroup['force'],
+    type?: IGroup['type'],
+  ): Omit<TThis, 'group'>
+  group<TThis>(
+    this: TThis,
     force: IGroup['force'] | IGroup,
     type?: IGroup['type'],
   ): Omit<TThis, 'group'> {
@@ -127,6 +142,12 @@ export class QueryBuilder<TDocumentType> {
   }
 
   groupBy<TThis>(this: TThis, params: IGroupBy): Omit<TThis, 'groupBy'>
+  groupBy<TThis>(
+    this: TThis,
+    path: IGroupBy['path'],
+    groups?: IGroupBy['groups'],
+    objectsPerGroup?: IGroupBy['objectsPerGroup'],
+  ): Omit<TThis, 'groupBy'>
   groupBy<TThis>(
     this: TThis,
     path: IGroupBy['path'] | IGroupBy,
@@ -152,6 +173,12 @@ export class QueryBuilder<TDocumentType> {
   ): Omit<TThis, 'hybrid'>
   hybrid<TThis>(
     this: TThis,
+    query: IHybrid<TDocumentType>['query'],
+    properties?: IHybrid<TDocumentType>['properties'],
+    alpha?: IHybrid<TDocumentType>['alpha'],
+  ): Omit<TThis, 'hybrid'>
+  hybrid<TThis>(
+    this: TThis,
     query: IHybrid<TDocumentType>['query'] | IHybrid<TDocumentType>,
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
@@ -174,6 +201,11 @@ export class QueryBuilder<TDocumentType> {
   nearText<TThis>(this: TThis, params: INearText): Omit<TThis, 'nearText'>
   nearText<TThis>(
     this: TThis,
+    concepts: INearText['concepts'],
+    distance?: INearText['distance'],
+  ): Omit<TThis, 'nearText'>
+  nearText<TThis>(
+    this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
   ): Omit<TThis, 'nearText'> {
@@ -192,13 +224,25 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
+  nearObject<TThis>(this: TThis, params: INearObject): Omit<TThis, 'nearObject'>
   nearObject<TThis>(
     this: TThis,
-    params: INearObject,
+    id: INearObject['id'],
+    distance?: INearObject['distance'],
+  ): Omit<TThis, 'nearObject'>
+  nearObject<TThis>(
+    this: TThis,
+    id: INearObject['id'] | INearObject,
+    distance?: INearObject['distance'],
   ): Omit<TThis, 'nearObject'> {
     // @ts-ignore
     const { query } = this
-    query.__args.nearObject = params
+    if (typeof id === 'object' && !Array.isArray(id)) query.__args.nearText = id
+    else
+      query.__args.nearText = {
+        id,
+        ...(distance ? { distance } : {}),
+      }
     query._additional.certainty = true
     query._additional.distance = true
     excludeProperty('nearObject', this)
