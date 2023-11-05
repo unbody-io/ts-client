@@ -1,7 +1,7 @@
 import { HttpClient } from '../utils'
 import { AxiosInstance } from 'axios'
 import { IUnbodyOptions } from './query-builder/interfaces'
-import { QueryBuilder } from './query-builder'
+import { GetQueryBuilder } from './query-builder'
 import { QueryType } from './query-builder/enums'
 import {
   DocumentType,
@@ -25,36 +25,36 @@ export class Unbody {
   get get() {
     const { httpClient } = this
     return {
-      get googleDoc(): QueryBuilder<IGoogleDoc> {
-        return new QueryBuilder<IGoogleDoc>({
+      get googleDoc(): GetQueryBuilder<IGoogleDoc> {
+        return new GetQueryBuilder<IGoogleDoc>({
           httpClient: httpClient,
           queryType: QueryType.Get,
           documentType: DocumentType.GoogleDoc,
         })
       },
-      get imageBlock(): QueryBuilder<IImageBlock> {
-        return new QueryBuilder<IImageBlock>({
+      get imageBlock(): GetQueryBuilder<IImageBlock> {
+        return new GetQueryBuilder<IImageBlock>({
           httpClient: httpClient,
           queryType: QueryType.Get,
           documentType: DocumentType.ImageBlock,
         })
       },
-      get audioFile(): QueryBuilder<IAudioFile> {
-        return new QueryBuilder<IAudioFile>({
+      get audioFile(): GetQueryBuilder<IAudioFile> {
+        return new GetQueryBuilder<IAudioFile>({
           httpClient: httpClient,
           queryType: QueryType.Get,
           documentType: DocumentType.AudioFile,
         })
       },
-      get textBlock(): QueryBuilder<ITextBlock> {
-        return new QueryBuilder<ITextBlock>({
+      get textBlock(): GetQueryBuilder<ITextBlock> {
+        return new GetQueryBuilder<ITextBlock>({
           httpClient: httpClient,
           queryType: QueryType.Get,
           documentType: DocumentType.TextBlock,
         })
       },
-      get googleCalendarEvent(): QueryBuilder<IGoogleCalendarEvent> {
-        return new QueryBuilder<IGoogleCalendarEvent>({
+      get googleCalendarEvent(): GetQueryBuilder<IGoogleCalendarEvent> {
+        return new GetQueryBuilder<IGoogleCalendarEvent>({
           httpClient: httpClient,
           queryType: QueryType.Get,
           documentType: DocumentType.GoogleCalendarEvent,

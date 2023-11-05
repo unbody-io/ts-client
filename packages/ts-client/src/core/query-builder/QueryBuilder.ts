@@ -1,4 +1,4 @@
-import { AdditionalProps, DocumentType } from '../documents'
+import { DocumentType } from '../documents'
 import {
   IAsk,
   IBm25,
@@ -15,16 +15,15 @@ import { excludeProperty } from '../../utils'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AxiosInstance } from 'axios'
 import { QueryBuilderOptions } from './interfaces'
-import { WhereParamsAdapter, objectPathToQueryAdapter } from './adapters'
-import { ObjectPath } from './types'
+import { WhereParamsAdapter } from './adapters'
 
 export class QueryBuilder<TDocumentType> {
-  protected query: { [key: string]: any } = { __args: {}, _additional: {} }
+  protected query: { [key: string]: any } = { __args: {}, additionalFields: {} }
   protected queryType: string
   protected documentType: DocumentType
   protected httpClient: AxiosInstance
   protected whereParamsAdapter: WhereParamsAdapter<TDocumentType>
-  protected _additional = {}
+  protected selectedFields = {}
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     this.httpClient = httpClient
@@ -81,7 +80,7 @@ export class QueryBuilder<TDocumentType> {
         question,
         ...(properties?.length ? { properties } : {}),
       }
-    query._additional.answer = {
+    query.additionalFields.answer = {
       result: true,
       property: true,
       hasAnswer: true,
@@ -112,7 +111,7 @@ export class QueryBuilder<TDocumentType> {
         query,
         ...(properties?.length ? { properties } : {}),
       }
-    thisQuery._additional.score = true
+    thisQuery.additionalFields.score = true
     excludeProperty('bm25', this)
     return this
   }
@@ -193,7 +192,7 @@ export class QueryBuilder<TDocumentType> {
         ...(properties ? { properties } : {}),
         ...(alpha ? { alpha } : {}),
       }
-    thisQuery._additional.score = true
+    thisQuery.additionalFields.score = true
     excludeProperty('hybrid', this)
     return this
   }
@@ -218,8 +217,8 @@ export class QueryBuilder<TDocumentType> {
         concepts,
         ...(distance ? { distance } : {}),
       }
-    query._additional.certainty = true
-    query._additional.distance = true
+    query.additionalFields.certainty = true
+    query.additionalFields.distance = true
     excludeProperty('nearText', this)
     return this
   }
@@ -243,8 +242,8 @@ export class QueryBuilder<TDocumentType> {
         id,
         ...(distance ? { distance } : {}),
       }
-    query._additional.certainty = true
-    query._additional.distance = true
+    query.additionalFields.certainty = true
+    query.additionalFields.distance = true
     excludeProperty('nearObject', this)
     return this
   }
@@ -264,8 +263,8 @@ export class QueryBuilder<TDocumentType> {
         vector,
         ...(distance ? { distance } : {}),
       }
-    query._additional.certainty = true
-    query._additional.distance = true
+    query.additionalFields.certainty = true
+    query.additionalFields.distance = true
     excludeProperty('nearVector', this)
     return this
   }
@@ -294,38 +293,13 @@ export class QueryBuilder<TDocumentType> {
     // @ts-ignore
     const { query } = this
     query.__args.offset = offset
-    if (!query._additional) query._additional = {}
+    if (!query.additionalFields) query.additionalFields = {}
     excludeProperty('offset', this)
     return this
   }
 
-  select<TThis>(
-    this: TThis,
-    ...args: ObjectPath<TDocumentType>[]
-  ): Omit<TThis, 'select'> {
-    // @ts-ignore
-    const { query } = this
-    const select = objectPathToQueryAdapter(args)
-    Object.assign(query, select)
-    excludeProperty('select', this)
-    return this
-  }
-
-  additional<TThis>(
-    this: TThis,
-    ...args: ObjectPath<AdditionalProps>[]
-  ): Omit<TThis, 'additional'> {
-    // @ts-ignore
-    const { _additional } = this
-    const additional = objectPathToQueryAdapter(args)
-    Object.assign(_additional, additional)
-    excludeProperty('additional', this)
-    return this
-  }
-
   getGraphQuery({ pretty } = { pretty: false }) {
-    // Assign _additional to query._additional to ensure that the order of .additional does not have any effect
-    Object.assign(this.query._additional, this._additional)
+    this.query = { ...this.query, ...this.selectedFields }
     return jsonToGraphQLQuery(
       { query: { [this.queryType]: { [this.documentType]: this.query } } },
       { pretty },
