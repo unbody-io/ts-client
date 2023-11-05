@@ -15,9 +15,10 @@ import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AxiosInstance } from 'axios'
 import { QueryBuilderOptions } from './interfaces'
 import { WhereParamsAdapter } from './adapters'
+import { AnyObject } from '../../types'
 
 export class QueryBuilder<TDocumentType> {
-  protected query: { [key: string]: any } = { __args: {}, _additional: {} }
+  protected query: AnyObject = { __args: {}, _additional: {} }
   protected queryType: string
   protected documentType: DocumentType
   protected httpClient: AxiosInstance

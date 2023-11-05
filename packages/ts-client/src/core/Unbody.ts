@@ -16,14 +16,24 @@ import {
   IImageBlock,
   ITextBlock,
 } from './documents'
+import { DEFAULT_TRANSFORMERS } from './transformer'
+import { deepMerge } from '../utils'
 
 export class Unbody {
   public httpClient: AxiosInstance
 
-  constructor({ apiKey, projectId }: IUnbodyOptions) {
+  constructor({ apiKey, projectId, transformers }: IUnbodyOptions) {
     if (!apiKey) throw new Error('Unbody client: apiKey is required')
     if (!projectId) throw new Error('Unbody client: projectId is required')
-    const httpClient = new HttpClient(apiKey, projectId)
+    const httpClient = new HttpClient(
+      apiKey,
+      projectId,
+      deepMerge(
+        {},
+        DEFAULT_TRANSFORMERS,
+        transformers,
+      ) as IUnbodyOptions['transformers'],
+    )
     this.httpClient = httpClient.instance
   }
 
