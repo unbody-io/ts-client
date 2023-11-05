@@ -1,10 +1,15 @@
 import { HttpClient } from '../utils'
 import { AxiosInstance } from 'axios'
 import { IUnbodyOptions } from './query-builder/interfaces'
-import { GetQueryBuilder } from './query-builder'
+import { AggregateQueryBuilder, GetQueryBuilder } from './query-builder'
 import { QueryType } from './query-builder/enums'
 import {
   DocumentType,
+  IAggregateAudioFile,
+  IAggregateGoogleCalendarEvent,
+  IAggregateGoogleDoc,
+  IAggregateImageBlock,
+  IAggregateTextBlock,
   IAudioFile,
   IGoogleCalendarEvent,
   IGoogleDoc,
@@ -57,6 +62,56 @@ export class Unbody {
         return new GetQueryBuilder<IGoogleCalendarEvent>({
           httpClient: httpClient,
           queryType: QueryType.Get,
+          documentType: DocumentType.GoogleCalendarEvent,
+        })
+      },
+    }
+  }
+
+  get aggregate() {
+    const { httpClient } = this
+    return {
+      get googleDoc(): AggregateQueryBuilder<IGoogleDoc, IAggregateGoogleDoc> {
+        return new AggregateQueryBuilder<IGoogleDoc, IAggregateGoogleDoc>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.GoogleDoc,
+        })
+      },
+      get imageBlock(): AggregateQueryBuilder<
+        IImageBlock,
+        IAggregateImageBlock
+      > {
+        return new AggregateQueryBuilder<IImageBlock, IAggregateImageBlock>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.ImageBlock,
+        })
+      },
+      get audioFile(): AggregateQueryBuilder<IAudioFile, IAggregateAudioFile> {
+        return new AggregateQueryBuilder<IAudioFile, IAggregateAudioFile>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.AudioFile,
+        })
+      },
+      get textBlock(): AggregateQueryBuilder<ITextBlock, IAggregateTextBlock> {
+        return new AggregateQueryBuilder<ITextBlock, IAggregateTextBlock>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.TextBlock,
+        })
+      },
+      get googleCalendarEvent(): AggregateQueryBuilder<
+        IGoogleCalendarEvent,
+        IAggregateGoogleCalendarEvent
+      > {
+        return new AggregateQueryBuilder<
+          IGoogleCalendarEvent,
+          IAggregateGoogleCalendarEvent
+        >({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
           documentType: DocumentType.GoogleCalendarEvent,
         })
       },

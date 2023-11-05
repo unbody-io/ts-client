@@ -1,6 +1,5 @@
 import { DocumentType } from '../documents'
 import {
-  IAsk,
   IBm25,
   IGroup,
   IGroupBy,
@@ -18,7 +17,7 @@ import { QueryBuilderOptions } from './interfaces'
 import { WhereParamsAdapter } from './adapters'
 
 export class QueryBuilder<TDocumentType> {
-  protected query: { [key: string]: any } = { __args: {}, additionalFields: {} }
+  protected query: { [key: string]: any } = { __args: {}, _additional: {} }
   protected queryType: string
   protected documentType: DocumentType
   protected httpClient: AxiosInstance
@@ -57,37 +56,6 @@ export class QueryBuilder<TDocumentType> {
       query.__args.where = whereParamsAdapter.adapt(params)
     }
     excludeProperty('where', this)
-    return this
-  }
-
-  ask<TThis>(this: TThis, params: IAsk<TDocumentType>): Omit<TThis, 'ask'>
-  ask<TThis>(
-    this: TThis,
-    question: IAsk<TDocumentType>['question'],
-    properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'>
-  ask<TThis>(
-    this: TThis,
-    question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
-    properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'> {
-    // @ts-ignore
-    const { query } = this
-    if (typeof query === 'object' && !Array.isArray(query))
-      query.__args.ask = question
-    else
-      query.__args.ask = {
-        question,
-        ...(properties?.length ? { properties } : {}),
-      }
-    query.additionalFields.answer = {
-      result: true,
-      property: true,
-      hasAnswer: true,
-      endPosition: true,
-      startPosition: true,
-    }
-    excludeProperty('ask', this)
     return this
   }
 
@@ -217,8 +185,8 @@ export class QueryBuilder<TDocumentType> {
         concepts,
         ...(distance ? { distance } : {}),
       }
-    query.additionalFields.certainty = true
-    query.additionalFields.distance = true
+    query._additional.certainty = true
+    query._additional.distance = true
     excludeProperty('nearText', this)
     return this
   }
@@ -242,8 +210,8 @@ export class QueryBuilder<TDocumentType> {
         id,
         ...(distance ? { distance } : {}),
       }
-    query.additionalFields.certainty = true
-    query.additionalFields.distance = true
+    query._additional.certainty = true
+    query._additional.distance = true
     excludeProperty('nearObject', this)
     return this
   }
@@ -263,8 +231,8 @@ export class QueryBuilder<TDocumentType> {
         vector,
         ...(distance ? { distance } : {}),
       }
-    query.additionalFields.certainty = true
-    query.additionalFields.distance = true
+    query._additional.certainty = true
+    query._additional.distance = true
     excludeProperty('nearVector', this)
     return this
   }
@@ -293,7 +261,7 @@ export class QueryBuilder<TDocumentType> {
     // @ts-ignore
     const { query } = this
     query.__args.offset = offset
-    if (!query.additionalFields) query.additionalFields = {}
+    if (!query._additional) query._additional = {}
     excludeProperty('offset', this)
     return this
   }

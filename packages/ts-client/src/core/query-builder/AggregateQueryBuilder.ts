@@ -2,31 +2,38 @@ import { QueryBuilder } from './QueryBuilder'
 import { ObjectPath } from './types'
 import { objectPathToQueryAdapter } from './adapters'
 import { excludeProperty } from '../../utils'
-import { AdditionalProps } from '../documents'
-import { QueryBuilderOptions } from './interfaces'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
-import { IAsk, INearText } from '../filters'
+import { QueryBuilderOptions } from './interfaces'
+import { IAggregateAsk } from '../filters'
+import { INearText } from '../filters'
 
-export class GetQueryBuilder<
+export class AggregateQueryBuilder<
   TDocumentType,
+  TAggregateDocumentType,
 > extends QueryBuilder<TDocumentType> {
-  protected additionalFields = {}
-
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     super({ httpClient, queryType, documentType })
-    this.selectedFields = DEFAULT_SELECTED_FIELDS[documentType]
+    this.selectedFields = DEFAULT_SELECTED_FIELDS[`Aggregate${documentType}`]
   }
 
-  ask<TThis>(this: TThis, params: IAsk<TDocumentType>): Omit<TThis, 'ask'>
+  // @ts-ignore
   ask<TThis>(
     this: TThis,
-    question: IAsk<TDocumentType>['question'],
-    properties?: IAsk<TDocumentType>['properties'],
+    params: IAggregateAsk<TDocumentType>,
   ): Omit<TThis, 'ask'>
   ask<TThis>(
     this: TThis,
-    question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
-    properties?: IAsk<TDocumentType>['properties'],
+    question: IAggregateAsk<TDocumentType>['question'],
+    objectLimit: IAggregateAsk<TDocumentType>['objectLimit'],
+    properties?: IAggregateAsk<TDocumentType>['properties'],
+  ): Omit<TThis, 'ask'>
+  ask<TThis>(
+    this: TThis,
+    question:
+      | IAggregateAsk<TDocumentType>['question']
+      | IAggregateAsk<TDocumentType>,
+    objectLimit: IAggregateAsk<TDocumentType>['objectLimit'],
+    properties?: IAggregateAsk<TDocumentType>['properties'],
   ): Omit<TThis, 'ask'> {
     // @ts-ignore
     const { query } = this
@@ -52,12 +59,12 @@ export class GetQueryBuilder<
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
-    distance?: INearText['distance'],
+    certainty?: INearText['certainty'],
   ): Omit<TThis, 'nearText'>
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
-    distance?: INearText['distance'],
+    certainty?: INearText['certainty'],
   ): Omit<TThis, 'nearText'> {
     // @ts-ignore
     const { query } = this
@@ -66,38 +73,21 @@ export class GetQueryBuilder<
     else
       query.__args.nearText = {
         concepts,
-        ...(distance ? { distance } : {}),
+        ...(certainty ? { certainty } : {}),
       }
     query._additional.certainty = true
     query._additional.distance = true
     excludeProperty('nearText', this)
     return this
   }
+
   select<TThis>(
     this: TThis,
-    ...args: ObjectPath<TDocumentType>[]
+    ...args: ObjectPath<TAggregateDocumentType>[]
   ): Omit<TThis, 'select'> {
     // @ts-ignore
     this.selectedFields = objectPathToQueryAdapter(args)
     excludeProperty('select', this)
     return this
-  }
-
-  additional<TThis>(
-    this: TThis,
-    ...args: ObjectPath<AdditionalProps>[]
-  ): Omit<TThis, 'additional'> {
-    // @ts-ignore
-    const { additionalFields } = this
-    const additional = objectPathToQueryAdapter(args)
-    Object.assign(additionalFields, additional)
-    excludeProperty('additional', this)
-    return this
-  }
-
-  getGraphQuery({ pretty } = { pretty: false }) {
-    // Assign additionalFields to query._additional to ensure that the order of .additional does not have any effect
-    Object.assign(this.query._additional, this.additionalFields)
-    return super.getGraphQuery({ pretty })
   }
 }

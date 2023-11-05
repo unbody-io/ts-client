@@ -1,15 +1,12 @@
-import { DocumentType } from '../enums'
 import {
   IAggregateDocument,
   IAggregateGroupBy,
   IAggregateMeta,
   IAggregateNumber,
   IAggregateString,
-  IFootnote,
 } from './fields'
 
 export interface IAggregateTextBlock {
-  __typename: DocumentType.TextBlock
   meta: IAggregateMeta
   document: IAggregateDocument
   groupedBy: IAggregateGroupBy

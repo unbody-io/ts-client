@@ -1,17 +1,13 @@
-import { IDocument } from './Document.interface'
-import { DocumentType } from '../enums'
 import {
   IAggregateBlocks,
   IAggregateDate,
-  IAggregateDocument,
   IAggregateGroupBy,
   IAggregateMeta,
   IAggregateNumber,
   IAggregateString,
 } from './fields'
 
-export interface IAggregateGoogleDoc extends IDocument {
-  __typename: DocumentType.GoogleDoc
+export interface IAggregateGoogleDoc {
   meta: IAggregateMeta
   blocks: IAggregateBlocks
   createdAt: IAggregateDate
