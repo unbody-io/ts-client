@@ -100,4 +100,8 @@ export class GetQueryBuilder<
     Object.assign(this.query._additional, this.additionalFields)
     return super.getGraphQuery({ pretty })
   }
+  getJsonQuery(): { [p: string]: any } {
+    Object.assign(this.query._additional, this.additionalFields)
+    return super.getJsonQuery()
+  }
 }

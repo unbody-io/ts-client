@@ -275,6 +275,11 @@ export class QueryBuilder<TDocumentType> {
     )
   }
 
+  getJsonQuery() {
+    this.query = { ...this.query, ...this.selectedFields }
+    return { [this.queryType]: { [this.documentType]: this.query } }
+  }
+
   exec() {
     return this.httpClient.post('', { query: this.getGraphQuery() })
   }
