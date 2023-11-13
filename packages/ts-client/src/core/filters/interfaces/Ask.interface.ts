@@ -1,4 +1,4 @@
-export interface IAsk {
+export interface IAsk<TDocumentType> {
   question: string
-  properties?: string[]
+  properties?: Array<keyof TDocumentType>
 }

@@ -1,19 +1,21 @@
-import { DocumentType } from '../enums'
-import { IDocumentWithRef } from './DocumentWithRef.interface'
 import { IGoogleDoc } from './GoogleDoc.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IBeacon } from './Beacon.interface'
+import { StringField, NumberField } from '../types'
 
-export interface IAudioFile
-  extends IDocumentWithRef<IGoogleDoc | IGoogleCalendarEvent | IBeacon> {
-  __typename: DocumentType.AudioFile
-  duration: number
-  ext: string
-  mimeType: string
-  order: number
-  originalName: string
-  remoteId: string
-  size: number
-  sourceId: string
-  url: string
+export interface IAudioFile {
+  document: {
+    GoogleDoc: IGoogleDoc
+    GoogleCalendarEvent: IGoogleCalendarEvent
+    Beacon: IBeacon
+  }
+  duration: NumberField
+  ext: StringField
+  mimeType: StringField
+  order: NumberField
+  originalName: StringField
+  remoteId: StringField
+  size: NumberField
+  sourceId: StringField
+  url: StringField
 }

@@ -1,26 +1,28 @@
-import { DocumentType } from '../enums'
-import { IDocumentWithRef } from './DocumentWithRef.interface'
 import { IGoogleDoc } from './GoogleDoc.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IBeacon } from './Beacon.interface'
+import { StringArrayField, StringField, NumberField, DateField } from '../types'
 
-export interface IImageBlock
-  extends IDocumentWithRef<IGoogleDoc | IGoogleCalendarEvent | IBeacon> {
-  __typename: DocumentType.ImageBlock
-  alt: string
-  createdAt: string
-  ext: string
-  height: number
-  mimeType: string
-  modifiedAt: string
-  order: number
-  originalName: string
-  path: string[]
-  pathString: string
-  remoteId: string
-  size: number
-  sourceId: string
-  url: string
-  width: number
-  classNames: string[]
+export interface IImageBlock {
+  document?: {
+    GoogleDoc?: IGoogleDoc
+    GoogleCalendarEvent?: IGoogleCalendarEvent
+    Beacon?: IBeacon
+  }
+  alt?: StringField
+  createdAt?: DateField
+  ext?: StringField
+  height?: NumberField
+  mimeType?: StringField
+  modifiedAt?: DateField
+  order?: NumberField
+  originalName?: StringField
+  path?: StringArrayField
+  pathString?: StringField
+  remoteId?: StringField
+  size?: NumberField
+  sourceId?: StringField
+  url?: StringField
+  width?: NumberField
+  classNames?: StringArrayField
 }

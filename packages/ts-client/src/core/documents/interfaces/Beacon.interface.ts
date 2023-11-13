@@ -1,4 +1,5 @@
+import { StringField } from '../types'
+
 export interface IBeacon {
-  beacon: string
-  __typename: 'Beacon'
+  beacon: StringField
 }
