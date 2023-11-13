@@ -1,5 +1,3 @@
-import { DocumentType } from '../enums'
-import { IImageBlock } from './ImageBlock.interface'
 import {
   IAggregateBlocks,
   IAggregateDate,
@@ -9,7 +7,6 @@ import {
 import { IAggregateBoolean } from './fields/common/AggregateBoolean.interface'
 
 export interface IAggregateGoogleCalendarEvent {
-  __typename: DocumentType.GoogleCalendarEvent
   createdAt: IAggregateString
   creatorDisplayName: IAggregateString
   creatorEmail: IAggregateString

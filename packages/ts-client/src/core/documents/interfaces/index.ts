@@ -1,4 +1,3 @@
-export * from './Document.interface'
 export * from './AdditionalProps.interface'
 export * from './AudioFile.interface'
 export * from './GoogleDoc.interface'

@@ -1,6 +1,5 @@
-import { AdditionalProps, DocumentType } from '../documents'
+import { DocumentType } from '../documents'
 import {
-  IAsk,
   IBm25,
   IGroup,
   IGroupBy,
@@ -15,16 +14,16 @@ import { excludeProperty } from '../../utils'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AxiosInstance } from 'axios'
 import { QueryBuilderOptions } from './interfaces'
-import { WhereParamsAdapter, objectPathToQueryAdapter } from './adapters'
-import { ObjectPath } from './types'
+import { WhereParamsAdapter } from './adapters'
+import { AnyObject } from '../../types'
 
 export class QueryBuilder<TDocumentType> {
-  protected query: { [key: string]: any } = { __args: {}, _additional: {} }
+  protected query: AnyObject = { __args: {}, _additional: {} }
   protected queryType: string
   protected documentType: DocumentType
   protected httpClient: AxiosInstance
   protected whereParamsAdapter: WhereParamsAdapter<TDocumentType>
-  protected _additional = {}
+  protected selectedFields = {}
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     this.httpClient = httpClient
@@ -61,37 +60,6 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  ask<TThis>(this: TThis, params: IAsk<TDocumentType>): Omit<TThis, 'ask'>
-  ask<TThis>(
-    this: TThis,
-    question: IAsk<TDocumentType>['question'],
-    properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'>
-  ask<TThis>(
-    this: TThis,
-    question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
-    properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'> {
-    // @ts-ignore
-    const { query } = this
-    if (typeof query === 'object' && !Array.isArray(query))
-      query.__args.ask = question
-    else
-      query.__args.ask = {
-        question,
-        ...(properties?.length ? { properties } : {}),
-      }
-    query._additional.answer = {
-      result: true,
-      property: true,
-      hasAnswer: true,
-      endPosition: true,
-      startPosition: true,
-    }
-    excludeProperty('ask', this)
-    return this
-  }
-
   bm25<TThis>(this: TThis, params: IBm25<TDocumentType>): Omit<TThis, 'bm25'>
   bm25<TThis>(
     this: TThis,
@@ -112,7 +80,7 @@ export class QueryBuilder<TDocumentType> {
         query,
         ...(properties?.length ? { properties } : {}),
       }
-    thisQuery._additional.score = true
+    thisQuery.additionalFields.score = true
     excludeProperty('bm25', this)
     return this
   }
@@ -193,7 +161,7 @@ export class QueryBuilder<TDocumentType> {
         ...(properties ? { properties } : {}),
         ...(alpha ? { alpha } : {}),
       }
-    thisQuery._additional.score = true
+    thisQuery.additionalFields.score = true
     excludeProperty('hybrid', this)
     return this
   }
@@ -299,37 +267,17 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  select<TThis>(
-    this: TThis,
-    ...args: ObjectPath<TDocumentType>[]
-  ): Omit<TThis, 'select'> {
-    // @ts-ignore
-    const { query } = this
-    const select = objectPathToQueryAdapter(args)
-    Object.assign(query, select)
-    excludeProperty('select', this)
-    return this
-  }
-
-  additional<TThis>(
-    this: TThis,
-    ...args: ObjectPath<AdditionalProps>[]
-  ): Omit<TThis, 'additional'> {
-    // @ts-ignore
-    const { _additional } = this
-    const additional = objectPathToQueryAdapter(args)
-    Object.assign(_additional, additional)
-    excludeProperty('additional', this)
-    return this
-  }
-
   getGraphQuery({ pretty } = { pretty: false }) {
-    // Assign _additional to query._additional to ensure that the order of .additional does not have any effect
-    Object.assign(this.query._additional, this._additional)
+    this.query = { ...this.query, ...this.selectedFields }
     return jsonToGraphQLQuery(
       { query: { [this.queryType]: { [this.documentType]: this.query } } },
       { pretty },
     )
+  }
+
+  getJsonQuery() {
+    this.query = { ...this.query, ...this.selectedFields }
+    return { [this.queryType]: { [this.documentType]: this.query } }
   }
 
   exec() {

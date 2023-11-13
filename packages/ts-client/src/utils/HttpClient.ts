@@ -1,10 +1,17 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 import { UNBODY_GRAPHQL_ENDPOINT } from '../constants'
+import { Transformers } from '../core/transformer'
+import { AnyObject } from '../types'
 
 export class HttpClient {
   instance: AxiosInstance | undefined
+  transformers: AnyObject
 
-  constructor(apiKey: string | undefined, projectId: string | undefined) {
+  constructor(
+    apiKey: string | undefined,
+    projectId: string | undefined,
+    transformers: Transformers,
+  ) {
     this.instance = axios.create({
       baseURL: UNBODY_GRAPHQL_ENDPOINT,
       headers: {
@@ -14,6 +21,7 @@ export class HttpClient {
         Accept: 'application/json',
       },
     })
+    this.transformers = transformers
     this.initializeResponseInterceptor()
   }
 
@@ -26,8 +34,24 @@ export class HttpClient {
 
   private handleResponse = ({ data }: AxiosResponse) => {
     if (data?.errors?.length) return Promise.reject(data.errors)
+    this.mapTransformers(data.data)
     return data.data
   }
 
   private handleError = (error: any) => Promise.reject(error)
+
+  private mapTransformers(data: AnyObject) {
+    if (!data.Get) return
+    Object.entries(data.Get).forEach(([documentKey, documents]) => {
+      const documentsArray = documents as []
+      documentsArray.forEach((document: AnyObject) => {
+        Object.keys(document).forEach((field) => {
+          if (!this.transformers[documentKey]?.[field]) return
+          document[field] = this.transformers[documentKey][field](
+            document[field],
+          )
+        })
+      })
+    })
+  }
 }

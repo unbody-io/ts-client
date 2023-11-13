@@ -1,4 +1,3 @@
-import { DocumentType } from '../enums'
 import {
   IAggregateDocument,
   IAggregateGroupBy,
@@ -8,7 +7,6 @@ import {
 } from './fields'
 
 export interface IAggregateAudioFile {
-  __typename: DocumentType.AudioFile
   meta: IAggregateMeta
   document: IAggregateDocument
   groupedBy: IAggregateGroupBy

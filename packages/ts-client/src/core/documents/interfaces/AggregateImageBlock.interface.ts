@@ -1,4 +1,3 @@
-import { DocumentType } from '../enums'
 import {
   IAggregateDate,
   IAggregateDocument,
@@ -9,7 +8,6 @@ import {
 } from './fields'
 
 export interface IAggregateImageBlock {
-  __typename: DocumentType.ImageBlock
   meta: IAggregateMeta
   document: IAggregateDocument
   groupedBy: IAggregateGroupBy
