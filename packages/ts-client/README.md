@@ -353,7 +353,7 @@ unbody.get.googleDoc
 
 ### Aggregate methods
 
-All the methods in `get` applies to this, except for `additonal`
+All the methods in `get` applies to this, except for `additional`
 
 ### Other methods in Get and Aggregate
 
