@@ -38,6 +38,11 @@ export interface AdditionalProps {
     result: string
     startPosition: number
   }
+  generate: {
+    error: string
+    singleResult: string
+    groupedResult: string
+  }
   classification: {
     basedOn: string[]
     classifiedFields: string[]

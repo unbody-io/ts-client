@@ -1,11 +1,12 @@
-import { QueryBuilder } from './QueryBuilder'
-import { ObjectPath } from './types'
-import { objectPathToQueryAdapter } from './adapters'
 import { excludeProperty } from '../../utils'
 import { AdditionalProps } from '../documents'
-import { QueryBuilderOptions } from './interfaces'
-import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
 import { IAsk, INearText } from '../filters'
+import { IGenerate } from '../filters/interfaces/Generate.interface'
+import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
+import { QueryBuilder } from './QueryBuilder'
+import { objectPathToQueryAdapter } from './adapters'
+import { QueryBuilderOptions } from './interfaces'
+import { ObjectPath } from './types'
 
 export class GetQueryBuilder<
   TDocumentType,
@@ -73,6 +74,54 @@ export class GetQueryBuilder<
     excludeProperty('nearText', this)
     return this
   }
+
+  generate<TThis>(
+    this: TThis,
+    type: 'singleResult',
+    prompt: IGenerate['singleResult']['prompt'],
+  ): Omit<TThis, 'generate'>
+  generate<TThis>(
+    this: TThis,
+    type: 'groupedResult',
+    prompt: IGenerate['groupedResult']['task'],
+    properties?: IGenerate['groupedResult']['properties'],
+  ): Omit<TThis, 'generate'>
+  generate<TThis>(
+    this: TThis,
+    type: 'groupedResult' | 'singleResult',
+    prompt:
+      | IGenerate['groupedResult']['task']
+      | IGenerate['singleResult']['prompt'],
+    properties?: IGenerate['groupedResult']['properties'],
+  ): Omit<TThis, 'generate'> {
+    // @ts-ignore
+    const { query } = this
+
+    if (type === 'singleResult') {
+      query._additional.generate = {
+        __args: {
+          singleResult: {
+            prompt,
+          },
+        },
+        singleResult: true,
+      }
+    } else {
+      query._additional.generate = {
+        __args: {
+          groupedResult: {
+            task: prompt,
+            properties,
+          },
+        },
+        groupedResult: true,
+      }
+    }
+
+    excludeProperty('generate', this)
+    return this
+  }
+
   select<TThis>(
     this: TThis,
     ...args: ObjectPath<TDocumentType>[]
