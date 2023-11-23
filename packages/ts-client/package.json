@@ -4,6 +4,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc --build",
     "lint": "TIMING=1 eslint \"**/*.ts*\"",
