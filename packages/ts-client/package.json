@@ -6,7 +6,9 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build",
-    "lint": "TIMING=1 eslint \"**/*.ts*\""
+    "lint": "TIMING=1 eslint \"**/*.ts*\"",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@types/dockerode": "^3.3.16",
@@ -18,5 +20,26 @@
   "dependencies": {
     "axios": "^1.4.0",
     "json-to-graphql-query": "^2.2.5"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.js?$": "babel-jest",
+      "^.+\\.ts$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
   }
 }
