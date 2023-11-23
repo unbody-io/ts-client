@@ -32,10 +32,10 @@ export class HttpClient {
     )
   }
 
-  private handleResponse = ({ data }: AxiosResponse) => {
-    if (data?.errors?.length) return Promise.reject(data.errors)
-    this.mapTransformers(data.data)
-    return data.data
+  private handleResponse = (res: AxiosResponse) => {
+    if (res?.data?.errors?.length) return Promise.reject(res?.data.errors)
+    this.mapTransformers(res.data.data)
+    return res
   }
 
   private handleError = (error: any) => Promise.reject(error)
