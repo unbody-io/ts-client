@@ -7,7 +7,7 @@ This is the official Unbody client for typescript/javascript
 Install unbody ts-client with npm
 
 ```bash
-  npm i unbody-ts-client
+  npm i @unbody-io/ts-client
 ```
 
 ## Usage/Examples
@@ -15,7 +15,7 @@ Install unbody ts-client with npm
 ### Instantiate
 
 ```typescript
-import Unbody from 'unbody-ts-client'
+import Unbody from '@unbody-io/ts-client'
 
 const unbody = new Unbody({
   apiKey: 'your api key',
@@ -30,7 +30,7 @@ _note: using this on client-side of your application can lead to crawling your d
 You can use this option to parse JSON strings in the response the way you want
 
 ```typescript
-import Unbody from 'unbody-ts-client'
+import Unbody from '@unbody-io/ts-client'
 
 const unbody = new Unbody({
   apiKey: 'your api key',
