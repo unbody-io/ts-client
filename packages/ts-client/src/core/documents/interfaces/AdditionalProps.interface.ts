@@ -50,5 +50,18 @@ export interface AdditionalProps {
     id: string
     scope: string[]
   }
+  rereank: {
+    score: number
+  }
+  spellCheck: {
+    changes: {
+      corrected: string
+      original: string
+    }
+    didYouMean: string
+    location: string
+    numberOfCorrections: number
+    originalText: string
+  }
   featureProjection: { vector: number[] }
 }

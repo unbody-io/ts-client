@@ -2,6 +2,8 @@ import { excludeProperty } from '../../utils'
 import { AdditionalProps } from '../documents'
 import { IAsk, INearText } from '../filters'
 import { IGenerate } from '../filters/interfaces/Generate.interface'
+import { INearImage } from '../filters/interfaces/NearImage.interface'
+import { IRerank } from '../filters/interfaces/Rerank.interface'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
 import { QueryBuilder } from './QueryBuilder'
 import { objectPathToQueryAdapter } from './adapters'
@@ -75,6 +77,33 @@ export class GetQueryBuilder<
     return this
   }
 
+  nearImage<TThis>(this: TThis, params: INearImage): Omit<TThis, 'nearImage'>
+  nearImage<TThis>(
+    this: TThis,
+    image: INearImage['image'],
+    distance?: INearImage['distance'],
+  ): Omit<TThis, 'nearImage'>
+  nearImage<TThis>(
+    this: TThis,
+    image: INearImage['image'] | INearImage,
+    distance?: INearImage['distance'],
+  ): Omit<TThis, 'nearImage'> {
+    // @ts-ignore
+    const { query } = this
+    if (typeof image === 'object') query.__args.nearImage = image
+    else
+      query.__args.nearImage = {
+        image,
+        ...(distance ? { distance } : {}),
+      }
+
+    query._additional.certainty = true
+    query._additional.distance = true
+    excludeProperty('nearImage', this)
+
+    return this
+  }
+
   generate<TThis>(
     this: TThis,
     type: 'singleResult',
@@ -119,6 +148,58 @@ export class GetQueryBuilder<
     }
 
     excludeProperty('generate', this)
+    return this
+  }
+
+  rerank<TThis>(this: TThis, params: IRerank): Omit<TThis, 'rerank'>
+  rerank<TThis>(
+    this: TThis,
+    query: IRerank['query'],
+    property: IRerank['property'],
+  ): Omit<TThis, 'rerank'>
+  rerank<TThis>(
+    this: TThis,
+    query: IRerank['query'] | IRerank,
+    property?: IRerank['property'],
+  ): Omit<TThis, 'rerank'> {
+    // @ts-ignore
+    const { query: _query } = this
+    if (typeof query === 'object')
+      _query._additional.rerank = {
+        score: true,
+        __args: {
+          ...query,
+        },
+      }
+    else
+      _query._additional.rerank = {
+        score: true,
+        __args: {
+          query,
+          property: property!,
+        },
+      }
+
+    excludeProperty('rerank', this)
+    return this
+  }
+
+  spellCheck<TThis>(this: TThis): Omit<TThis, 'spellCheck'> {
+    // @ts-ignore
+    const { query } = this
+
+    query._additional.spellCheck = {
+      changes: {
+        corrected: true,
+        original: true,
+      },
+      didYouMean: true,
+      location: true,
+      numberOfCorrections: true,
+      originalText: true,
+    }
+
+    excludeProperty('spellCheck', this)
     return this
   }
 

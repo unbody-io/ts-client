@@ -1,6 +1,6 @@
 import {
   IAggregateDate,
-  IAggregateDocument,
+  IAggregateReference,
   IAggregateGroupBy,
   IAggregateMeta,
   IAggregateNumber,
@@ -9,7 +9,7 @@ import {
 
 export interface IAggregateImageBlock {
   meta: IAggregateMeta
-  document: IAggregateDocument
+  document: IAggregateReference
   groupedBy: IAggregateGroupBy
   alt: IAggregateString
   createdAt: IAggregateDate

@@ -6,7 +6,7 @@ import {
   IAggregateString,
 } from './fields'
 
-export interface IAggregateAudioFile {
+export interface IAggregateVideoFile {
   document: IAggregateReference
   assetId: IAggregateString
   blob: IAggregateString
@@ -20,6 +20,8 @@ export interface IAggregateAudioFile {
   playbackId: IAggregateString
   files: IAggregateReference
   subtitles: IAggregateReference
+  width: IAggregateNumber
+  height: IAggregateNumber
   size: IAggregateNumber
   path: IAggregateString
   pathString: IAggregateString

@@ -1,5 +1,5 @@
 import {
-  IAggregateDocument,
+  IAggregateReference,
   IAggregateGroupBy,
   IAggregateMeta,
   IAggregateNumber,
@@ -8,7 +8,7 @@ import {
 
 export interface IAggregateTextBlock {
   meta: IAggregateMeta
-  document: IAggregateDocument
+  document: IAggregateReference
   groupedBy: IAggregateGroupBy
   footnotes: IAggregateString
   html: IAggregateString

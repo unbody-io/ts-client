@@ -1,7 +1,7 @@
 import {
-  IAggregateBlocks,
   IAggregateDate,
   IAggregateNumber,
+  IAggregateReference,
   IAggregateString,
 } from './fields'
 import { IAggregateBoolean } from './fields/common/AggregateBoolean.interface'
@@ -31,5 +31,5 @@ export interface IAggregateGoogleCalendarEvent {
   summary: IAggregateString
   title: IAggregateString
   updatedAt: IAggregateDate
-  attachments: IAggregateBlocks
+  attachments: IAggregateReference
 }

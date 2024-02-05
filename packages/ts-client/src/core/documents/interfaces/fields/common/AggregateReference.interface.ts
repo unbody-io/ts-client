@@ -1,4 +1,4 @@
-export interface IAggregateBlocks {
+export interface IAggregateReference {
   type: string
   pointingTo: string[]
 }

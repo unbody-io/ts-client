@@ -14,4 +14,12 @@ export const DEFAULT_TRANSFORMERS = {
       return JSON.parse(data)
     },
   },
+  TextDocument: {
+    authors(data: string): AnyObject {
+      return JSON.parse(data)
+    },
+    toc(data: string): AnyObject {
+      return JSON.parse(data)
+    },
+  },
 }

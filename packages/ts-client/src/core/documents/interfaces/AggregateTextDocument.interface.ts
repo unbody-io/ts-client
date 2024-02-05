@@ -7,13 +7,13 @@ import {
   IAggregateString,
 } from './fields'
 
-export interface IAggregateGoogleDoc {
+export interface IAggregateTextDocument {
   meta: IAggregateMeta
   blocks: IAggregateReference
   createdAt: IAggregateDate
   groupedBy: IAggregateGroupBy
   html: IAggregateString
-  mentions: IAggregateString
+  authors: IAggregateString
   mimeType: IAggregateString
   modifiedAt: IAggregateDate
   originalName: IAggregateString
@@ -24,7 +24,7 @@ export interface IAggregateGoogleDoc {
   slug: IAggregateString
   sourceId: IAggregateString
   subtitle: IAggregateString
-  summary: IAggregateString
+  description: IAggregateString
   tags: IAggregateString
   text: IAggregateString
   title: IAggregateString

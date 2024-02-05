@@ -5,7 +5,13 @@ import { IGoogleDoc } from './GoogleDoc.interface'
 import { IMediaFile } from './MediaFile.interface'
 import { ISubtitleFile } from './SubtitleFile.interface'
 
-export interface IAudioFile {
+interface ImageUrls {
+  png?: StringField
+  jpeg?: StringField
+  webp?: StringField
+}
+
+export interface IVideoFile {
   document?: {
     GoogleDoc?: IGoogleDoc
     GoogleCalendarEvent?: IGoogleCalendarEvent
@@ -22,9 +28,13 @@ export interface IAudioFile {
   originalName?: StringField
   playbackId?: StringField
   files?: IMediaFile
+  animatedImageUrl?: ImageUrls
+  thumbnailUrl?: ImageUrls
   subtitles?: {
     SubtitleFile?: ISubtitleFile
   }
+  width?: NumberField
+  height?: NumberField
   size?: NumberField
   path?: StringField
   pathString?: StringField
