@@ -1,11 +1,13 @@
-import { IGoogleDoc } from './GoogleDoc.interface'
-import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
+import { DateField, NumberField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
-import { StringArrayField, StringField, NumberField, DateField } from '../types'
+import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
+import { IGoogleDoc } from './GoogleDoc.interface'
+import { ITextDocument } from './TextDocument.interface'
 
 export interface IImageBlock {
   document?: {
     GoogleDoc?: IGoogleDoc
+    TextDocument?: ITextDocument
     GoogleCalendarEvent?: IGoogleCalendarEvent
     Beacon?: IBeacon
   }
