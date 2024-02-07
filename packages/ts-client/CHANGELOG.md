@@ -1,5 +1,12 @@
 # @unbody-io/ts-client
 
+## 0.0.4
+
+### Patch Changes
+
+- - Enhance search functionality with more accessible methods
+  - Implement minor bug fixes
+
 ## 0.0.3
 
 ### Patch Changes
