@@ -63,10 +63,14 @@ export class GetQueryBuilder<
     distance?: INearText['distance'],
   ): Omit<TThis, 'nearText'> {
     // @ts-ignore
-    const { query } = this
-    if (typeof concepts === 'object' && !Array.isArray(concepts))
+    const { query, spellCheck } = this
+
+    let withSpellCheck = false
+
+    if (typeof concepts === 'object' && !Array.isArray(concepts)) {
       query.__args.nearText = concepts
-    else
+      if (concepts.autocorrect) withSpellCheck = true
+    } else
       query.__args.nearText = {
         concepts,
         ...(distance ? { distance } : {}),
@@ -74,6 +78,9 @@ export class GetQueryBuilder<
     query._additional.certainty = true
     query._additional.distance = true
     excludeProperty('nearText', this)
+
+    if (withSpellCheck) return spellCheck.bind(this)()
+
     return this
   }
 
@@ -140,7 +147,7 @@ export class GetQueryBuilder<
         __args: {
           groupedResult: {
             task: prompt,
-            properties,
+            ...(properties ? { properties } : {}),
           },
         },
         groupedResult: true,
@@ -199,7 +206,6 @@ export class GetQueryBuilder<
       originalText: true,
     }
 
-    excludeProperty('spellCheck', this)
     return this
   }
 

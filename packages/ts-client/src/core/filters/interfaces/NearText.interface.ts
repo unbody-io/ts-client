@@ -6,4 +6,5 @@ export interface INearText {
   distance?: number
   moveAwayFrom?: INearTextMoveObj
   concepts: string[]
+  autocorrect?: boolean
 }
