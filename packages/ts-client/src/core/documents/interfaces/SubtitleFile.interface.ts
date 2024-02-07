@@ -2,10 +2,12 @@ import { BooleanField, NumberField, StringField } from '../types'
 import { IAudioFile } from './AudioFile.interface'
 import { IBeacon } from './Beacon.interface'
 import { ISubtitleEntry } from './SubtitleEntry.interface'
+import { IVideoFile } from './VideoFile.interface'
 
 export interface ISubtitleFile {
   media?: {
     AudioFile?: IAudioFile
+    VideoFile?: IVideoFile
     Beacon?: IBeacon
   }
   originalName?: StringField
