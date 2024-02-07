@@ -296,7 +296,10 @@ export class QueryBuilder<TDocumentType> {
   ): Omit<TThis, 'sort'> {
     // @ts-ignore
     const { query } = this
-    query.__args.sort = { order, ...(path ? { path } : {}) }
+    query.__args.sort = {
+      order: new EnumType(order),
+      ...(path ? { path } : {}),
+    }
     excludeProperty('sort', this)
     return this
   }
