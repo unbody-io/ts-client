@@ -1,4 +1,8 @@
-import { DocumentType } from '../documents'
+import { AxiosInstance } from 'axios'
+import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
+import { AnyObject } from '../../types'
+import { excludeProperty } from '../../utils'
+import { DocumentType, StringField } from '../documents'
 import {
   IBm25,
   IGroup,
@@ -10,12 +14,10 @@ import {
   SortType,
   WhereOperators,
 } from '../filters'
-import { excludeProperty } from '../../utils'
-import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
-import { AxiosInstance } from 'axios'
-import { QueryBuilderOptions } from './interfaces'
+import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { WhereParamsAdapter } from './adapters'
-import { AnyObject } from '../../types'
+import { QueryBuilderOptions } from './interfaces'
+import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class QueryBuilder<TDocumentType> {
   protected query: AnyObject = { __args: {}, _additional: {} }
@@ -32,21 +34,27 @@ export class QueryBuilder<TDocumentType> {
     this.whereParamsAdapter = new WhereParamsAdapter<TDocumentType>()
   }
 
-  where<TThis>(this: TThis, params: TDocumentType): Omit<TThis, 'where'>
+  where<TThis>(
+    this: TThis,
+    params: TDocumentType & { id?: StringField },
+  ): Omit<TThis, 'where'>
   where<TThis>(
     this: TThis,
     callback:
-      | TDocumentType
+      | (TDocumentType & { id?: StringField })
       | ((
-          operator: WhereOperators<TDocumentType>,
+          operator: WhereOperators<TDocumentType & { id?: StringField }>,
         ) =>
-          | TDocumentType
+          | (TDocumentType & { id?: StringField })
           | ReturnType<
-              | WhereOperators<TDocumentType>['And']
-              | WhereOperators<TDocumentType>['Or']
+              | WhereOperators<TDocumentType & { id?: StringField }>['And']
+              | WhereOperators<TDocumentType & { id?: StringField }>['Or']
             >),
   ): Omit<TThis, 'where'>
-  where<TThis>(this: TThis, params: TDocumentType): Omit<TThis, 'where'> {
+  where<TThis>(
+    this: TThis,
+    params: TDocumentType & { id?: StringField },
+  ): Omit<TThis, 'where'> {
     // @ts-ignore
     const { query, whereParamsAdapter } = this
     if (typeof params === 'function') {
@@ -60,17 +68,20 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  bm25<TThis>(this: TThis, params: IBm25<TDocumentType>): Omit<TThis, 'bm25'>
+  bm25<TThis>(
+    this: TThis,
+    params: IBm25<TDocumentType>,
+  ): Omit<TThis, SearchOperatorMethods>
   bm25<TThis>(
     this: TThis,
     query: IBm25<TDocumentType>['query'],
     properties?: IBm25<TDocumentType>['properties'],
-  ): Omit<TThis, 'bm25'>
+  ): Omit<TThis, SearchOperatorMethods>
   bm25<TThis>(
     this: TThis,
     query: IBm25<TDocumentType>['query'] | IBm25<TDocumentType>,
     properties?: IBm25<TDocumentType>['properties'],
-  ): Omit<TThis, 'bm25'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query: thisQuery } = this
     if (typeof query === 'object' && !Array.isArray(query))
@@ -138,19 +149,19 @@ export class QueryBuilder<TDocumentType> {
   hybrid<TThis>(
     this: TThis,
     params: IHybrid<TDocumentType>,
-  ): Omit<TThis, 'hybrid'>
+  ): Omit<TThis, SearchOperatorMethods>
   hybrid<TThis>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'],
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
-  ): Omit<TThis, 'hybrid'>
+  ): Omit<TThis, SearchOperatorMethods>
   hybrid<TThis>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'] | IHybrid<TDocumentType>,
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
-  ): Omit<TThis, 'hybrid'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query: thisQuery } = this
     if (typeof query === 'object' && !Array.isArray(query))
@@ -166,17 +177,20 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  nearText<TThis>(this: TThis, params: INearText): Omit<TThis, 'nearText'>
+  nearText<TThis>(
+    this: TThis,
+    params: INearText,
+  ): Omit<TThis, SearchOperatorMethods>
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
     distance?: INearText['distance'],
-  ): Omit<TThis, 'nearText'>
+  ): Omit<TThis, SearchOperatorMethods>
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
-  ): Omit<TThis, 'nearText'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query } = this
     if (typeof concepts === 'object' && !Array.isArray(concepts))
@@ -192,22 +206,56 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  nearObject<TThis>(this: TThis, params: INearObject): Omit<TThis, 'nearObject'>
+  nearImage<TThis>(
+    this: TThis,
+    params: INearImage,
+  ): Omit<TThis, SearchOperatorMethods>
+  nearImage<TThis>(
+    this: TThis,
+    image: INearImage['image'],
+    distance?: INearImage['distance'],
+  ): Omit<TThis, SearchOperatorMethods>
+  nearImage<TThis>(
+    this: TThis,
+    image: INearImage['image'] | INearImage,
+    distance?: INearImage['distance'],
+  ): Omit<TThis, SearchOperatorMethods> {
+    // @ts-ignore
+    const { query } = this
+    if (typeof image === 'object') query.__args.nearImage = image
+    else
+      query.__args.nearImage = {
+        image,
+        ...(distance ? { distance } : {}),
+      }
+
+    query._additional.certainty = true
+    query._additional.distance = true
+    excludeProperty('nearImage', this)
+
+    return this
+  }
+
+  nearObject<TThis>(
+    this: TThis,
+    params: INearObject,
+  ): Omit<TThis, SearchOperatorMethods>
   nearObject<TThis>(
     this: TThis,
     id: INearObject['id'],
     distance?: INearObject['distance'],
-  ): Omit<TThis, 'nearObject'>
+  ): Omit<TThis, SearchOperatorMethods>
   nearObject<TThis>(
     this: TThis,
     id: INearObject['id'] | INearObject,
     distance?: INearObject['distance'],
-  ): Omit<TThis, 'nearObject'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query } = this
-    if (typeof id === 'object' && !Array.isArray(id)) query.__args.nearText = id
+    if (typeof id === 'object' && !Array.isArray(id))
+      query.__args.nearObject = id
     else
-      query.__args.nearText = {
+      query.__args.nearObject = {
         id,
         ...(distance ? { distance } : {}),
       }
@@ -217,12 +265,15 @@ export class QueryBuilder<TDocumentType> {
     return this
   }
 
-  nearVector<TThis>(this: TThis, params: INearVector): Omit<TThis, 'nearVector'>
+  nearVector<TThis>(
+    this: TThis,
+    params: INearVector,
+  ): Omit<TThis, SearchOperatorMethods>
   nearVector<TThis>(
     this: TThis,
     vector: INearVector['vector'] | INearVector,
     distance?: INearVector['distance'],
-  ): Omit<TThis, 'nearVector'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query } = this
     if (typeof vector === 'object' && !Array.isArray(vector))

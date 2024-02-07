@@ -6,31 +6,42 @@ import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { IRerank } from '../filters/interfaces/Rerank.interface'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
 import { QueryBuilder } from './QueryBuilder'
+import { SearchQuery } from './SearchQuery'
+import { SimilarQuery } from './SimilarQuery'
 import { objectPathToQueryAdapter } from './adapters'
 import { QueryBuilderOptions } from './interfaces'
 import { ObjectPath } from './types'
+import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class GetQueryBuilder<
   TDocumentType,
 > extends QueryBuilder<TDocumentType> {
   protected additionalFields = {}
+  public search: SearchQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
+  public similar: SimilarQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     super({ httpClient, queryType, documentType })
     this.selectedFields = DEFAULT_SELECTED_FIELDS[documentType]
+
+    this.search = new SearchQuery(this)
+    this.similar = new SimilarQuery(this)
   }
 
-  ask<TThis>(this: TThis, params: IAsk<TDocumentType>): Omit<TThis, 'ask'>
+  ask<TThis>(
+    this: TThis,
+    params: IAsk<TDocumentType>,
+  ): Omit<TThis, SearchOperatorMethods>
   ask<TThis>(
     this: TThis,
     question: IAsk<TDocumentType>['question'],
     properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'>
+  ): Omit<TThis, SearchOperatorMethods>
   ask<TThis>(
     this: TThis,
     question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
     properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, 'ask'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query } = this
     if (typeof question === 'object' && !Array.isArray(question))
@@ -51,17 +62,20 @@ export class GetQueryBuilder<
     return this
   }
 
-  nearText<TThis>(this: TThis, params: INearText): Omit<TThis, 'nearText'>
+  nearText<TThis>(
+    this: TThis,
+    params: INearText,
+  ): Omit<TThis, SearchOperatorMethods>
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
     distance?: INearText['distance'],
-  ): Omit<TThis, 'nearText'>
+  ): Omit<TThis, SearchOperatorMethods>
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
-  ): Omit<TThis, 'nearText'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query, spellCheck } = this
 
@@ -79,22 +93,25 @@ export class GetQueryBuilder<
     query._additional.distance = true
     excludeProperty('nearText', this)
 
-    if (withSpellCheck) return spellCheck.bind(this)()
+    // if (withSpellCheck) return spellCheck.bind(this)()
 
     return this
   }
 
-  nearImage<TThis>(this: TThis, params: INearImage): Omit<TThis, 'nearImage'>
+  nearImage<TThis>(
+    this: TThis,
+    params: INearImage,
+  ): Omit<TThis, SearchOperatorMethods>
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'],
     distance?: INearImage['distance'],
-  ): Omit<TThis, 'nearImage'>
+  ): Omit<TThis, SearchOperatorMethods>
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'] | INearImage,
     distance?: INearImage['distance'],
-  ): Omit<TThis, 'nearImage'> {
+  ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
     const { query } = this
     if (typeof image === 'object') query.__args.nearImage = image
@@ -236,6 +253,7 @@ export class GetQueryBuilder<
     Object.assign(this.query._additional, this.additionalFields)
     return super.getGraphQuery({ pretty })
   }
+
   getJsonQuery(): { [p: string]: any } {
     Object.assign(this.query._additional, this.additionalFields)
     return super.getJsonQuery()

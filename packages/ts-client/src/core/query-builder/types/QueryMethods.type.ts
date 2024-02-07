@@ -1,0 +1,10 @@
+export type SearchOperatorMethods =
+  | 'search'
+  | 'similar'
+  | 'ask'
+  | 'bm25'
+  | 'hybrid'
+  | 'nearText'
+  | 'nearImage'
+  | 'nearObject'
+  | 'nearVector'
