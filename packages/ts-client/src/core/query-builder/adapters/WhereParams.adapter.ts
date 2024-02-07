@@ -64,7 +64,12 @@ export class WhereParamsAdapter<TDocumentType> {
           adapted.operands.forEach(
             (operation) => (operation.path = [param.key, prop, operation.path]),
           )
-        else adapted.path = [param.key, prop, adapted.path]
+        else
+          adapted.path = [
+            param.key,
+            prop,
+            ...(Array.isArray(adapted.path) ? adapted.path : [adapted.path]),
+          ]
         return adapted
       }),
     )
