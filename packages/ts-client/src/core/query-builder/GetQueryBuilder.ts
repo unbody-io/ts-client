@@ -2,10 +2,10 @@ import { AxiosResponse } from 'axios'
 import { excludeProperty } from '../../utils'
 import { AdditionalProps } from '../documents'
 import { IAsk, INearText } from '../filters'
-import { IGenerate } from '../filters/interfaces/Generate.interface'
 import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { IRerank } from '../filters/interfaces/Rerank.interface'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
+import { GenerateQuery, createGenerateQuery } from './GenerateQuery'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchQuery } from './SearchQuery'
 import { SimilarQuery } from './SimilarQuery'
@@ -20,6 +20,7 @@ export class GetQueryBuilder<
   protected additionalFields = {}
   public search: SearchQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
   public similar: SimilarQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
+  public generate: GenerateQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     super({ httpClient, queryType, documentType })
@@ -27,6 +28,7 @@ export class GetQueryBuilder<
 
     this.search = new SearchQuery(this)
     this.similar = new SimilarQuery(this)
+    this.generate = createGenerateQuery(this)
   }
 
   ask<TThis>(
@@ -126,53 +128,6 @@ export class GetQueryBuilder<
     query._additional.distance = true
     excludeProperty('nearImage', this)
 
-    return this
-  }
-
-  generate<TThis>(
-    this: TThis,
-    type: 'singleResult',
-    prompt: IGenerate<TDocumentType>['singleResult']['prompt'],
-  ): Omit<TThis, 'generate'>
-  generate<TThis>(
-    this: TThis,
-    type: 'groupedResult',
-    prompt: IGenerate<TDocumentType>['groupedResult']['task'],
-    properties?: IGenerate<TDocumentType>['groupedResult']['properties'],
-  ): Omit<TThis, 'generate'>
-  generate<TThis>(
-    this: TThis,
-    type: 'groupedResult' | 'singleResult',
-    prompt:
-      | IGenerate<TDocumentType>['groupedResult']['task']
-      | IGenerate<TDocumentType>['singleResult']['prompt'],
-    properties?: IGenerate<TDocumentType>['groupedResult']['properties'],
-  ): Omit<TThis, 'generate'> {
-    // @ts-ignore
-    const { query } = this
-
-    if (type === 'singleResult') {
-      query._additional.generate = {
-        __args: {
-          singleResult: {
-            prompt,
-          },
-        },
-        singleResult: true,
-      }
-    } else {
-      query._additional.generate = {
-        __args: {
-          groupedResult: {
-            task: prompt,
-            ...(properties ? { properties } : {}),
-          },
-        },
-        groupedResult: true,
-      }
-    }
-
-    excludeProperty('generate', this)
     return this
   }
 
