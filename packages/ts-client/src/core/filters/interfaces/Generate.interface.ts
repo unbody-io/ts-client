@@ -1,9 +1,9 @@
-export interface IGenerate {
+export interface IGenerate<TDocumentType> {
   singleResult?: {
     prompt: string
   }
   groupedResult?: {
     task: string
-    properties: string[]
+    properties: Array<keyof TDocumentType>
   }
 }

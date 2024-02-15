@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios'
+import { AxiosInstance, AxiosResponse } from 'axios'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { HttpClient, deepMerge } from '../utils'
 import {
@@ -48,19 +48,59 @@ export class Unbody {
     this.httpClient = httpClient.instance
   }
 
-  exec(...documents: QueryBuilder<any>[]) {
-    const queryJson = documents.reduce((result, currentValue, currentIndex) => {
+  async exec(
+    ...documents: Partial<QueryBuilder<any>>[]
+  ): Promise<AxiosResponse<Array<any>>> {
+    const queries: {
+      name: string
+      __aliasFor: string
+      query: any
+    }[] = documents.reduce((result, currentValue, currentIndex) => {
       const query = currentValue.getJsonQuery()
       const queryName = Object.keys(query)[0]
-      result[`q${currentIndex}`] = {
-        __aliasFor: queryName,
-        ...query[queryName],
-      }
-      return result
-    }, Object.create({}))
-    return this.httpClient.post('', {
-      query: jsonToGraphQLQuery({ query: queryJson }),
+
+      return [
+        ...result,
+        {
+          name: `q${currentIndex}`,
+          __aliasFor: queryName,
+          query: query[queryName],
+        },
+      ]
+    }, [])
+
+    const res = await this.httpClient.post('', {
+      query: jsonToGraphQLQuery({
+        query: Object.fromEntries(
+          queries.map((query) => [
+            query.name,
+            {
+              __aliasFor: query.__aliasFor,
+              ...query.query,
+            },
+          ]),
+        ),
+      }),
     })
+
+    return {
+      ...res,
+      data: queries.map(({ name, __aliasFor, query }, index) => {
+        const fakeRes = {
+          ...res,
+          data: {
+            ...res.data,
+            data: {
+              [__aliasFor]: res.data.data[name],
+            },
+          },
+        }
+
+        const { data } = (documents[index] as any)._resolveResData(fakeRes)
+
+        return data
+      }),
+    } as AxiosResponse<Array<unknown>>
   }
 
   get get() {

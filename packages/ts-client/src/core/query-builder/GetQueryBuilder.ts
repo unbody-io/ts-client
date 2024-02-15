@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios'
 import { excludeProperty } from '../../utils'
 import { AdditionalProps } from '../documents'
 import { IAsk, INearText } from '../filters'
@@ -131,21 +132,21 @@ export class GetQueryBuilder<
   generate<TThis>(
     this: TThis,
     type: 'singleResult',
-    prompt: IGenerate['singleResult']['prompt'],
+    prompt: IGenerate<TDocumentType>['singleResult']['prompt'],
   ): Omit<TThis, 'generate'>
   generate<TThis>(
     this: TThis,
     type: 'groupedResult',
-    prompt: IGenerate['groupedResult']['task'],
-    properties?: IGenerate['groupedResult']['properties'],
+    prompt: IGenerate<TDocumentType>['groupedResult']['task'],
+    properties?: IGenerate<TDocumentType>['groupedResult']['properties'],
   ): Omit<TThis, 'generate'>
   generate<TThis>(
     this: TThis,
     type: 'groupedResult' | 'singleResult',
     prompt:
-      | IGenerate['groupedResult']['task']
-      | IGenerate['singleResult']['prompt'],
-    properties?: IGenerate['groupedResult']['properties'],
+      | IGenerate<TDocumentType>['groupedResult']['task']
+      | IGenerate<TDocumentType>['singleResult']['prompt'],
+    properties?: IGenerate<TDocumentType>['groupedResult']['properties'],
   ): Omit<TThis, 'generate'> {
     // @ts-ignore
     const { query } = this
@@ -257,5 +258,33 @@ export class GetQueryBuilder<
   getJsonQuery(): { [p: string]: any } {
     Object.assign(this.query._additional, this.additionalFields)
     return super.getJsonQuery()
+  }
+
+  protected resovleResData = (res: AxiosResponse) => {
+    const result: any = {
+      payload: res.data?.data?.[this.queryType]?.[this.documentType],
+    }
+
+    if (this.query._additional.generate && result.payload) {
+      const generateType = !!this.query._additional?.generate?.singleResult
+        ? 'singleResult'
+        : !!this.query._additional?.generate?.groupedResult
+        ? 'groupedResult'
+        : null
+
+      if (generateType === 'singleResult') {
+        result.generate = (result.payload || []).map((obj: any) => ({
+          from: obj,
+          result: obj?._additional?.generate?.singleResult,
+        }))
+      } else if (generateType === 'groupedResult') {
+        result.generate = {
+          from: result.payload,
+          result: result.payload?.[0]?._additional?.generate?.groupedResult,
+        }
+      }
+    }
+
+    return result
   }
 }

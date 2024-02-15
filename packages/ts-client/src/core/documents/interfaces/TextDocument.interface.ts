@@ -13,8 +13,6 @@ export interface ITextDocument {
   path?: StringArrayField
   pathString?: StringField
   remoteId?: StringField
-  slug?: StringField
-  size?: NumberField
   sourceId?: StringField
   subtitle?: StringField
   description?: StringField

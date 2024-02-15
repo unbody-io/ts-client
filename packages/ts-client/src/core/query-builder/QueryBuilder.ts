@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios'
+import { AxiosInstance, AxiosResponse } from 'axios'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AnyObject } from '../../types'
 import { excludeProperty } from '../../utils'
@@ -26,6 +26,7 @@ export class QueryBuilder<TDocumentType> {
   protected httpClient: AxiosInstance
   protected whereParamsAdapter: WhereParamsAdapter<TDocumentType>
   protected selectedFields = {}
+  protected additionalFields = {}
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     this.httpClient = httpClient
@@ -83,7 +84,7 @@ export class QueryBuilder<TDocumentType> {
     properties?: IBm25<TDocumentType>['properties'],
   ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
-    const { query: thisQuery } = this
+    const { query: thisQuery, additionalFields } = this
     if (typeof query === 'object' && !Array.isArray(query))
       thisQuery.__args.bm25 = query
     else
@@ -91,7 +92,7 @@ export class QueryBuilder<TDocumentType> {
         query,
         ...(properties?.length ? { properties } : {}),
       }
-    thisQuery.additionalFields.score = true
+    additionalFields.score = true
     excludeProperty('bm25', this)
     return this
   }
@@ -163,7 +164,7 @@ export class QueryBuilder<TDocumentType> {
     alpha?: IHybrid<TDocumentType>['alpha'],
   ): Omit<TThis, SearchOperatorMethods> {
     // @ts-ignore
-    const { query: thisQuery } = this
+    const { query: thisQuery, additionalFields } = this
     if (typeof query === 'object' && !Array.isArray(query))
       thisQuery.__args.hybrid = query
     else
@@ -172,7 +173,7 @@ export class QueryBuilder<TDocumentType> {
         ...(properties ? { properties } : {}),
         ...(alpha ? { alpha } : {}),
       }
-    thisQuery.additionalFields.score = true
+    additionalFields.score = true
     excludeProperty('hybrid', this)
     return this
   }
@@ -334,7 +335,23 @@ export class QueryBuilder<TDocumentType> {
     return { [this.queryType]: { [this.documentType]: this.query } }
   }
 
-  exec() {
-    return this.httpClient.post('', { query: this.getGraphQuery() })
+  exec = async (): Promise<AxiosResponse<any>> => {
+    return this.httpClient
+      .post('', { query: this.getGraphQuery() })
+      .then(this._resolveResData)
+  }
+
+  protected _resolveResData = (res: AxiosResponse): AxiosResponse => ({
+    ...res,
+    data: {
+      ...this.resovleResData(res),
+      _original: res.data,
+    },
+  })
+
+  protected resovleResData = (res: AxiosResponse) => {
+    return {
+      payload: res.data?.data?.[this.queryType]?.[this.documentType],
+    }
   }
 }

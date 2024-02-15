@@ -26,5 +26,4 @@ export interface IImageBlock {
   sourceId?: StringField
   url?: StringField
   width?: NumberField
-  classNames?: StringArrayField
 }

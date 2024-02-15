@@ -73,8 +73,6 @@ export const DEFAULT_SELECTED_FIELDS = {
     path: true,
     pathString: true,
     remoteId: true,
-    slug: true,
-    size: true,
     sourceId: true,
     subtitle: true,
     description: true,
@@ -209,7 +207,6 @@ export const DEFAULT_SELECTED_FIELDS = {
     sourceId: true,
     url: true,
     width: true,
-    classNames: true,
   },
   TextBlock: {
     footnotes: true,
