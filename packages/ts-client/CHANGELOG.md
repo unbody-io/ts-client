@@ -1,5 +1,12 @@
 # @unbody-io/ts-client
 
+## 0.0.5
+
+### Patch Changes
+
+- Implement more accessible methods for generative search
+- Improved response handling
+
 ## 0.0.4
 
 ### Patch Changes
