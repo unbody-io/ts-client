@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.6
+
+### Patch Changes
+
+-
+
 ## 0.0.5
 
 ### Patch Changes
