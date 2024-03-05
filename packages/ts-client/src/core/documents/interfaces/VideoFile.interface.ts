@@ -1,19 +1,15 @@
 import { NumberField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
+import { IDiscordMessage } from './DiscordMessage.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IGoogleDoc } from './GoogleDoc.interface'
 import { IMediaFile } from './MediaFile.interface'
 import { ISubtitleFile } from './SubtitleFile.interface'
 
-interface ImageUrls {
-  png?: StringField
-  jpeg?: StringField
-  webp?: StringField
-}
-
 export interface IVideoFile {
   document?: {
     GoogleDoc?: IGoogleDoc
+    DiscordMessage?: IDiscordMessage
     GoogleCalendarEvent?: IGoogleCalendarEvent
     Beacon?: IBeacon
   }
@@ -28,8 +24,15 @@ export interface IVideoFile {
   originalName?: StringField
   playbackId?: StringField
   files?: IMediaFile
-  animatedImageUrl?: ImageUrls
-  thumbnailUrl?: ImageUrls
+  animatedImageUrl?: {
+    gif?: StringField
+    webp?: StringField
+  }
+  thumbnailUrl?: {
+    png?: StringField
+    jpeg?: StringField
+    webp?: StringField
+  }
   subtitles?: {
     SubtitleFile?: ISubtitleFile
   }
