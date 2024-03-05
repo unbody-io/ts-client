@@ -1,5 +1,6 @@
 import { NumberField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
+import { IDiscordMessage } from './DiscordMessage.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IGoogleDoc } from './GoogleDoc.interface'
 import { IMediaFile } from './MediaFile.interface'
@@ -8,6 +9,7 @@ import { ISubtitleFile } from './SubtitleFile.interface'
 export interface IAudioFile {
   document?: {
     GoogleDoc?: IGoogleDoc
+    DiscordMessage?: IDiscordMessage
     GoogleCalendarEvent?: IGoogleCalendarEvent
     Beacon?: IBeacon
   }

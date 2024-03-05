@@ -4,6 +4,7 @@ import { HttpClient, deepMerge } from '../utils'
 import {
   DocumentType,
   IAggregateAudioFile,
+  IAggregateDiscordMessage,
   IAggregateGoogleCalendarEvent,
   IAggregateGoogleDoc,
   IAggregateImageBlock,
@@ -12,6 +13,7 @@ import {
   IAggregateTextBlock,
   IAggregateTextDocument,
   IAudioFile,
+  IDiscordMessage,
   IGoogleCalendarEvent,
   IGoogleDoc,
   IImageBlock,
@@ -169,6 +171,13 @@ export class Unbody {
           documentType: DocumentType.GoogleCalendarEvent,
         })
       },
+      get discordMessage(): GetQueryBuilder<IDiscordMessage> {
+        return new GetQueryBuilder<IDiscordMessage>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.DiscordMessage,
+        })
+      },
     }
   }
 
@@ -254,6 +263,19 @@ export class Unbody {
           httpClient: httpClient,
           queryType: QueryType.Aggregate,
           documentType: DocumentType.GoogleCalendarEvent,
+        })
+      },
+      get disocrdMessage(): AggregateQueryBuilder<
+        IDiscordMessage,
+        IAggregateDiscordMessage
+      > {
+        return new AggregateQueryBuilder<
+          IDiscordMessage,
+          IAggregateDiscordMessage
+        >({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.DiscordMessage,
         })
       },
     }

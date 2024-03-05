@@ -191,6 +191,33 @@ export const DEFAULT_SELECTED_FIELDS = {
     updatedAt: true,
     modifiedAt: true,
   },
+  DiscordMessage: {
+    content: true,
+    referencedMessageId: true,
+    mentionEveryone: true,
+    position: true,
+    author: {
+      id: true,
+      avatar: true,
+      username: true,
+      globalName: true,
+    },
+    mentions: {
+      id: true,
+      avatar: true,
+      username: true,
+      globalName: true,
+    },
+    channelId: true,
+    guildId: true,
+    remoteId: true,
+    createdAt: true,
+    modifiedAt: true,
+    sourceId: true,
+    attachments: {
+      __typename: true,
+    },
+  },
   ImageBlock: {
     alt: true,
     createdAt: true,
@@ -325,6 +352,9 @@ export const DEFAULT_SELECTED_FIELDS = {
     meta: aggregateMeta,
   },
   AggregateSubtitleEntry: {
+    meta: aggregateMeta,
+  },
+  AggregateDiscordMessage: {
     meta: aggregateMeta,
   },
 }
