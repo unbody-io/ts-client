@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.7
+
+### Patch Changes
+
+- Spreadsheet support
+
 ## 0.0.6
 
 ### Patch Changes
