@@ -245,6 +245,25 @@ export const DEFAULT_SELECTED_FIELDS = {
     text: true,
     classNames: true,
   },
+  CsvRow: {
+    csv: true,
+    columns: true,
+    order: true,
+    remoteId: true,
+    sourceId: true,
+  },
+  Spreadsheet: {
+    name: true,
+    order: true,
+    remoteId: true,
+    sourceId: true,
+  },
+  SpreadsheetDocument: {
+    name: true,
+    order: true,
+    remoteId: true,
+    sourceId: true,
+  },
   AggregateGoogleDoc: {
     meta: aggregateMeta,
     blocks: aggregateBlocks,
@@ -355,6 +374,15 @@ export const DEFAULT_SELECTED_FIELDS = {
     meta: aggregateMeta,
   },
   AggregateDiscordMessage: {
+    meta: aggregateMeta,
+  },
+  AggregateCsvRow: {
+    meta: aggregateMeta,
+  },
+  AggregateSpreadsheet: {
+    meta: aggregateMeta,
+  },
+  AggregateSpreadsheetDocument: {
     meta: aggregateMeta,
   },
 }

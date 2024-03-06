@@ -8,15 +8,20 @@ import {
   IAggregateGoogleCalendarEvent,
   IAggregateGoogleDoc,
   IAggregateImageBlock,
+  IAggregateSpreadsheet,
+  IAggregateSpreadsheetDocument,
   IAggregateSubtitleEntry,
   IAggregateSubtitleFile,
   IAggregateTextBlock,
   IAggregateTextDocument,
   IAudioFile,
+  ICsvRow,
   IDiscordMessage,
   IGoogleCalendarEvent,
   IGoogleDoc,
   IImageBlock,
+  ISpreadsheet,
+  ISpreadsheetDocument,
   ISubtitleEntry,
   ISubtitleFile,
   ITextBlock,
@@ -178,6 +183,27 @@ export class Unbody {
           documentType: DocumentType.DiscordMessage,
         })
       },
+      get csvRow(): GetQueryBuilder<ICsvRow> {
+        return new GetQueryBuilder<ICsvRow>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.CsvRow,
+        })
+      },
+      get spreadsheet(): GetQueryBuilder<ISpreadsheet> {
+        return new GetQueryBuilder<ISpreadsheet>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.Spreadsheet,
+        })
+      },
+      get spreadsheetDocument(): GetQueryBuilder<ISpreadsheetDocument> {
+        return new GetQueryBuilder<ISpreadsheetDocument>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.SpreadsheetDocument,
+        })
+      },
     }
   }
 
@@ -276,6 +302,36 @@ export class Unbody {
           httpClient: httpClient,
           queryType: QueryType.Aggregate,
           documentType: DocumentType.DiscordMessage,
+        })
+      },
+      get csvRow(): AggregateQueryBuilder<ICsvRow, IAggregateDiscordMessage> {
+        return new AggregateQueryBuilder<ICsvRow, IAggregateDiscordMessage>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.CsvRow,
+        })
+      },
+      get spreadsheet(): AggregateQueryBuilder<
+        ISpreadsheet,
+        IAggregateSpreadsheet
+      > {
+        return new AggregateQueryBuilder<ISpreadsheet, IAggregateSpreadsheet>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.Spreadsheet,
+        })
+      },
+      get spreadsheetDocument(): AggregateQueryBuilder<
+        ISpreadsheetDocument,
+        IAggregateSpreadsheetDocument
+      > {
+        return new AggregateQueryBuilder<
+          ISpreadsheetDocument,
+          IAggregateSpreadsheetDocument
+        >({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.SpreadsheetDocument,
         })
       },
     }

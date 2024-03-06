@@ -5,4 +5,7 @@ export const CROSS_REFERENCE_PROPS = [
   'media',
   'subtitles',
   'attachments',
+  'sheets',
+  'rows',
+  'header',
 ]
