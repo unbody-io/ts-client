@@ -21,6 +21,12 @@ export interface IAggregateSubtitleFile {
   sourceId: IAggregateString
   remoteId: IAggregateString
 
+  // auto-generated
+  autoSummary?: IAggregateString
+  autoKeywords?: IAggregateString
+  autoTopics?: IAggregateString
+  autoEntities?: IAggregateString
+
   groupedBy: IAggregateGroupBy
   meta: IAggregateMeta
 }

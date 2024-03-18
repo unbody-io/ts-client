@@ -12,6 +12,13 @@ export interface ISpreadsheetDocument {
   pathString?: StringField
   remoteId?: StringField
   sourceId?: StringField
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
+
   sheets?: {
     Spreadsheet?: ISpreadsheet
     Beacon?: IBeacon

@@ -29,4 +29,10 @@ export interface IAggregateTextDocument {
   text: IAggregateString
   title: IAggregateString
   toc: IAggregateString
+
+  // auto-generated
+  autoSummary?: IAggregateString
+  autoKeywords?: IAggregateString
+  autoTopics?: IAggregateString
+  autoEntities?: IAggregateString
 }

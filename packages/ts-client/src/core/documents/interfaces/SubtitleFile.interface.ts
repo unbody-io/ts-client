@@ -1,4 +1,9 @@
-import { BooleanField, NumberField, StringField } from '../types'
+import {
+  BooleanField,
+  NumberField,
+  StringArrayField,
+  StringField,
+} from '../types'
 import { IAudioFile } from './AudioFile.interface'
 import { IBeacon } from './Beacon.interface'
 import { ISubtitleEntry } from './SubtitleEntry.interface'
@@ -23,4 +28,10 @@ export interface ISubtitleFile {
   pathString?: StringField
   sourceId?: StringField
   remoteId?: StringField
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
 }

@@ -16,6 +16,12 @@ export interface IAggregateSpreadsheet {
   rows?: IAggregateReference
   document?: IAggregateReference
 
+  // auto-generated
+  autoSummary?: IAggregateString
+  autoKeywords?: IAggregateString
+  autoTopics?: IAggregateString
+  autoEntities?: IAggregateString
+
   meta?: IAggregateMeta
   groupedBy?: IAggregateGroupBy
 }

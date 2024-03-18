@@ -1,4 +1,4 @@
-import { DateField, NumberField, StringArrayField, StringField } from '../types'
+import { DateField, StringArrayField, StringField } from '../types'
 import { IImageBlock } from './ImageBlock.interface'
 import { ITextBlock } from './TextBlock.interface'
 import { IMention, IToc } from './fields'
@@ -22,4 +22,10 @@ export interface ITextDocument {
   properties?: StringField
   toc?: StringArrayField<IToc>
   authors?: StringArrayField<IMention>
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
 }

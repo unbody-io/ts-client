@@ -1,4 +1,4 @@
-import { NumberField, StringField } from '../types'
+import { NumberField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
 import { IDiscordMessage } from './DiscordMessage.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
@@ -32,4 +32,10 @@ export interface IAudioFile {
   pathString?: StringField
   remoteId?: StringField
   sourceId?: StringField
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
 }

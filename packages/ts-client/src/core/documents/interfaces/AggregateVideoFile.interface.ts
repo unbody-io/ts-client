@@ -29,4 +29,10 @@ export interface IAggregateVideoFile {
   sourceId: IAggregateString
   groupedBy: IAggregateGroupBy
   meta: IAggregateMeta
+
+  // auto-generated
+  autoSummary?: IAggregateString
+  autoKeywords?: IAggregateString
+  autoTopics?: IAggregateString
+  autoEntities?: IAggregateString
 }

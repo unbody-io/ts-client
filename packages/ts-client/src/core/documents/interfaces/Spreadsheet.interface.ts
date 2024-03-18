@@ -1,4 +1,4 @@
-import { NumberField, StringField } from '../types'
+import { NumberField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
 import { ICsvRow } from './CsvRow.interface'
 import { ISpreadsheetDocument } from './SpreadsheetDocument.interface'
@@ -18,6 +18,12 @@ export interface ISpreadsheet {
     CsvRow?: ICsvRow
     Beacon?: IBeacon
   }
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
 
   document?: {
     SpreadsheetDocument?: ISpreadsheetDocument

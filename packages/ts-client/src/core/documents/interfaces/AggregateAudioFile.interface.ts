@@ -26,5 +26,11 @@ export interface IAggregateAudioFile {
   remoteId: IAggregateString
   sourceId: IAggregateString
   groupedBy: IAggregateGroupBy
+  // auto-generated
+  autoSummary?: IAggregateString
+  autoKeywords?: IAggregateString
+  autoTopics?: IAggregateString
+  autoEntities?: IAggregateString
+
   meta: IAggregateMeta
 }

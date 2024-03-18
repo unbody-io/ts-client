@@ -23,4 +23,10 @@ export interface IGoogleDoc {
   title?: StringField
   toc?: StringArrayField<IToc>
   mentions?: StringArrayField<IMention>
+
+  // auto-generated
+  autoSummary?: StringField
+  autoKeywords?: StringArrayField
+  autoTopics?: StringArrayField
+  autoEntities?: StringArrayField
 }
