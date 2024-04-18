@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.9
+
+### Patch Changes
+
+- Add GithubComment and GithubThread classes
+
 ## 0.0.8
 
 ## 0.0.7
