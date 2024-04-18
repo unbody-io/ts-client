@@ -12,4 +12,6 @@ export enum DocumentType {
   CsvRow = 'CsvRow',
   Spreadsheet = 'Spreadsheet',
   SpreadsheetDocument = 'SpreadsheetDocument',
+  GithubThread = 'GithubThread',
+  GithubComment = 'GithubComment',
 }

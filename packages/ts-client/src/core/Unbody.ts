@@ -5,6 +5,8 @@ import {
   DocumentType,
   IAggregateAudioFile,
   IAggregateDiscordMessage,
+  IAggregateGithubComment,
+  IAggregateGithubThread,
   IAggregateGoogleCalendarEvent,
   IAggregateGoogleDoc,
   IAggregateImageBlock,
@@ -17,6 +19,8 @@ import {
   IAudioFile,
   ICsvRow,
   IDiscordMessage,
+  IGithubComment,
+  IGithubThread,
   IGoogleCalendarEvent,
   IGoogleDoc,
   IImageBlock,
@@ -204,6 +208,20 @@ export class Unbody {
           documentType: DocumentType.SpreadsheetDocument,
         })
       },
+      get githubThread(): GetQueryBuilder<IGithubThread> {
+        return new GetQueryBuilder<IGithubThread>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.GithubThread,
+        })
+      },
+      get githubComment(): GetQueryBuilder<IGithubComment> {
+        return new GetQueryBuilder<IGithubComment>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.GithubComment,
+        })
+      },
     }
   }
 
@@ -333,6 +351,31 @@ export class Unbody {
           queryType: QueryType.Aggregate,
           documentType: DocumentType.SpreadsheetDocument,
         })
+      },
+      get githubComment(): AggregateQueryBuilder<
+        IGithubComment,
+        IAggregateGithubComment
+      > {
+        return new AggregateQueryBuilder<
+          IGithubComment,
+          IAggregateGithubComment
+        >({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.GithubComment,
+        })
+      },
+      get githubThread(): AggregateQueryBuilder<
+        IGithubThread,
+        IAggregateGithubThread
+      > {
+        return new AggregateQueryBuilder<IGithubThread, IAggregateGithubThread>(
+          {
+            httpClient: httpClient,
+            queryType: QueryType.Aggregate,
+            documentType: DocumentType.GithubThread,
+          },
+        )
       },
     }
   }

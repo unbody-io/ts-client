@@ -8,4 +8,6 @@ export const CROSS_REFERENCE_PROPS = [
   'sheets',
   'rows',
   'header',
+  'thread',
+  'comments',
 ]

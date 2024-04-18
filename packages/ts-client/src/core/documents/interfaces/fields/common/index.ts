@@ -1,3 +1,4 @@
+export * from './AggregateBoolean.interface'
 export * from './AggregateDate.interface'
 export * from './AggregateGroupBy.interface'
 export * from './AggregateMeta.interface'
