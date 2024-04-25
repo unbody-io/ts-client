@@ -5,6 +5,7 @@ import {
   StringArrayField,
   StringField,
 } from '../types'
+import { IBeacon } from './Beacon.interface'
 import { IGithubComment } from './GithubComment.interface'
 import {
   IGithubLabel,
@@ -23,11 +24,11 @@ export interface IGithubThread {
   stateReason?: StringField
   author?: IGithubUser
   authorAssociation?: StringField
-  assignees?: IGithubUser
+  assignees?: IGithubUser[]
   mergedBy?: IGithubUser
   labels?: StringArrayField
-  labelsData?: IGithubLabel
-  reactions?: IGithubReaction
+  labelsData?: IGithubLabel[]
+  reactions?: IGithubReaction[]
   locked?: BooleanField
   activeLockReason?: StringField
   pinned?: BooleanField
@@ -59,11 +60,15 @@ export interface IGithubThread {
   modifiedAt?: DateField
 
   comments?: {
-    GithubComment?: IGithubComment
+    GithubComment?: IGithubComment[]
+
+    Beacon?: IBeacon
   }
 
   thread?: {
-    GithubThread?: IGithubThread
+    GithubThread?: IGithubThread[]
+
+    Beacon?: IBeacon
   }
 
   // auto-generated
@@ -71,4 +76,6 @@ export interface IGithubThread {
   autoKeywords?: StringArrayField
   autoTopics?: StringArrayField
   autoEntities?: StringArrayField
+
+  __typename?: 'GithubThread'
 }

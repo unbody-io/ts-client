@@ -2,9 +2,16 @@ import { IMention, IToc } from './fields'
 import { IImageBlock } from './ImageBlock.interface'
 import { ITextBlock } from './TextBlock.interface'
 import { StringArrayField, StringField, NumberField, DateField } from '../types'
+import { IBeacon } from './Beacon.interface'
 
 export interface IGoogleDoc {
-  blocks?: { ImageBlock?: IImageBlock; TextBlock?: ITextBlock }
+  blocks?: {
+    ImageBlock?: IImageBlock[]
+    TextBlock?: ITextBlock[]
+
+    Beacon?: IBeacon
+  }
+
   createdAt?: DateField
   html?: StringField
   mimeType?: StringField
@@ -29,4 +36,6 @@ export interface IGoogleDoc {
   autoKeywords?: StringArrayField
   autoTopics?: StringArrayField
   autoEntities?: StringArrayField
+
+  __typename?: 'GoogleDoc'
 }

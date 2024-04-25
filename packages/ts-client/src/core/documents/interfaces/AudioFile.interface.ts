@@ -8,11 +8,13 @@ import { ISubtitleFile } from './SubtitleFile.interface'
 
 export interface IAudioFile {
   document?: {
-    GoogleDoc?: IGoogleDoc
-    DiscordMessage?: IDiscordMessage
-    GoogleCalendarEvent?: IGoogleCalendarEvent
+    GoogleDoc?: IGoogleDoc[]
+    DiscordMessage?: IDiscordMessage[]
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
+
     Beacon?: IBeacon
   }
+
   assetId?: StringField
   blob?: StringField
   duration?: NumberField
@@ -23,12 +25,14 @@ export interface IAudioFile {
   order?: NumberField
   originalName?: StringField
   playbackId?: StringField
-  files?: IMediaFile
+  files?: IMediaFile[]
   subtitles?: {
-    SubtitleFile?: ISubtitleFile
+    SubtitleFile?: ISubtitleFile[]
+
+    Beacon?: IBeacon
   }
   size?: NumberField
-  path?: StringField
+  path?: StringArrayField
   pathString?: StringField
   remoteId?: StringField
   sourceId?: StringField
@@ -38,4 +42,6 @@ export interface IAudioFile {
   autoKeywords?: StringArrayField
   autoTopics?: StringArrayField
   autoEntities?: StringArrayField
+
+  __typename?: 'AudioFile'
 }

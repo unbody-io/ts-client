@@ -6,8 +6,9 @@ import { ITextDocument } from './TextDocument.interface'
 
 export interface ITextBlock {
   document?: {
-    GoogleDoc?: IGoogleDoc
-    TextDocument?: ITextDocument
+    GoogleDoc?: IGoogleDoc[]
+    TextDocument?: ITextDocument[]
+
     Beacon?: IBeacon
   }
   footnotes?: StringArrayField<IFootnote>
@@ -18,4 +19,6 @@ export interface ITextBlock {
   tagName?: StringField
   text?: StringField
   classNames?: StringArrayField
+
+  __typename?: 'TextBlock'
 }

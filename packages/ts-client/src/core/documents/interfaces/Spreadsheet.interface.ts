@@ -10,12 +10,14 @@ export interface ISpreadsheet {
   sourceId?: StringField
 
   header?: {
-    CsvRow?: ICsvRow
+    CsvRow?: ICsvRow[]
+
     Beacon?: IBeacon
   }
 
   rows?: {
-    CsvRow?: ICsvRow
+    CsvRow?: ICsvRow[]
+
     Beacon?: IBeacon
   }
 
@@ -26,7 +28,10 @@ export interface ISpreadsheet {
   autoEntities?: StringArrayField
 
   document?: {
-    SpreadsheetDocument?: ISpreadsheetDocument
+    SpreadsheetDocument?: ISpreadsheetDocument[]
+
     Beacon?: IBeacon
   }
+
+  __typename?: 'Spreadsheet'
 }

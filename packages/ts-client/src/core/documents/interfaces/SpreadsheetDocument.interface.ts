@@ -20,7 +20,10 @@ export interface ISpreadsheetDocument {
   autoEntities?: StringArrayField
 
   sheets?: {
-    Spreadsheet?: ISpreadsheet
+    Spreadsheet?: ISpreadsheet[]
+
     Beacon?: IBeacon
   }
+
+  __typename?: 'SpreadsheetDocument'
 }

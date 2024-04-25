@@ -10,7 +10,10 @@ export interface ICsvRow {
   sourceId?: StringField
 
   document?: {
-    Spreadsheet?: ISpreadsheet
+    Spreadsheet?: ISpreadsheet[]
+
     Beacon?: IBeacon
   }
+
+  __typename?: 'CsvRow'
 }

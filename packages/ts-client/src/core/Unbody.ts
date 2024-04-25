@@ -41,6 +41,9 @@ import { QueryType } from './query-builder/enums'
 import { IUnbodyOptions } from './query-builder/interfaces'
 import { DEFAULT_TRANSFORMERS } from './transformer'
 
+export * from './documents/interfaces'
+export * from './query-builder/types/QueryResult.type'
+
 export class Unbody {
   public httpClient: AxiosInstance
 

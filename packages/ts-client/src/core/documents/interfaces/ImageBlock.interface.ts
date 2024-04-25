@@ -7,12 +7,13 @@ import { ITextDocument } from './TextDocument.interface'
 
 export interface IImageBlock {
   document?: {
-    GoogleDoc?: IGoogleDoc
-    TextDocument?: ITextDocument
-    DiscordMessage?: IDiscordMessage
-    GoogleCalendarEvent?: IGoogleCalendarEvent
+    GoogleDoc?: IGoogleDoc[]
+    TextDocument?: ITextDocument[]
+    DiscordMessage?: IDiscordMessage[]
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
     Beacon?: IBeacon
   }
+
   alt?: StringField
   createdAt?: DateField
   ext?: StringField
@@ -28,4 +29,6 @@ export interface IImageBlock {
   sourceId?: StringField
   url?: StringField
   width?: NumberField
+
+  __typename?: 'ImageBlock'
 }

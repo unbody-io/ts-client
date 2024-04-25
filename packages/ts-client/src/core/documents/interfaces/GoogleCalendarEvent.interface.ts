@@ -1,11 +1,12 @@
-import { IImageBlock } from './ImageBlock.interface'
 import {
+  BooleanField,
+  DateField,
+  NumberField,
   StringArrayField,
   StringField,
-  NumberField,
-  DateField,
-  BooleanField,
 } from '../types'
+import { IBeacon } from './Beacon.interface'
+import { IImageBlock } from './ImageBlock.interface'
 
 export interface IGoogleCalendarEvent {
   createdAt: DateField
@@ -33,5 +34,12 @@ export interface IGoogleCalendarEvent {
   title: StringField
   updatedAt: DateField
   modifiedAt: DateField
-  attachments: StringArrayField<IImageBlock>
+
+  attachments: {
+    ImageBlock?: IImageBlock[]
+
+    Beacon?: IBeacon[]
+  }
+
+  __typename?: 'GoogleCalendarEvent'
 }

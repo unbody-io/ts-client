@@ -4,7 +4,7 @@ import { IBeacon } from './Beacon.interface'
 import { IImageBlock } from './ImageBlock.interface'
 import { IVideoFile } from './VideoFile.interface'
 
-export interface DiscordUser {
+export interface IDiscordUser {
   id?: StringField
   avatar?: StringField
   username?: StringField
@@ -16,8 +16,8 @@ export interface IDiscordMessage {
   referencedMessageId?: StringField
   mentionEveryone?: BooleanField
   position?: NumberField
-  mentions?: DiscordUser[]
-  author?: DiscordUser
+  mentions?: IDiscordUser[]
+  author?: IDiscordUser
   authorId?: StringField
   channelId?: StringField
   guildId?: StringField
@@ -25,10 +25,14 @@ export interface IDiscordMessage {
   modifiedAt?: DateField
   remoteId?: StringField
   sourceId?: StringField
+
   attachments?: {
-    ImageBlock?: IImageBlock
-    AudioFile?: IAudioFile
-    VideoFile?: IVideoFile
+    ImageBlock?: IImageBlock[]
+    AudioFile?: IAudioFile[]
+    VideoFile?: IVideoFile[]
+
     Beacon?: IBeacon
   }
+
+  __typename?: 'DiscordMessage'
 }

@@ -1,10 +1,17 @@
 import { DateField, StringArrayField, StringField } from '../types'
+import { IBeacon } from './Beacon.interface'
 import { IImageBlock } from './ImageBlock.interface'
 import { ITextBlock } from './TextBlock.interface'
 import { IMention, IToc } from './fields'
 
 export interface ITextDocument {
-  blocks?: { ImageBlock?: IImageBlock; TextBlock?: ITextBlock }
+  blocks?: {
+    ImageBlock?: IImageBlock[]
+    TextBlock?: ITextBlock[]
+
+    Beacon?: IBeacon
+  }
+
   createdAt?: DateField
   html?: StringField
   mimeType?: StringField
@@ -28,4 +35,6 @@ export interface ITextDocument {
   autoKeywords?: StringArrayField
   autoTopics?: StringArrayField
   autoEntities?: StringArrayField
+
+  __typename?: 'TextDocument'
 }

@@ -2,7 +2,7 @@ import { AxiosInstance, AxiosResponse } from 'axios'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AnyObject } from '../../types'
 import { excludeProperty } from '../../utils'
-import { DocumentType, StringField } from '../documents'
+import { DocumentType } from '../documents'
 import {
   IBm25,
   IGroup,
@@ -15,6 +15,7 @@ import {
   WhereOperators,
 } from '../filters'
 import { INearImage } from '../filters/interfaces/NearImage.interface'
+import { DocumentFilterType } from '../filters/types'
 import { WhereParamsAdapter } from './adapters'
 import { QueryBuilderOptions } from './interfaces'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
@@ -37,24 +38,24 @@ export class QueryBuilder<TDocumentType> {
 
   where<TThis>(
     this: TThis,
-    params: TDocumentType & { id?: StringField },
+    params: DocumentFilterType<TDocumentType, true>,
   ): Omit<TThis, 'where'>
   where<TThis>(
     this: TThis,
     callback:
-      | (TDocumentType & { id?: StringField })
+      | DocumentFilterType<TDocumentType, true>
       | ((
-          operator: WhereOperators<TDocumentType & { id?: StringField }>,
+          operator: WhereOperators<DocumentFilterType<TDocumentType, true>>,
         ) =>
-          | (TDocumentType & { id?: StringField })
+          | DocumentFilterType<TDocumentType, true>
           | ReturnType<
-              | WhereOperators<TDocumentType & { id?: StringField }>['And']
-              | WhereOperators<TDocumentType & { id?: StringField }>['Or']
+              | WhereOperators<DocumentFilterType<TDocumentType, true>>['And']
+              | WhereOperators<DocumentFilterType<TDocumentType, true>>['Or']
             >),
   ): Omit<TThis, 'where'>
   where<TThis>(
     this: TThis,
-    params: TDocumentType & { id?: StringField },
+    params: DocumentFilterType<TDocumentType, true>,
   ): Omit<TThis, 'where'> {
     // @ts-ignore
     const { query, whereParamsAdapter } = this
@@ -335,7 +336,7 @@ export class QueryBuilder<TDocumentType> {
     return { [this.queryType]: { [this.documentType]: this.query } }
   }
 
-  exec = async (): Promise<AxiosResponse<any>> => {
+  exec = async <T = any>(): Promise<AxiosResponse<T>> => {
     return this.httpClient
       .post('', { query: this.getGraphQuery() })
       .then(this._resolveResData)

@@ -8,9 +8,10 @@ import { ISubtitleFile } from './SubtitleFile.interface'
 
 export interface IVideoFile {
   document?: {
-    GoogleDoc?: IGoogleDoc
-    DiscordMessage?: IDiscordMessage
-    GoogleCalendarEvent?: IGoogleCalendarEvent
+    GoogleDoc?: IGoogleDoc[]
+    DiscordMessage?: IDiscordMessage[]
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
+
     Beacon?: IBeacon
   }
   assetId?: StringField
@@ -34,7 +35,9 @@ export interface IVideoFile {
     webp?: StringField
   }
   subtitles?: {
-    SubtitleFile?: ISubtitleFile
+    SubtitleFile?: ISubtitleFile[]
+
+    Beacon?: IBeacon
   }
   width?: NumberField
   height?: NumberField
@@ -49,4 +52,6 @@ export interface IVideoFile {
   autoKeywords?: StringArrayField
   autoTopics?: StringArrayField
   autoEntities?: StringArrayField
+
+  __typename?: 'VideoFile'
 }

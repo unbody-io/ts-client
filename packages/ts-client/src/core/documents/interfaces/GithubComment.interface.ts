@@ -4,6 +4,7 @@ import {
   StringArrayField,
   StringField,
 } from '../types'
+import { IBeacon } from './Beacon.interface'
 import { IGithubReaction, IGithubUser } from './GithubCommon.interface'
 import { IGithubThread } from './GithubThread.interface'
 
@@ -29,7 +30,9 @@ export interface IGithubComment {
   modifiedAt?: DateField
 
   thread?: {
-    GithubThread?: IGithubThread
+    GithubThread?: IGithubThread[]
+
+    Beacon?: IBeacon
   }
 
   // auto-generated
