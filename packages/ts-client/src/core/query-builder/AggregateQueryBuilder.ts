@@ -1,3 +1,4 @@
+import { AnyObject } from '../../types'
 import { excludeProperty } from '../../utils'
 import { IAggregateAsk, INearText } from '../filters'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
@@ -10,7 +11,7 @@ import { ObjectPath } from './types'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class AggregateQueryBuilder<
-  TDocumentType,
+  TDocumentType extends AnyObject,
   TAggregateDocumentType,
 > extends QueryBuilder<TDocumentType, any> {
   public search: SearchQuery<

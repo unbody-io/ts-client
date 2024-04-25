@@ -1,4 +1,5 @@
-import { DeepPartial, HasArrayMember } from '../../../types'
+import { DeepPartial, DeepRequired } from 'utility-types'
+import { HasArrayMember } from '../../../types'
 import { StringArrayField } from '../../documents'
 import { IBeacon } from '../../documents/interfaces/Beacon.interface'
 import { WhereCompareOperator } from '../WhereCompareOperator'
@@ -40,7 +41,7 @@ export type DocumentFieldFilterType<
     : DocumentFilterType<T, false, Decrement<Depth>>
   : T
 
-export type DocumentFilterType<
+export type _DocumentFilterType<
   T extends Record<string, any>,
   R extends boolean = false,
   Depth extends number = 5,
@@ -57,3 +58,9 @@ export type DocumentFilterType<
           | DocumentFieldWhereOperatorType<T[K]>
       }
     >
+
+export type DocumentFilterType<
+  T extends Record<string, any>,
+  R extends boolean = false,
+  Depth extends number = 5,
+> = _DocumentFilterType<DeepRequired<T>, R, Depth>

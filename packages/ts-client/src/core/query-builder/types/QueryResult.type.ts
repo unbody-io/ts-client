@@ -1,4 +1,5 @@
-import { DeepPartial, HasArrayMember } from '../../../types'
+import { DeepPartial, DeepRequired } from 'utility-types'
+import { HasArrayMember } from '../../../types'
 import { AdditionalProps, StringArrayField } from '../../documents'
 import { IBeacon } from '../../documents/interfaces/Beacon.interface'
 
@@ -37,7 +38,9 @@ export type GetQueryDocumentPayload<T> = {
 
 export type GetQueryResult<TDocumentType> = {
   data: any
-  payload: (GetQueryDocumentPayload<TDocumentType> & {
+  payload: (DeepPartial<
+    GetQueryDocumentPayload<DeepRequired<TDocumentType>>
+  > & {
     _additional?: DeepPartial<AdditionalProps>
   })[]
   errors?: ResponseError[]

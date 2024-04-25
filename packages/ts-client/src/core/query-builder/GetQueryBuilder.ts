@@ -1,4 +1,6 @@
 import { AxiosResponse } from 'axios'
+import { DeepRequired } from 'utility-types'
+import { AnyObject } from '../../types'
 import { excludeProperty } from '../../utils'
 import { GetQueryResult } from '../Unbody'
 import { AdditionalProps } from '../documents'
@@ -15,10 +17,9 @@ import { QueryBuilderOptions } from './interfaces'
 import { ObjectPath } from './types'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class GetQueryBuilder<TDocumentType> extends QueryBuilder<
-  TDocumentType,
-  GetQueryResult<TDocumentType>
-> {
+export class GetQueryBuilder<
+  TDocumentType extends AnyObject,
+> extends QueryBuilder<TDocumentType, GetQueryResult<TDocumentType>> {
   protected additionalFields = {}
   public search: SearchQuery<TDocumentType, any, GetQueryBuilder<TDocumentType>>
   public similar: SimilarQuery<
@@ -190,7 +191,7 @@ export class GetQueryBuilder<TDocumentType> extends QueryBuilder<
 
   select<TThis>(
     this: TThis,
-    ...args: ObjectPath<TDocumentType>[]
+    ...args: ObjectPath<DeepRequired<TDocumentType>>[]
   ): Omit<TThis, 'select'> {
     // @ts-ignore
     this.selectedFields = objectPathToQueryAdapter(args)

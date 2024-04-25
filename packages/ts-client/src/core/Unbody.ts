@@ -53,13 +53,9 @@ export class Unbody {
     const httpClient = new HttpClient(
       apiKey,
       projectId,
-      deepMerge(
-        {},
-        DEFAULT_TRANSFORMERS,
-        transformers,
-      ) as IUnbodyOptions['transformers'],
+      deepMerge({}, DEFAULT_TRANSFORMERS, transformers || {}),
     )
-    this.httpClient = httpClient.instance
+    this.httpClient = httpClient.instance!
   }
 
   async exec(
@@ -69,8 +65,8 @@ export class Unbody {
       name: string
       __aliasFor: string
       query: any
-    }[] = documents.reduce((result, currentValue, currentIndex) => {
-      const query = currentValue.getJsonQuery()
+    }[] = documents.reduce((result: any, currentValue, currentIndex) => {
+      const query = currentValue.getJsonQuery!()
       const queryName = Object.keys(query)[0]
 
       return [

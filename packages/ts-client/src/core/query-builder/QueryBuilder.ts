@@ -20,7 +20,7 @@ import { WhereParamsAdapter } from './adapters'
 import { QueryBuilderOptions } from './interfaces'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class QueryBuilder<TDocumentType, R> {
+export class QueryBuilder<TDocumentType extends AnyObject, R> {
   protected query: AnyObject = { __args: {}, _additional: {} }
   protected queryType: string
   protected documentType: DocumentType

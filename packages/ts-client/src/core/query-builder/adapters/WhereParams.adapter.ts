@@ -1,3 +1,7 @@
+import { EnumType } from 'json-to-graphql-query'
+import { CROSS_REFERENCE_PROPS } from '../../../constants'
+import { AnyObject } from '../../../types'
+import { isInteger } from '../../../utils'
 import {
   IWhereGeoRange,
   WhereCompareOperator,
@@ -5,11 +9,8 @@ import {
   WhereOperator,
   WhereOperators,
 } from '../../filters'
-import { EnumType } from 'json-to-graphql-query'
-import { isInteger } from '../../../utils'
-import { CROSS_REFERENCE_PROPS } from '../../../constants'
 
-export class WhereParamsAdapter<TDocumentType> {
+export class WhereParamsAdapter<TDocumentType extends AnyObject> {
   adapt(params: TDocumentType | WhereLogicalOperator<TDocumentType>): any {
     if (params instanceof WhereLogicalOperator) {
       return {
