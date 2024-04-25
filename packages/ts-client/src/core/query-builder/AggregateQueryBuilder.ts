@@ -12,13 +12,15 @@ import { SearchOperatorMethods } from './types/QueryMethods.type'
 export class AggregateQueryBuilder<
   TDocumentType,
   TAggregateDocumentType,
-> extends QueryBuilder<TDocumentType> {
+> extends QueryBuilder<TDocumentType, any> {
   public search: SearchQuery<
     TDocumentType,
+    any,
     AggregateQueryBuilder<TDocumentType, TAggregateDocumentType>
   >
   public similar: SimilarQuery<
     TDocumentType,
+    any,
     AggregateQueryBuilder<TDocumentType, TAggregateDocumentType>
   >
 

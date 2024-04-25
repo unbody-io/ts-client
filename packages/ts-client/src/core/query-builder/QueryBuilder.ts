@@ -20,7 +20,7 @@ import { WhereParamsAdapter } from './adapters'
 import { QueryBuilderOptions } from './interfaces'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class QueryBuilder<TDocumentType> {
+export class QueryBuilder<TDocumentType, R> {
   protected query: AnyObject = { __args: {}, _additional: {} }
   protected queryType: string
   protected documentType: DocumentType
@@ -336,7 +336,7 @@ export class QueryBuilder<TDocumentType> {
     return { [this.queryType]: { [this.documentType]: this.query } }
   }
 
-  exec = async <T = any>(): Promise<AxiosResponse<T>> => {
+  exec = async <T = R>(): Promise<AxiosResponse<T>> => {
     return this.httpClient
       .post('', { query: this.getGraphQuery() })
       .then(this._resolveResData)
@@ -345,12 +345,12 @@ export class QueryBuilder<TDocumentType> {
   protected _resolveResData = (res: AxiosResponse): AxiosResponse => ({
     ...res,
     data: {
-      ...this.resovleResData(res),
+      ...this.resolveResData(res),
       _original: res.data,
     },
   })
 
-  protected resovleResData = (res: AxiosResponse) => {
+  protected resolveResData = (res: AxiosResponse) => {
     return {
       payload: res.data?.data?.[this.queryType]?.[this.documentType],
     }

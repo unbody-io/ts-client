@@ -3,7 +3,7 @@ import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class SimilarQuery<T, Q extends QueryBuilder<T>> {
+export class SimilarQuery<T, R, Q extends QueryBuilder<T, R>> {
   constructor(private queryBuilder: Q) {}
 
   text(

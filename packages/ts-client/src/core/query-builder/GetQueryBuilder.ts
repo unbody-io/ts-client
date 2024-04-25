@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { excludeProperty } from '../../utils'
+import { GetQueryResult } from '../Unbody'
 import { AdditionalProps } from '../documents'
 import { IAsk, INearText } from '../filters'
 import { INearImage } from '../filters/interfaces/NearImage.interface'
@@ -14,12 +15,17 @@ import { QueryBuilderOptions } from './interfaces'
 import { ObjectPath } from './types'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class GetQueryBuilder<
+export class GetQueryBuilder<TDocumentType> extends QueryBuilder<
   TDocumentType,
-> extends QueryBuilder<TDocumentType> {
+  GetQueryResult<TDocumentType>
+> {
   protected additionalFields = {}
-  public search: SearchQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
-  public similar: SimilarQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
+  public search: SearchQuery<TDocumentType, any, GetQueryBuilder<TDocumentType>>
+  public similar: SimilarQuery<
+    TDocumentType,
+    any,
+    GetQueryBuilder<TDocumentType>
+  >
   public generate: GenerateQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
@@ -215,7 +221,7 @@ export class GetQueryBuilder<
     return super.getJsonQuery()
   }
 
-  protected resovleResData = (res: AxiosResponse) => {
+  protected resolveResData = (res: AxiosResponse) => {
     const result: any = {
       payload: res.data?.data?.[this.queryType]?.[this.documentType],
     }

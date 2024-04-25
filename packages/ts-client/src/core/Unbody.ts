@@ -63,7 +63,7 @@ export class Unbody {
   }
 
   async exec(
-    ...documents: Partial<QueryBuilder<any>>[]
+    ...documents: Partial<QueryBuilder<any, any>>[]
   ): Promise<AxiosResponse<Array<any>>> {
     const queries: {
       name: string

@@ -2,7 +2,7 @@ import { IBm25, IHybrid, INearText } from '../filters'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
-export class SearchQuery<T, Q extends QueryBuilder<T>> {
+export class SearchQuery<T, R, Q extends QueryBuilder<T, R>> {
   constructor(private queryBuilder: Q) {}
 
   about(

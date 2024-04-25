@@ -1,5 +1,5 @@
-import { DeepPartial } from '../../../types'
-import { AdditionalProps } from '../../documents'
+import { DeepPartial, HasArrayMember } from '../../../types'
+import { AdditionalProps, StringArrayField } from '../../documents'
 import { IBeacon } from '../../documents/interfaces/Beacon.interface'
 
 export type ResponseError = {
@@ -16,7 +16,13 @@ type ExcludeBeacon<T extends { Beacon?: IBeacon }> = {
 }
 
 export type GetQueryDocumentPayload<T> = {
-  [K in keyof T]: T[K] extends Record<string, any>
+  [K in keyof T]: HasArrayMember<T[K]> extends true
+    ? T[K] extends ArrayLike<any>
+      ? T[K]
+      : T[K] extends StringArrayField<infer U>
+      ? U[]
+      : T[K]
+    : T[K] extends Record<string, any>
     ? T[K] extends { Beacon?: IBeacon }
       ? {
           [P in keyof ExcludeBeacon<T[K]>]: ExcludeBeacon<
