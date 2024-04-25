@@ -1,4 +1,4 @@
-import { HasArrayMember } from 'src/types'
+import { HasArrayMember } from '../../../types'
 
 type Decrement<N extends number> = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10][N]
 type Ignore<K, Depth> = Depth extends 0 ? true : false

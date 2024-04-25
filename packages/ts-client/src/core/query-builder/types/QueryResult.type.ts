@@ -1,6 +1,6 @@
-import { AdditionalProps } from 'src/core/documents'
-import { IBeacon } from 'src/core/documents/interfaces/Beacon.interface'
-import { DeepPartial } from 'src/types'
+import { DeepPartial } from '../../../types'
+import { AdditionalProps } from '../../documents'
+import { IBeacon } from '../../documents/interfaces/Beacon.interface'
 
 export type ResponseError = {
   locations: {
