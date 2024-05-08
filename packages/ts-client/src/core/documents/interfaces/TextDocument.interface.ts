@@ -9,7 +9,7 @@ export interface ITextDocument {
     ImageBlock?: IImageBlock[]
     TextBlock?: ITextBlock[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   createdAt?: DateField

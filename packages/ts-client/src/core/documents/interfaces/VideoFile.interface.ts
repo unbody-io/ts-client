@@ -12,7 +12,7 @@ export interface IVideoFile {
     DiscordMessage?: IDiscordMessage[]
     GoogleCalendarEvent?: IGoogleCalendarEvent[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
   assetId?: StringField
   blob?: StringField
@@ -37,7 +37,7 @@ export interface IVideoFile {
   subtitles?: {
     SubtitleFile?: ISubtitleFile[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
   width?: NumberField
   height?: NumberField

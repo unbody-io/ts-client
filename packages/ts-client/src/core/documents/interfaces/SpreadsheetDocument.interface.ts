@@ -22,7 +22,7 @@ export interface ISpreadsheetDocument {
   sheets?: {
     Spreadsheet?: ISpreadsheet[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   __typename?: 'SpreadsheetDocument'

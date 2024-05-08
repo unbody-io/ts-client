@@ -10,7 +10,7 @@ type Ignore<Depth> = Depth extends 0 ? true : false
 export type DocumentFieldWhereOperatorType<T extends any> =
   T extends StringArrayField<any>
     ? WhereCompareOperator<string[] | string>
-    : T extends { Beacon?: IBeacon }
+    : T extends { Beacon?: IBeacon[] }
     ? {
         [K in keyof T]: K extends 'Beacon'
           ? never
@@ -30,7 +30,7 @@ export type DocumentFieldFilterType<
       : DocumentFilterType<T[number], false, Decrement<Depth>>
     : Extract<T, Array<any>>[number]
   : T extends Record<string, any>
-  ? T extends { Beacon?: IBeacon }
+  ? T extends { Beacon?: IBeacon[] }
     ? {
         [K in keyof T]: K extends 'Beacon'
           ? never

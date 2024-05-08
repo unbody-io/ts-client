@@ -12,7 +12,7 @@ export interface ICsvRow {
   document?: {
     Spreadsheet?: ISpreadsheet[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   __typename?: 'CsvRow'

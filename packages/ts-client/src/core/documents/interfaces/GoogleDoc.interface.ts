@@ -9,7 +9,7 @@ export interface IGoogleDoc {
     ImageBlock?: IImageBlock[]
     TextBlock?: ITextBlock[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   createdAt?: DateField

@@ -6,7 +6,7 @@ export interface ISubtitleEntry {
   document?: {
     SubtitleFile?: ISubtitleFile[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   text?: StringField

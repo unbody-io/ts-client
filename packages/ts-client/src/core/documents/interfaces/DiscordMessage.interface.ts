@@ -31,7 +31,7 @@ export interface IDiscordMessage {
     AudioFile?: IAudioFile[]
     VideoFile?: IVideoFile[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   __typename?: 'DiscordMessage'

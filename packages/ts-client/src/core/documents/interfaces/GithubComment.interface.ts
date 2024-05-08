@@ -32,7 +32,7 @@ export interface IGithubComment {
   thread?: {
     GithubThread?: IGithubThread[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   // auto-generated

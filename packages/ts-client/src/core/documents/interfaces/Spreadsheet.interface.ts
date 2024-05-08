@@ -12,13 +12,13 @@ export interface ISpreadsheet {
   header?: {
     CsvRow?: ICsvRow[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   rows?: {
     CsvRow?: ICsvRow[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   // auto-generated
@@ -30,7 +30,7 @@ export interface ISpreadsheet {
   document?: {
     SpreadsheetDocument?: ISpreadsheetDocument[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   __typename?: 'Spreadsheet'

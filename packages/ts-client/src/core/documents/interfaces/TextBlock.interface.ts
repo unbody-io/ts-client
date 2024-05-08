@@ -9,7 +9,7 @@ export interface ITextBlock {
     GoogleDoc?: IGoogleDoc[]
     TextDocument?: ITextDocument[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
   footnotes?: StringArrayField<IFootnote>
   html?: StringField

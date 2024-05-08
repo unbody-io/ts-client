@@ -12,7 +12,7 @@ export interface IAudioFile {
     DiscordMessage?: IDiscordMessage[]
     GoogleCalendarEvent?: IGoogleCalendarEvent[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   assetId?: StringField
@@ -29,7 +29,7 @@ export interface IAudioFile {
   subtitles?: {
     SubtitleFile?: ISubtitleFile[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
   size?: NumberField
   path?: StringArrayField

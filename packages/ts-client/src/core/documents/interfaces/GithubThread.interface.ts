@@ -62,13 +62,13 @@ export interface IGithubThread {
   comments?: {
     GithubComment?: IGithubComment[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   thread?: {
     GithubThread?: IGithubThread[]
 
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   // auto-generated

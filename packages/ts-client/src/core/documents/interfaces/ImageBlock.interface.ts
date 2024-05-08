@@ -11,7 +11,7 @@ export interface IImageBlock {
     TextDocument?: ITextDocument[]
     DiscordMessage?: IDiscordMessage[]
     GoogleCalendarEvent?: IGoogleCalendarEvent[]
-    Beacon?: IBeacon
+    Beacon?: IBeacon[]
   }
 
   alt?: StringField
