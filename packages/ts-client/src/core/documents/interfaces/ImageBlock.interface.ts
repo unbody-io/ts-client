@@ -30,5 +30,10 @@ export interface IImageBlock {
   url?: StringField
   width?: NumberField
 
+  // auto-generated
+  autoCaption?: StringField
+  autoOCR?: StringField
+  autoTypes?: StringArrayField
+
   __typename?: 'ImageBlock'
 }
