@@ -48,11 +48,22 @@ export type GetQueryResult<TDocumentType> = {
   errors?: ResponseError[]
 }
 
+export type GetQueryGenerativeResultMetadata = {
+  finishReason: string
+  usage: {
+    inputTokens: number
+    outputTokens: number
+    totalTokens: number
+  }
+}
+
 export type GetQueryGenerativeSingleResult<Q extends GetQueryResult<any>> =
   Q & {
     generate: {
       result: string
+      error?: string
       from: Q['payload'][number]
+      metadata: GetQueryGenerativeResultMetadata
     }[]
   }
 
@@ -60,6 +71,8 @@ export type GetQueryGenerativeGroupedResult<Q extends GetQueryResult<any>> =
   Q & {
     generate: {
       result: string
+      error?: string
       from: Q['payload']
+      metadata: GetQueryGenerativeResultMetadata
     }
   }

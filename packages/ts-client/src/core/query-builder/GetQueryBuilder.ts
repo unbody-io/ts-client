@@ -238,11 +238,15 @@ export class GetQueryBuilder<
         result.generate = (result.payload || []).map((obj: any) => ({
           from: obj,
           result: obj?._additional?.generate?.singleResult,
+          error: obj?._additional?.generate?.error,
+          metadata: obj?._additional?.generate?.metadata,
         }))
       } else if (generateType === 'groupedResult') {
         result.generate = {
           from: result.payload,
           result: result.payload?.[0]?._additional?.generate?.groupedResult,
+          error: result.payload?.[0]?._additional?.generate?.error,
+          metadata: result.payload?.[0]?._additional?.generate?.metadata,
         }
       }
     }

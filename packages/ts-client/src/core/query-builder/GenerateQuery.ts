@@ -1,11 +1,17 @@
 import { AxiosResponse } from 'axios'
 import { AnyObject } from '../../types'
 import {
+  IGenerate,
+  IGenerateGroupedResultMessages,
+  IGenerateGroupedResultTask,
+  IGenerateSingleResultMessages,
+  IGenerateSingleResultPrompt,
+} from '../filters/interfaces/Generate.interface'
+import {
   GetQueryGenerativeGroupedResult,
   GetQueryGenerativeSingleResult,
   GetQueryResult,
 } from '../Unbody'
-import { IGenerate } from '../filters/interfaces/Generate.interface'
 import { QueryBuilder } from './QueryBuilder'
 
 export interface GenerateQuery<
@@ -17,6 +23,38 @@ export interface GenerateQuery<
     prompt: Required<IGenerate<T>>['singleResult']['prompt'],
   ): Omit<Q, 'generate' | 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  (type: 'singleResult', args: IGenerateSingleResultPrompt): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  (type: 'singleResult', args: IGenerateSingleResultMessages): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  (type: 'groupedResult', prompt: IGenerateGroupedResultTask<T>): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  (type: 'groupedResult', prompt: IGenerateGroupedResultMessages): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
@@ -33,7 +71,11 @@ export interface GenerateQuery<
     type: 'groupedResult' | 'singleResult',
     prompt:
       | Required<IGenerate<T>>['groupedResult']['task']
-      | Required<IGenerate<T>>['singleResult']['prompt'],
+      | Required<IGenerate<T>>['singleResult']['prompt']
+      | IGenerateSingleResultPrompt
+      | IGenerateSingleResultMessages
+      | IGenerateGroupedResultTask<T>
+      | IGenerateGroupedResultMessages,
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
   ): Omit<Q, 'generate' | 'exec'> & {
     exec: <
@@ -48,7 +90,46 @@ export interface GenerateQuery<
       AxiosResponse<R>
     >
   }
+  fromOne(prompt: IGenerateSingleResultPrompt): Omit<Q, 'generate' | 'exec'> & {
+    exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  fromOne(prompt: IGenerateSingleResultMessages): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  fromOne(
+    prompt:
+      | string
+      | IGenerateSingleResultPrompt
+      | IGenerateSingleResultMessages,
+  ): Omit<Q, 'generate' | 'exec'> & {
+    exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
 
+  fromMany(task: IGenerateGroupedResultTask<T>): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
+  fromMany(task: IGenerateGroupedResultMessages): Omit<
+    Q,
+    'generate' | 'exec'
+  > & {
+    exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
+      AxiosResponse<R>
+    >
+  }
   fromMany(
     task: string,
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
@@ -67,7 +148,12 @@ export const createGenerateQuery = <
 ): GenerateQuery<T, Q> => {
   const generate = (
     type: 'groupedResult' | 'singleResult',
-    prompt: string,
+    prompt:
+      | string
+      | IGenerateSingleResultPrompt
+      | IGenerateSingleResultMessages
+      | IGenerateGroupedResultTask<T>
+      | IGenerateGroupedResultMessages,
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
   ) => {
     // @ts-ignore
@@ -76,21 +162,63 @@ export const createGenerateQuery = <
     if (type === 'singleResult') {
       query._additional.generate = {
         __args: {
-          singleResult: {
-            prompt,
+          singleResult:
+            typeof prompt === 'string'
+              ? {
+                  prompt,
+                }
+              : 'prompt' in prompt && typeof prompt.prompt !== 'undefined'
+              ? {
+                  prompt: prompt.prompt,
+                  options: prompt.options || {},
+                }
+              : {
+                  messages: (prompt as IGenerateSingleResultMessages).messages,
+                  options: prompt.options || {},
+                },
+        },
+        error: true,
+        singleResult: true,
+        metadata: {
+          finishReason: true,
+          usage: {
+            inputTokens: true,
+            outputTokens: true,
+            totalTokens: true,
           },
         },
-        singleResult: true,
       }
     } else {
       query._additional.generate = {
         __args: {
-          groupedResult: {
-            properties,
-            task: prompt,
+          groupedResult:
+            typeof prompt === 'string'
+              ? {
+                  task: prompt,
+                  properties: properties || [],
+                }
+              : 'task' in prompt && typeof prompt.task !== 'undefined'
+              ? {
+                  task: prompt.task,
+                  properties: prompt.properties || [],
+                  options: prompt.options || {},
+                }
+              : {
+                  messages: (prompt as IGenerateGroupedResultMessages).messages,
+                  options:
+                    (prompt as IGenerateGroupedResultMessages).options || {},
+                },
+        },
+        error: true,
+        groupedResult: true,
+        metadata: {
+          finishReason: true,
+          usage: {
+            inputTokens: true,
+            outputTokens: true,
+            totalTokens: true,
           },
         },
-        groupedResult: true,
       }
     }
 
@@ -98,10 +226,18 @@ export const createGenerateQuery = <
   }
 
   return Object.assign(generate, {
-    fromOne: (prompt: string) => generate('singleResult', prompt),
+    fromOne: (
+      prompt:
+        | string
+        | IGenerateSingleResultPrompt
+        | IGenerateSingleResultMessages,
+    ) => generate('singleResult', prompt as any),
     fromMany: (
-      task: string,
+      task:
+        | string
+        | IGenerateGroupedResultTask<T>
+        | IGenerateGroupedResultMessages,
       properties?: Required<IGenerate<T>>['groupedResult']['properties'],
-    ) => generate('groupedResult', task, properties),
+    ) => generate('groupedResult', task as any, properties),
   }) as any as GenerateQuery<T, Q>
 }
