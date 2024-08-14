@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.16
+
+### Patch Changes
+
+- feat: update generative method arguments
+
 ## 0.0.9
 
 ### Patch Changes
