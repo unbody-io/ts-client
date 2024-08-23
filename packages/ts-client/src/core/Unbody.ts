@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
-import { HttpClient, deepMerge } from '../utils'
+import { deepMerge, HttpClient } from '../utils'
 import {
   DocumentType,
   IAggregateAudioFile,
@@ -42,6 +42,7 @@ import { IUnbodyOptions } from './query-builder/interfaces'
 import { DEFAULT_TRANSFORMERS } from './transformer'
 
 export * from './documents/interfaces'
+export * from './documents/types'
 export * from './query-builder/types/QueryResult.type'
 
 export class Unbody {
@@ -116,6 +117,13 @@ export class Unbody {
   get get() {
     const { httpClient } = this
     return {
+      schema<T extends {} = any>(collection: string): GetQueryBuilder<T> {
+        return new GetQueryBuilder<T>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: collection as DocumentType,
+        })
+      },
       get googleDoc(): GetQueryBuilder<IGoogleDoc> {
         return new GetQueryBuilder<IGoogleDoc>({
           httpClient: httpClient,

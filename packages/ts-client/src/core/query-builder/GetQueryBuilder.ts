@@ -2,18 +2,18 @@ import { AxiosResponse } from 'axios'
 import { DeepRequired } from 'utility-types'
 import { AnyObject } from '../../types'
 import { excludeProperty } from '../../utils'
-import { GetQueryResult } from '../Unbody'
-import { AdditionalProps } from '../documents'
+import { AdditionalProps, DocumentType } from '../documents'
 import { IAsk, INearText } from '../filters'
 import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { IRerank } from '../filters/interfaces/Rerank.interface'
+import { GetQueryResult } from '../Unbody'
+import { objectPathToQueryAdapter } from './adapters'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
-import { GenerateQuery, createGenerateQuery } from './GenerateQuery'
+import { createGenerateQuery, GenerateQuery } from './GenerateQuery'
+import { QueryBuilderOptions } from './interfaces'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchQuery } from './SearchQuery'
 import { SimilarQuery } from './SimilarQuery'
-import { objectPathToQueryAdapter } from './adapters'
-import { QueryBuilderOptions } from './interfaces'
 import { ObjectPath } from './types'
 import { SearchOperatorMethods } from './types/QueryMethods.type'
 
@@ -28,10 +28,13 @@ export class GetQueryBuilder<
     GetQueryBuilder<TDocumentType>
   >
   public generate: GenerateQuery<TDocumentType, GetQueryBuilder<TDocumentType>>
+  public documentType: DocumentType
 
   constructor({ httpClient, queryType, documentType }: QueryBuilderOptions) {
     super({ httpClient, queryType, documentType })
-    this.selectedFields = DEFAULT_SELECTED_FIELDS[documentType]
+    this.selectedFields = DEFAULT_SELECTED_FIELDS[documentType] || ['remoteId']
+
+    this.documentType = documentType
 
     this.search = new SearchQuery(this)
     this.similar = new SimilarQuery(this)
@@ -134,6 +137,14 @@ export class GetQueryBuilder<
     query._additional.certainty = true
     query._additional.distance = true
     excludeProperty('nearImage', this)
+
+    return this
+  }
+
+  autocut<TThis>(this: TThis, n: number): TThis {
+    // @ts-ignore
+    const { query: _query } = this
+    _query.__args.autocut = n
 
     return this
   }
