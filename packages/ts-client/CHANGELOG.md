@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.17
+
+### Patch Changes
+
+- Add custom schema query builder
+
 ## 0.0.16
 
 ### Patch Changes
