@@ -21,22 +21,19 @@ export interface GenerateQuery<
   (
     type: 'singleResult',
     prompt: Required<IGenerate<T>>['singleResult']['prompt'],
-  ): Omit<Q, 'generate' | 'exec'> & {
+  ): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
-  (type: 'singleResult', args: IGenerateSingleResultPrompt): Omit<
-    Q,
-    'generate' | 'exec'
-  > & {
+  (type: 'singleResult', args: IGenerateSingleResultPrompt): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
   (type: 'singleResult', args: IGenerateSingleResultMessages): Omit<
     Q,
-    'generate' | 'exec'
+    'exec'
   > & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
@@ -44,7 +41,7 @@ export interface GenerateQuery<
   }
   (type: 'groupedResult', prompt: IGenerateGroupedResultTask<T>): Omit<
     Q,
-    'generate' | 'exec'
+    'exec'
   > & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
@@ -52,7 +49,7 @@ export interface GenerateQuery<
   }
   (type: 'groupedResult', prompt: IGenerateGroupedResultMessages): Omit<
     Q,
-    'generate' | 'exec'
+    'exec'
   > & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
@@ -62,7 +59,7 @@ export interface GenerateQuery<
     type: 'groupedResult',
     prompt: Required<IGenerate<T>>['groupedResult']['task'],
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
-  ): Omit<Q, 'generate' | 'exec'> & {
+  ): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
@@ -77,7 +74,7 @@ export interface GenerateQuery<
       | IGenerateGroupedResultTask<T>
       | IGenerateGroupedResultMessages,
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
-  ): Omit<Q, 'generate' | 'exec'> & {
+  ): Omit<Q, 'exec'> & {
     exec: <
       R =
         | GetQueryGenerativeSingleResult<GetQueryResult<T>>
@@ -85,20 +82,17 @@ export interface GenerateQuery<
     >() => Promise<AxiosResponse<R>>
   }
 
-  fromOne(prompt: string): Omit<Q, 'generate' | 'exec'> & {
+  fromOne(prompt: string): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
-  fromOne(prompt: IGenerateSingleResultPrompt): Omit<Q, 'generate' | 'exec'> & {
+  fromOne(prompt: IGenerateSingleResultPrompt): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
-  fromOne(prompt: IGenerateSingleResultMessages): Omit<
-    Q,
-    'generate' | 'exec'
-  > & {
+  fromOne(prompt: IGenerateSingleResultMessages): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
@@ -108,24 +102,18 @@ export interface GenerateQuery<
       | string
       | IGenerateSingleResultPrompt
       | IGenerateSingleResultMessages,
-  ): Omit<Q, 'generate' | 'exec'> & {
+  ): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeSingleResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
 
-  fromMany(task: IGenerateGroupedResultTask<T>): Omit<
-    Q,
-    'generate' | 'exec'
-  > & {
+  fromMany(task: IGenerateGroupedResultTask<T>): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
   }
-  fromMany(task: IGenerateGroupedResultMessages): Omit<
-    Q,
-    'generate' | 'exec'
-  > & {
+  fromMany(task: IGenerateGroupedResultMessages): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
@@ -133,7 +121,7 @@ export interface GenerateQuery<
   fromMany(
     task: string,
     properties?: Required<IGenerate<T>>['groupedResult']['properties'],
-  ): Omit<Q, 'generate' | 'exec'> & {
+  ): Omit<Q, 'exec'> & {
     exec: <R = GetQueryGenerativeGroupedResult<GetQueryResult<T>>>() => Promise<
       AxiosResponse<R>
     >
@@ -158,6 +146,8 @@ export const createGenerateQuery = <
   ) => {
     // @ts-ignore
     const { query } = queryBuilder
+
+    delete query._additional?.generate
 
     if (type === 'singleResult') {
       query._additional.generate = {

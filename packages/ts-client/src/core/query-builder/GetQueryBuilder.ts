@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { DeepRequired } from 'utility-types'
 import { AnyObject } from '../../types'
-import { excludeProperty } from '../../utils'
 import { AdditionalProps, DocumentType } from '../documents'
 import { IAsk, INearText } from '../filters'
 import { INearImage } from '../filters/interfaces/NearImage.interface'
@@ -15,7 +14,6 @@ import { QueryBuilder } from './QueryBuilder'
 import { SearchQuery } from './SearchQuery'
 import { SimilarQuery } from './SimilarQuery'
 import { ObjectPath } from './types'
-import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class GetQueryBuilder<
   TDocumentType extends AnyObject,
@@ -41,20 +39,20 @@ export class GetQueryBuilder<
     this.generate = createGenerateQuery(this)
   }
 
-  ask<TThis>(
-    this: TThis,
-    params: IAsk<TDocumentType>,
-  ): Omit<TThis, SearchOperatorMethods>
+  ask<TThis>(this: TThis, params: IAsk<TDocumentType>): TThis
   ask<TThis>(
     this: TThis,
     question: IAsk<TDocumentType>['question'],
     properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   ask<TThis>(
     this: TThis,
     question: IAsk<TDocumentType>['question'] | IAsk<TDocumentType>,
     properties?: IAsk<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
     if (typeof question === 'object' && !Array.isArray(question))
@@ -71,24 +69,24 @@ export class GetQueryBuilder<
       endPosition: true,
       startPosition: true,
     }
-    excludeProperty('ask', this)
+
     return this
   }
 
-  nearText<TThis>(
-    this: TThis,
-    params: INearText,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearText<TThis>(this: TThis, params: INearText): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
     distance?: INearText['distance'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query, spellCheck } = this
 
@@ -97,34 +95,34 @@ export class GetQueryBuilder<
     if (typeof concepts === 'object' && !Array.isArray(concepts)) {
       query.__args.nearText = concepts
       if (concepts.autocorrect) withSpellCheck = true
-    } else
+    } else {
       query.__args.nearText = {
         concepts,
         ...(distance ? { distance } : {}),
       }
+    }
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearText', this)
 
     // if (withSpellCheck) return spellCheck.bind(this)()
 
     return this
   }
 
-  nearImage<TThis>(
-    this: TThis,
-    params: INearImage,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearImage<TThis>(this: TThis, params: INearImage): TThis
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'],
     distance?: INearImage['distance'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'] | INearImage,
     distance?: INearImage['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
     if (typeof image === 'object') query.__args.nearImage = image
@@ -136,7 +134,6 @@ export class GetQueryBuilder<
 
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearImage', this)
 
     return this
   }
@@ -144,24 +141,28 @@ export class GetQueryBuilder<
   autocut<TThis>(this: TThis, n: number): TThis {
     // @ts-ignore
     const { query: _query } = this
+
     _query.__args.autocut = n
 
     return this
   }
 
-  rerank<TThis>(this: TThis, params: IRerank): Omit<TThis, 'rerank'>
+  rerank<TThis>(this: TThis, params: IRerank): TThis
   rerank<TThis>(
     this: TThis,
     query: IRerank['query'],
     property: IRerank['property'],
-  ): Omit<TThis, 'rerank'>
+  ): TThis
   rerank<TThis>(
     this: TThis,
     query: IRerank['query'] | IRerank,
     property?: IRerank['property'],
-  ): Omit<TThis, 'rerank'> {
+  ): TThis {
     // @ts-ignore
     const { query: _query } = this
+
+    delete _query._additional?.rerank
+
     if (typeof query === 'object')
       _query._additional.rerank = {
         score: true,
@@ -178,11 +179,10 @@ export class GetQueryBuilder<
         },
       }
 
-    excludeProperty('rerank', this)
     return this
   }
 
-  spellCheck<TThis>(this: TThis): Omit<TThis, 'spellCheck'> {
+  spellCheck<TThis>(this: TThis) {
     // @ts-ignore
     const { query } = this
 
@@ -203,22 +203,22 @@ export class GetQueryBuilder<
   select<TThis>(
     this: TThis,
     ...args: ObjectPath<DeepRequired<TDocumentType>>[]
-  ): Omit<TThis, 'select'> {
+  ): TThis {
     // @ts-ignore
     this.selectedFields = objectPathToQueryAdapter(args)
-    excludeProperty('select', this)
+
     return this
   }
 
   additional<TThis>(
     this: TThis,
     ...args: ObjectPath<AdditionalProps>[]
-  ): Omit<TThis, 'additional'> {
+  ): TThis {
     // @ts-ignore
     const { additionalFields } = this
     const additional = objectPathToQueryAdapter(args)
     Object.assign(additionalFields, additional)
-    excludeProperty('additional', this)
+
     return this
   }
 

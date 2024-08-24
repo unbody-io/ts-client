@@ -1,7 +1,7 @@
 import { EnumType } from 'json-to-graphql-query'
-import { CROSS_REFERENCE_PROPS } from '../../../constants'
 import { AnyObject } from '../../../types'
 import { isInteger } from '../../../utils'
+import { isCollectionType } from '../../documents/utils'
 import {
   IWhereGeoRange,
   WhereCompareOperator,
@@ -13,17 +13,32 @@ import {
 export class WhereParamsAdapter<TDocumentType extends AnyObject> {
   adapt(params: TDocumentType | WhereLogicalOperator<TDocumentType>): any {
     if (params instanceof WhereLogicalOperator) {
-      return {
+      const operator = {
         ...params,
-        operands: params.operands.map((params) => this.adapt(params)),
+        operands: params.operands
+          .map((params) => this.adapt(params))
+          .filter(Boolean),
       }
+
+      if (operator.operands.length === 0) return null
+
+      return operator
     }
     return this.composeOperands(
       Object.entries(params).map(([key, value]) => {
-        if (CROSS_REFERENCE_PROPS.includes(key))
+        if (
+          value &&
+          typeof value === 'object' &&
+          !(value instanceof WhereOperators) &&
+          !(value instanceof WhereCompareOperator) &&
+          Object.keys(value).some((vk) => isCollectionType(vk))
+        ) {
           return this.composeCrossReferenceParam({ key, value })
+        }
+
         if (value instanceof WhereCompareOperator)
           return this.composeParam({ key, ...value })
+
         return this.composeParam({
           key,
           ...WhereOperators.prototype.Equal(value),
@@ -73,10 +88,11 @@ export class WhereParamsAdapter<TDocumentType extends AnyObject> {
           ]
         return adapted
       }),
-    )
+    ).filter(Boolean)
   }
 
   private composeOperands(operands: any[]) {
+    if (operands.length === 0) return null
     if (operands.length === 1) return operands[0]
     else
       return new WhereLogicalOperator({

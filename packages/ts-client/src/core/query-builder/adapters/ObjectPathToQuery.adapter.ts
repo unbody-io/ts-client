@@ -1,7 +1,7 @@
 import get from 'lodash/get'
 import set from 'lodash/set'
 import { DocumentType } from '../../documents'
-import { isDocumentType } from '../../documents/utils'
+import { isCollectionType } from '../../documents/utils'
 import { ObjectPath } from '../types'
 
 const documentTypes = Object.values(DocumentType) as string[]
@@ -18,7 +18,7 @@ export function objectPathToQueryAdapter<TDocumentType>(
       const targetPath: string[] = []
       const pathArray = path.split('.')
       for (const field of pathArray) {
-        if (documentTypes.includes(field) || isDocumentType(field)) {
+        if (documentTypes.includes(field) || isCollectionType(field)) {
           targetPath.push('__on')
 
           const crefPath = targetPath.join('.')

@@ -1,14 +1,12 @@
 import { AnyObject } from '../../types'
-import { excludeProperty } from '../../utils'
 import { IAggregateAsk, INearText } from '../filters'
+import { objectPathToQueryAdapter } from './adapters'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
+import { QueryBuilderOptions } from './interfaces'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchQuery } from './SearchQuery'
 import { SimilarQuery } from './SimilarQuery'
-import { objectPathToQueryAdapter } from './adapters'
-import { QueryBuilderOptions } from './interfaces'
 import { ObjectPath } from './types'
-import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class AggregateQueryBuilder<
   TDocumentType extends AnyObject,
@@ -34,16 +32,13 @@ export class AggregateQueryBuilder<
   }
 
   // @ts-ignore
-  ask<TThis>(
-    this: TThis,
-    params: IAggregateAsk<TDocumentType>,
-  ): Omit<TThis, SearchOperatorMethods>
+  ask<TThis>(this: TThis, params: IAggregateAsk<TDocumentType>): TThis
   ask<TThis>(
     this: TThis,
     question: IAggregateAsk<TDocumentType>['question'],
     objectLimit: IAggregateAsk<TDocumentType>['objectLimit'],
     properties?: IAggregateAsk<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   ask<TThis>(
     this: TThis,
     question:
@@ -51,7 +46,10 @@ export class AggregateQueryBuilder<
       | IAggregateAsk<TDocumentType>,
     objectLimit: IAggregateAsk<TDocumentType>['objectLimit'],
     properties?: IAggregateAsk<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
     if (typeof question === 'object' && !Array.isArray(question))
@@ -68,24 +66,24 @@ export class AggregateQueryBuilder<
       endPosition: true,
       startPosition: true,
     }
-    excludeProperty('ask', this)
+
     return this
   }
 
-  nearText<TThis>(
-    this: TThis,
-    params: INearText,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearText<TThis>(this: TThis, params: INearText): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
     certainty?: INearText['certainty'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     certainty?: INearText['certainty'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
     if (typeof concepts === 'object' && !Array.isArray(concepts))
@@ -97,17 +95,16 @@ export class AggregateQueryBuilder<
       }
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearText', this)
+
     return this
   }
 
   select<TThis>(
     this: TThis,
     ...args: ObjectPath<TAggregateDocumentType>[]
-  ): Omit<TThis, 'select'> {
+  ): TThis {
     // @ts-ignore
     this.selectedFields = objectPathToQueryAdapter(args)
-    excludeProperty('select', this)
     return this
   }
 }

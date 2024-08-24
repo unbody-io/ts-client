@@ -1,7 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { AnyObject } from '../../types'
-import { excludeProperty } from '../../utils'
 import { DocumentType } from '../documents'
 import {
   IBm25,
@@ -18,7 +17,6 @@ import { INearImage } from '../filters/interfaces/NearImage.interface'
 import { DocumentFilterType } from '../filters/types'
 import { WhereParamsAdapter } from './adapters'
 import { QueryBuilderOptions } from './interfaces'
-import { SearchOperatorMethods } from './types/QueryMethods.type'
 
 export class QueryBuilder<TDocumentType extends AnyObject, R> {
   protected query: AnyObject = { __args: {}, _additional: {} }
@@ -39,7 +37,7 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
   where<TThis>(
     this: TThis,
     params: DocumentFilterType<TDocumentType, true>,
-  ): Omit<TThis, 'where'>
+  ): TThis
   where<TThis>(
     this: TThis,
     callback:
@@ -52,13 +50,20 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
               | WhereOperators<DocumentFilterType<TDocumentType, true>>['And']
               | WhereOperators<DocumentFilterType<TDocumentType, true>>['Or']
             >),
-  ): Omit<TThis, 'where'>
+  ): TThis
   where<TThis>(
     this: TThis,
     params: DocumentFilterType<TDocumentType, true>,
-  ): Omit<TThis, 'where'> {
+  ): TThis {
     // @ts-ignore
     const { query, whereParamsAdapter } = this
+
+    if (!params) {
+      if (query.__args.where) delete query.__args.where
+
+      return this
+    }
+
     if (typeof params === 'function') {
       const callback = params as Function
       const { prototype } = WhereOperators<TDocumentType>
@@ -66,26 +71,29 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     } else {
       query.__args.where = whereParamsAdapter.adapt(params)
     }
-    excludeProperty('where', this)
+
+    if (!query.__args.where) delete query.__args.where
+
     return this
   }
 
-  bm25<TThis>(
-    this: TThis,
-    params: IBm25<TDocumentType>,
-  ): Omit<TThis, SearchOperatorMethods>
+  bm25<TThis>(this: TThis, params: IBm25<TDocumentType>): TThis
   bm25<TThis>(
     this: TThis,
     query: IBm25<TDocumentType>['query'],
     properties?: IBm25<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   bm25<TThis>(
     this: TThis,
     query: IBm25<TDocumentType>['query'] | IBm25<TDocumentType>,
     properties?: IBm25<TDocumentType>['properties'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
     // @ts-ignore
-    const { query: thisQuery, additionalFields } = this
+    this.removeSearchOperators()
+
+    // @ts-ignore
+    const { query: thisQuery } = this
+
     if (typeof query === 'object' && !Array.isArray(query))
       thisQuery.__args.bm25 = query
     else
@@ -93,22 +101,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         query,
         ...(properties?.length ? { properties } : {}),
       }
-    additionalFields.score = true
-    excludeProperty('bm25', this)
+    thisQuery._additional.score = true
+
     return this
   }
 
-  group<TThis>(this: TThis, params: IGroup): Omit<TThis, 'group'>
+  group<TThis>(this: TThis, params: IGroup): TThis
   group<TThis>(
     this: TThis,
     force: IGroup['force'],
     type?: IGroup['type'],
-  ): Omit<TThis, 'group'>
+  ): TThis
   group<TThis>(
     this: TThis,
     force: IGroup['force'] | IGroup,
     type?: IGroup['type'],
-  ): Omit<TThis, 'group'> {
+  ): TThis {
     // @ts-ignore
     const { query } = this
     if (typeof force === 'object' && !Array.isArray(force))
@@ -118,23 +126,23 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         force,
         ...(type ? { type: new EnumType(type) } : {}),
       }
-    excludeProperty('group', this)
+
     return this
   }
 
-  groupBy<TThis>(this: TThis, params: IGroupBy): Omit<TThis, 'groupBy'>
+  groupBy<TThis>(this: TThis, params: IGroupBy): TThis
   groupBy<TThis>(
     this: TThis,
     path: IGroupBy['path'],
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
-  ): Omit<TThis, 'groupBy'>
+  ): TThis
   groupBy<TThis>(
     this: TThis,
     path: IGroupBy['path'] | IGroupBy,
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
-  ): Omit<TThis, 'groupBy'> {
+  ): TThis {
     // @ts-ignore
     const { query } = this
     if (typeof path === 'object' && !Array.isArray(path))
@@ -144,28 +152,29 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
       ...(groups ? { groups } : {}),
       ...(objectsPerGroup ? { objectsPerGroup } : {}),
     }
-    excludeProperty('groupBy', this)
+
     return this
   }
 
-  hybrid<TThis>(
-    this: TThis,
-    params: IHybrid<TDocumentType>,
-  ): Omit<TThis, SearchOperatorMethods>
+  hybrid<TThis>(this: TThis, params: IHybrid<TDocumentType>): TThis
   hybrid<TThis>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'],
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   hybrid<TThis>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'] | IHybrid<TDocumentType>,
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
     // @ts-ignore
-    const { query: thisQuery, additionalFields } = this
+    this.removeSearchOperators()
+
+    // @ts-ignore
+    const { query: thisQuery } = this
+
     if (typeof query === 'object' && !Array.isArray(query))
       thisQuery.__args.hybrid = query
     else
@@ -174,27 +183,28 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         ...(properties ? { properties } : {}),
         ...(alpha ? { alpha } : {}),
       }
-    additionalFields.score = true
-    excludeProperty('hybrid', this)
+    thisQuery._additional.score = true
+
     return this
   }
 
-  nearText<TThis>(
-    this: TThis,
-    params: INearText,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearText<TThis>(this: TThis, params: INearText): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'],
     distance?: INearText['distance'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearText<TThis>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
+
     if (typeof concepts === 'object' && !Array.isArray(concepts))
       query.__args.nearText = concepts
     else
@@ -204,26 +214,27 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
       }
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearText', this)
+
     return this
   }
 
-  nearImage<TThis>(
-    this: TThis,
-    params: INearImage,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearImage<TThis>(this: TThis, params: INearImage): TThis
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'],
     distance?: INearImage['distance'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearImage<TThis>(
     this: TThis,
     image: INearImage['image'] | INearImage,
     distance?: INearImage['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
+
     if (typeof image === 'object') query.__args.nearImage = image
     else
       query.__args.nearImage = {
@@ -233,27 +244,27 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
 
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearImage', this)
 
     return this
   }
 
-  nearObject<TThis>(
-    this: TThis,
-    params: INearObject,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearObject<TThis>(this: TThis, params: INearObject): TThis
   nearObject<TThis>(
     this: TThis,
     id: INearObject['id'],
     distance?: INearObject['distance'],
-  ): Omit<TThis, SearchOperatorMethods>
+  ): TThis
   nearObject<TThis>(
     this: TThis,
     id: INearObject['id'] | INearObject,
     distance?: INearObject['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    this.removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
+
     if (typeof id === 'object' && !Array.isArray(id))
       query.__args.nearObject = id
     else
@@ -263,21 +274,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
       }
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearObject', this)
+
     return this
   }
 
-  nearVector<TThis>(
-    this: TThis,
-    params: INearVector,
-  ): Omit<TThis, SearchOperatorMethods>
+  nearVector<TThis>(this: TThis, params: INearVector): TThis
   nearVector<TThis>(
     this: TThis,
     vector: INearVector['vector'] | INearVector,
     distance?: INearVector['distance'],
-  ): Omit<TThis, SearchOperatorMethods> {
+  ): TThis {
+    // @ts-ignore
+    removeSearchOperators()
+
     // @ts-ignore
     const { query } = this
+
     if (typeof vector === 'object' && !Array.isArray(vector))
       query.__args.nearVector = vector
     else
@@ -287,7 +299,7 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
       }
     query._additional.certainty = true
     query._additional.distance = true
-    excludeProperty('nearVector', this)
+
     return this
   }
 
@@ -295,31 +307,30 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     this: TThis,
     path: string | string[],
     order: keyof typeof SortType,
-  ): Omit<TThis, 'sort'> {
+  ) {
     // @ts-ignore
     const { query } = this
     query.__args.sort = {
       order: new EnumType(order),
       ...(path ? { path } : {}),
     }
-    excludeProperty('sort', this)
     return this
   }
 
-  limit<TThis>(this: TThis, limit: number): Omit<TThis, 'limit'> {
+  limit<TThis>(this: TThis, limit: number): TThis {
     // @ts-ignore
     const { query } = this
     query.__args.limit = limit
-    excludeProperty('limit', this)
+
     return this
   }
 
-  offset<TThis>(this: TThis, offset: number): Omit<TThis, 'offset'> {
+  offset<TThis>(this: TThis, offset: number): TThis {
     // @ts-ignore
     const { query } = this
     query.__args.offset = offset
     if (!query._additional) query._additional = {}
-    excludeProperty('offset', this)
+
     return this
   }
 
@@ -354,5 +365,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return {
       payload: res.data?.data?.[this.queryType]?.[this.documentType],
     }
+  }
+
+  protected removeSearchOperators() {
+    // @ts-ignore
+    const { query } = this
+
+    delete query?.__args?.ask
+    delete query?.__args?.bm25
+    delete query?.__args?.hybrid
+    delete query?.__args?.nearText
+    delete query?.__args?.nearImage
+    delete query?.__args?.nearObject
+    delete query?.__args?.nearVector
+    delete query?._additional?.score
+    delete query?._additional?.answer
+    delete query?._additional?.certainty
+    delete query?._additional?.distance
   }
 }
