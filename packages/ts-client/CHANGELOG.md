@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.19
+
+### Patch Changes
+
+- fix: cref where operator constructor
+
 ## 0.0.18
 
 ### Patch Changes
