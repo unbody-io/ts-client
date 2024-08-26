@@ -74,21 +74,26 @@ export class WhereParamsAdapter<TDocumentType extends AnyObject> {
 
   private composeCrossReferenceParam(param: { key: any; value: any }) {
     return this.composeOperands(
-      Object.entries(param.value).map(([prop, params]) => {
-        const adapted = this.adapt(params as any)
-        if (adapted instanceof WhereLogicalOperator)
-          adapted.operands.forEach(
-            (operation) => (operation.path = [param.key, prop, operation.path]),
-          )
-        else
-          adapted.path = [
-            param.key,
-            prop,
-            ...(Array.isArray(adapted.path) ? adapted.path : [adapted.path]),
-          ]
-        return adapted
-      }),
-    ).filter(Boolean)
+      Object.entries(param.value)
+        .map(([prop, params]) => {
+          const adapted = this.adapt(params as any)
+          if (!adapted) return null
+
+          if (adapted instanceof WhereLogicalOperator)
+            adapted.operands.forEach(
+              (operation) =>
+                (operation.path = [param.key, prop, operation.path]),
+            )
+          else
+            adapted.path = [
+              param.key,
+              prop,
+              ...(Array.isArray(adapted.path) ? adapted.path : [adapted.path]),
+            ]
+          return adapted
+        })
+        .filter(Boolean),
+    )
   }
 
   private composeOperands(operands: any[]) {
