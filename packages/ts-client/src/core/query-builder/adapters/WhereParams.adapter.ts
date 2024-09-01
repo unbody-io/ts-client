@@ -49,7 +49,7 @@ export class WhereParamsAdapter<TDocumentType extends AnyObject> {
 
   private adaptValue(val: string | Date | number | boolean | IWhereGeoRange) {
     const valueForTypeCheck = Array.isArray(val) ? val[0] : val
-    if (val instanceof Date) return { valueDate: val }
+    if (val instanceof Date) return { valueDate: val.toJSON() }
     switch (typeof valueForTypeCheck) {
       case 'boolean':
         return { valueBoolean: new EnumType(val === true ? 'true' : 'false') }
