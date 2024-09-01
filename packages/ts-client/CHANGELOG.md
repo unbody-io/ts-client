@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.20
+
+### Patch Changes
+
+- Fix date filter operator
+
 ## 0.0.19
 
 ### Patch Changes
