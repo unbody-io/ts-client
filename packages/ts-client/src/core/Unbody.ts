@@ -33,6 +33,7 @@ import {
   ITextDocument,
   IVideoFile,
 } from './documents'
+import { Generative } from './Generative'
 import {
   AggregateQueryBuilder,
   GetQueryBuilder,
@@ -44,10 +45,20 @@ import { DEFAULT_TRANSFORMERS } from './transformer'
 
 export * from './documents/interfaces'
 export * from './documents/types'
+export type {
+  IGenerateImageMessage,
+  IGenerateMessage,
+  IGenerateMessageCommon,
+  IGenerateTextMessage,
+  IGenerateTextOptions,
+  IGenerateTextRes,
+  IGenerateTextResPayload,
+} from './Generative'
 export * from './query-builder/types/QueryResult.type'
 
 export class Unbody {
   public httpClient: AxiosInstance
+  public generate: Generative
 
   constructor({ apiKey, projectId, transformers, baseUrl }: IUnbodyOptions) {
     if (!apiKey) throw new Error('Unbody client: apiKey is required')
@@ -59,6 +70,7 @@ export class Unbody {
       deepMerge({}, DEFAULT_TRANSFORMERS, transformers || {}),
     )
     this.httpClient = httpClient.instance!
+    this.generate = new Generative(httpClient)
   }
 
   async exec(
