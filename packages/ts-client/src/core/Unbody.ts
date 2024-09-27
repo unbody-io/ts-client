@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
+import { UNBODY_API_BASE_URL, UNBODY_GRAPHQL_API_ENDPOINT } from '../constants'
 import { deepMerge, HttpClient } from '../utils'
 import {
   DocumentType,
@@ -48,10 +49,11 @@ export * from './query-builder/types/QueryResult.type'
 export class Unbody {
   public httpClient: AxiosInstance
 
-  constructor({ apiKey, projectId, transformers }: IUnbodyOptions) {
+  constructor({ apiKey, projectId, transformers, baseUrl }: IUnbodyOptions) {
     if (!apiKey) throw new Error('Unbody client: apiKey is required')
     if (!projectId) throw new Error('Unbody client: projectId is required')
     const httpClient = new HttpClient(
+      baseUrl || UNBODY_API_BASE_URL,
       apiKey,
       projectId,
       deepMerge({}, DEFAULT_TRANSFORMERS, transformers || {}),
@@ -80,7 +82,7 @@ export class Unbody {
       ]
     }, [])
 
-    const res = await this.httpClient.post('', {
+    const res = await this.httpClient.post(UNBODY_GRAPHQL_API_ENDPOINT, {
       query: jsonToGraphQLQuery({
         query: Object.fromEntries(
           queries.map((query) => [

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import { UNBODY_GRAPHQL_ENDPOINT } from '../constants'
+import { UNBODY_API_BASE_URL } from '../constants'
 import { Transformers } from '../core/transformer'
 import { AnyObject } from '../types'
 
@@ -8,12 +8,13 @@ export class HttpClient {
   transformers: AnyObject
 
   constructor(
+    baseUrl: string,
     apiKey: string | undefined,
     projectId: string | undefined,
     transformers: Transformers,
   ) {
     this.instance = axios.create({
-      baseURL: UNBODY_GRAPHQL_ENDPOINT,
+      baseURL: baseUrl,
       headers: {
         Authorization: apiKey,
         'X-Project-id': projectId,

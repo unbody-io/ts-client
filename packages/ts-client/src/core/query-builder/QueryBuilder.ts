@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
 import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query'
+import { UNBODY_GRAPHQL_API_ENDPOINT } from '../../constants'
 import { AnyObject } from '../../types'
 import { DocumentType } from '../documents'
 import {
@@ -349,7 +350,7 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
 
   exec = async <T = R>(): Promise<AxiosResponse<T>> => {
     return this.httpClient
-      .post('', { query: this.getGraphQuery() })
+      .post(UNBODY_GRAPHQL_API_ENDPOINT, { query: this.getGraphQuery() })
       .then(this._resolveResData)
   }
 
