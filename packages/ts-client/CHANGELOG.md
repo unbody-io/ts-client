@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.21
+
+### Patch Changes
+
+- Add Generative API and custom baseURL support
+
 ## 0.0.20
 
 ### Patch Changes
