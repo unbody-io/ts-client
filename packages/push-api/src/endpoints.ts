@@ -18,6 +18,12 @@ export type FileRecordEntity = {
 
 export type RecordEntity = DataRecordEntity | FileRecordEntity
 
+export type GetRecordParams = {
+  id: string
+}
+
+export type GetRecordResPayload = RecordEntity
+
 export type ListRecordsParams = {
   limit?: number
   offset?: number
@@ -76,10 +82,31 @@ export type DeleteFileParams = {
   id: string
 }
 
+export type ListFilesParams = {
+  limit?: number
+  offset?: number
+  cursor?: string
+  sort?: 'asc' | 'desc'
+}
+
+export type ListFilesResPayload = {
+  files: FileRecordEntity[]
+  cursor: string
+}
+
 export type DeleteFileResPayload = FileRecordEntity
 
 export const endpoints = {
   records: {
+    get: {
+      path: '/data/records/{id}',
+      method: Methods.GET,
+      params: {} as GetRecordParams,
+      response: {} as ApiResponsePayload<GetRecordResPayload>,
+    } as EndpointDefinition<
+      GetRecordParams,
+      ApiResponsePayload<GetRecordResPayload>
+    >,
     list: {
       path: '/data/records',
       method: Methods.GET,
@@ -139,6 +166,18 @@ export const endpoints = {
     >,
   },
   files: {
+    list: {
+      path: '/data/files',
+      method: Methods.GET,
+      params: {} as ListFilesParams,
+      response: {} as ApiResponsePayload<ListFilesResPayload>,
+      callback: function ({ params, setParams }) {
+        setParams(params)
+      },
+    } as EndpointDefinition<
+      ListFilesParams,
+      ApiResponsePayload<ListFilesResPayload>
+    >,
     upload: {
       path: '/data/files',
       method: Methods.POST,
