@@ -121,6 +121,8 @@ console.log(response.data)
 - **Method**: `POST`
 - **Path**: `/projects`
 
+For more details on configuring project settings, see the [Project Settings Reference](#project-settings-reference).
+
 #### Update Project
 
 ```typescript
@@ -434,3 +436,274 @@ await admin.projects.rebuildSource({
 ### Date Filter Operators
 
 - `$gt`, `$gte`, `$lt`, `$lte`, `$null`
+
+## Project Settings Reference
+
+### Project Settings Fields
+
+- **`textVectorizer`**
+  - Defines the text vectorization model used for representing text as vectors, which is essential for search operations.
+  - **`name: string`** - Possible values:
+    - `text2vec-contextionary`
+    - `text2vec-transformers`
+    - `text2vec-openai-ada-002`
+    - `text2vec-openai-text-embedding-3-large`
+    - `text2vec-openai-text-embedding-small`
+    - `text2vec-cohere-multilingual-v3.0`
+    - `text2vec-cohere-multilingual-light-v3.0`
+    - `text2vec-cohere-english-v3.0`
+    - `text2vec-cohere-english-light-v3.0`
+    - `text2vec-cohere-english-v2.0`
+    - `text2vec-cohere-english-light-v2.0`
+
+- **`imageVectorizer`**
+  - Sets the model used for representing images as vectors.
+  - **`name: string`** - Possible value:
+    - `img2vec-neural`
+
+- **`qnaProvider`**
+  - Defines the provider used for Q&A capabilities within the project.
+  - **`name: string`** - Possible values:
+    - `qna-transformers`
+    - `qna-openai-gpt-3.5-turbo-instruct`
+
+- **`generativeSearch`**
+  - **`name: string`** - Possible value:
+    - `generative-unbody`
+  - **`options`**
+    - **`model: string`** - Possible values:
+      - `gpt-3.5-turbo`
+      - `gpt-4`
+      - `gpt-4-turbo`
+      - `gpt-4o`
+      - `gpt-4o-mini`
+      - `command`
+      - `command-light`
+      - `command-r`
+      - `command-r-plus`
+      - `open-mistral-7b`
+      - `open-mixtral-8x7b`
+
+- **`reranker`**
+  - Specifies the reranking model used to prioritize search results.
+  - **`name: string`** - Possible values:
+    - `reranker-transformers`
+    - `reranker-cohere-multilingual-v3.0`
+    - `reranker-cohere-multilingual-v2.0`
+    - `reranker-cohere-english-v3.0`
+    - `reranker-cohere-english-v2.0`
+
+- **`spellcheck`**
+  - Configures the spellcheck functionality.
+  - **`name: string`** - Possible value:
+    - `text-spellcheck`
+
+- **`autoSummary`**
+  - Automatically generates summaries for text content.
+  - **`name: string`** - Possible values:
+    - `autosum-openai-gpt-3.5-turbo`
+    - `autosum-openai-gpt-4o`
+    - `autosum-openai-gpt-4o-mini`
+    - `autosum-cohere-command-r`
+
+- **`autoKeywords`**
+  - Extracts keywords from text automatically.
+  - **`name: string`** - Possible values:
+    - `autokeywords-openai-gpt-3.5-turbo`
+    - `autokeywords-openai-gpt-4o`
+    - `autokeywords-openai-gpt-4o-mini`
+
+- **`autoEntities`**
+  - Automatically identifies and extracts entities from text.
+  - **`name: string`** - Possible values:
+    - `autoentities-openai-gpt-3.5-turbo`
+    - `autoentities-openai-gpt-4o`
+    - `autoentities-openai-gpt-4o-mini`
+
+- **`autoTopics`**
+  - Automatically generates topics from the content.
+  - **`name: string`** - Possible values:
+    - `autotopics-openai-gpt-3.5-turbo`
+    - `autotopics-openai-gpt-4o`
+    - `autotopics-openai-gpt-4o-mini`
+
+- **`autoVision`**
+  - Generates captions, labels, and extracts texts from image files.
+  - **`name: string`** - Possible values:
+    - `autovision-openai-gpt-4o`
+    - `autovision-openai-gpt-4o-mini`
+    - `autovision-openai-gpt-4-turbo`
+
+- **`customSchema`**
+  - Allows defining custom data schemas for projects.
+  - **`name: string`** - Possible value: `customSchema`
+  - **`options`**
+    - **`collections`**: An array of collection definitions, each with the following fields:
+      - **`name: string`** - The name of the collection in PascalCase format with the suffix `Collection` (e.g., `CustomCollection`).
+      - **`fields`**: An array of field definitions, each including:
+        - **`name: string`** - Field name in camelCase format.
+        - **`array: boolean`** - Indicates whether the field is an array.
+        - **`description: string`** - (Optional) Description of the field.
+        - **`type`** - Possible types: `int`, `number`, `text`, `uuid`, `date`, `boolean`, `object`, `phoneNumber`, `geoCoordinates`, `cref`.
+
+        - **Additional Field Configurations**:
+          - **`text` field**:
+            - Can have additional properties:
+              - **`skipTokenization: boolean`** - If `true`, the field will not be tokenized.
+              - **`tokenization: enum`** - Defines the tokenization strategy for the field. Possible values are `word`, `field`, `lowercase`, and `whitespace`.
+          - **`phoneNumber` field**:
+            - **Input/Output Schema**:
+              ```json
+              {
+                "input": "020 1234567",                       // Required. Raw input in string format
+                "defaultCountry": "nl",                       // Required if only a national number is provided, ISO 3166-1 alpha-2 country code. Only set if explicitly set by the user.
+                "internationalFormatted": "+31 20 1234567",   // Read-only string
+                "countryCode": 31,                            // Read-only unsigned integer, numerical country code
+                "national": 201234567,                        // Read-only unsigned integer, numerical representation of the national number
+                "nationalFormatted": "020 1234567",           // Read-only string
+                "valid": true                                 // Read-only boolean. Whether the parser recognized the phone number as valid
+              }
+              ```
+          - **`geoCoordinates` field**:
+            - **Input/Output Schema**:
+              ```json
+              {
+                "latitude": 52.366667,
+                "longitude": 4.9
+              }
+              ```
+          - **`object` field**:
+            - Must have a **`fields`** field, which is an array of field definitions. Possible types within the `object` are: `int`, `number`, `text`, `date`, `boolean`, `uuid`.
+            - **Note**: Currently, objects are not vectorized, and filter operators are not supported.
+          - **`cref` field**:
+            - Must have a **`refs`** array where each reference includes:
+              - **`collection: string`** - The collection name being referenced.
+              - **`field: string`** - The foreign collection's field being referenced.
+            - **Available Built-in Collections** for `cref` include:
+              - `ImageBlock`'s `document` field
+              - `AudioFile`'s `document` field
+              - `VideoFile`'s `document` field
+
+### Example Configuration
+Here’s an example of configuring project settings with various options:
+
+```json
+{
+  "textVectorizer": {
+    "name": "text2vec-openai-text-embedding-3-small"
+  },
+  "spellcheck": {
+    "name": "text-spellcheck"
+  },
+  "reranker": {
+    "name": "reranker-cohere-multilingual-v3.0"
+  },
+  "autoTopics": {
+    "name": "autotopics-openai-gpt-4o"
+  },
+  "autoVision": {
+    "name": "autovision-openai-gpt-4o"
+  },
+  "autoSummary": {
+    "name": "autosum-openai-gpt-4o"
+  },
+  "qnaProvider": {
+    "name": "qna-openai-gpt-3.5-turbo-instruct"
+  },
+  "autoEntities": {
+    "name": "autoentities-openai-gpt-4o"
+  },
+  "autoKeywords": {
+    "name": "autokeywords-openai-gpt-4o"
+  },
+  "generativeSearch": {
+    "name": "generative-unbody",
+    "options": {
+      "model": "gpt-4o"
+    }
+  },
+  "customSchema": {
+    "name": "customSchema",
+    "options": {
+      "collections": [
+        {
+          "name": "ProfileCollection",
+          "fields": [
+            {
+              "name": "name",
+              "type": "text"
+            },
+            {
+              "name": "firstName",
+              "type": "text"
+            },
+            {
+              "name": "lastName",
+              "type": "text"
+            },
+            {
+              "name": "photos",
+              "type": "cref",
+              "refs": [
+                {
+                  "collection": "ImageBlock",
+                  "field": "document"
+                }
+              ]
+            },
+            {
+              "name": "videos",
+              "type": "cref",
+              "refs": [
+                {
+                  "collection": "VideoFile",
+                  "field": "document"
+                }
+              ]
+            },
+            {
+              "name": "emailAddress",
+              "type": "text",
+              "tokenization": "field"
+            },
+            {
+              "name": "phoneNumber",
+              "type": "phoneNumber"
+            },
+            {
+              "name": "address",
+              "type": "object",
+              "fields": [
+                {
+                  "name": "street",
+                  "type": "text"
+                },
+                {
+                  "name": "city",
+                  "type": "text"
+                },
+                {
+                  "name": "state",
+                  "type": "text"
+                },
+                {
+                  "name": "zip",
+                  "type": "text"
+                },
+                {
+                  "name": "country",
+                  "type": "text"
+                }
+              ]
+            },
+            {
+              "name": "addressCoordinates",
+              "type": "geoCoordinates"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
