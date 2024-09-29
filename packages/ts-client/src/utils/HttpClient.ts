@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import { UNBODY_API_BASE_URL } from '../constants'
 import { Transformers } from '../core/transformer'
 import { AnyObject } from '../types'
 
