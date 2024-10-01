@@ -71,6 +71,7 @@ export type UploadFileParams =
   | {
       id: string
       file: any
+      payload?: Record<string, any>
     }
   | {
       form: any
@@ -189,6 +190,7 @@ export const endpoints = {
           const form = toFormData({})
           form.append('id', params.id)
           form.append('file', params.file)
+          form.append('payload', JSON.stringify(params.payload))
 
           setBody(form)
         }
