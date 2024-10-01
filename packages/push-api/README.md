@@ -44,6 +44,7 @@ You can upload files to your Unbody project using the `.files.upload()` method. 
 const { data } = await pushApi.files.upload({
   id: 'file-uuid', // Unique ID for the file
   file: file, // File object
+  payload: {}, // Extra fields for the file (optional)
 })
 
 // Example response data
@@ -55,6 +56,17 @@ console.log(data.data.contentType) // File's content type
 Alternatively, you can also upload a file using a `FormData` object:
 
 ```ts
+const formData = new FormData()
+
+formData.append('id', 'file-unique-id')
+formData.append('file', file, 'file-name.ext')
+formData.append(
+  'payload',
+  JSON.stringify({
+    xCustomField: 'value',
+  }),
+)
+
 await pushApi.files.upload({
   form: formData, // FormData object with file and id
 })
@@ -110,9 +122,9 @@ console.log(data.data.payload) // Record payload
 console.log(data.data.type) // Record type; `file` or `record`
 ```
 
-### Update Data Records
+### Update Records
 
-The `.records.update()` method allows you to replace the entire payload of a record:
+The `.records.update()` method allows you to replace the entire payload of a record or file's extra fields:
 
 ```js
 await pushApi.records.update({
@@ -120,17 +132,33 @@ await pushApi.records.update({
   collection: 'CustomCollection',
   payload: {}, // New payload, replaces the existing payload
 })
+
+await pushApi.records.update({
+  id: 'file-unique-id',
+  collection: 'TextDocument',
+  payload: {
+    xCustomField: 'value',
+  }, // New payload, replaces the existing payload
+})
 ```
 
-### Patch Data Records
+### Patch Records
 
-The `.records.patch()` method lets you partially update the record's payload.
+The `.records.patch()` method lets you partially update the record's payload or file's extra fields:
 
 ```js
 await pushApi.records.patch({
   id: 'record-unique-id',
   collection: 'CustomCollection',
   payload: {}, // Partial update, merges with the existing payload
+})
+
+await pushApi.records.patch({
+  id: 'file-unique-id',
+  collection: 'TextDocument',
+  payload: {
+    xCustomField: 'new value',
+  }, // Partial update, merges with the existing payload
 })
 ```
 
