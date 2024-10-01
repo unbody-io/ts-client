@@ -442,6 +442,7 @@ await admin.projects.rebuildSource({
 ### Project Settings Fields
 
 - **`textVectorizer`**
+
   - Defines the text vectorization model used for representing text as vectors, which is essential for search operations.
   - **`name: string`** - Possible values:
     - `text2vec-contextionary`
@@ -457,17 +458,20 @@ await admin.projects.rebuildSource({
     - `text2vec-cohere-english-light-v2.0`
 
 - **`imageVectorizer`**
+
   - Sets the model used for representing images as vectors.
   - **`name: string`** - Possible value:
     - `img2vec-neural`
 
 - **`qnaProvider`**
+
   - Defines the provider used for Q&A capabilities within the project.
   - **`name: string`** - Possible values:
     - `qna-transformers`
     - `qna-openai-gpt-3.5-turbo-instruct`
 
 - **`generativeSearch`**
+
   - **`name: string`** - Possible value:
     - `generative-unbody`
   - **`options`**
@@ -485,6 +489,7 @@ await admin.projects.rebuildSource({
       - `open-mixtral-8x7b`
 
 - **`reranker`**
+
   - Specifies the reranking model used to prioritize search results.
   - **`name: string`** - Possible values:
     - `reranker-transformers`
@@ -494,11 +499,13 @@ await admin.projects.rebuildSource({
     - `reranker-cohere-english-v2.0`
 
 - **`spellcheck`**
+
   - Configures the spellcheck functionality.
   - **`name: string`** - Possible value:
     - `text-spellcheck`
 
 - **`autoSummary`**
+
   - Automatically generates summaries for text content.
   - **`name: string`** - Possible values:
     - `autosum-openai-gpt-3.5-turbo`
@@ -507,6 +514,7 @@ await admin.projects.rebuildSource({
     - `autosum-cohere-command-r`
 
 - **`autoKeywords`**
+
   - Extracts keywords from text automatically.
   - **`name: string`** - Possible values:
     - `autokeywords-openai-gpt-3.5-turbo`
@@ -514,6 +522,7 @@ await admin.projects.rebuildSource({
     - `autokeywords-openai-gpt-4o-mini`
 
 - **`autoEntities`**
+
   - Automatically identifies and extracts entities from text.
   - **`name: string`** - Possible values:
     - `autoentities-openai-gpt-3.5-turbo`
@@ -521,6 +530,7 @@ await admin.projects.rebuildSource({
     - `autoentities-openai-gpt-4o-mini`
 
 - **`autoTopics`**
+
   - Automatically generates topics from the content.
   - **`name: string`** - Possible values:
     - `autotopics-openai-gpt-3.5-turbo`
@@ -528,6 +538,7 @@ await admin.projects.rebuildSource({
     - `autotopics-openai-gpt-4o-mini`
 
 - **`autoVision`**
+
   - Generates captions, labels, and extracts texts from image files.
   - **`name: string`** - Possible values:
     - `autovision-openai-gpt-4o`
@@ -535,12 +546,16 @@ await admin.projects.rebuildSource({
     - `autovision-openai-gpt-4-turbo`
 
 - **`customSchema`**
+
   - Allows defining custom data schemas for projects.
   - **`name: string`** - Possible value: `customSchema`
   - **`options`**
+
     - **`collections`**: An array of collection definitions, each with the following fields:
+
       - **`name: string`** - The name of the collection in PascalCase format with the suffix `Collection` (e.g., `CustomCollection`).
       - **`fields`**: An array of field definitions, each including:
+
         - **`name: string`** - Field name in camelCase format.
         - **`array: boolean`** - Indicates whether the field is an array.
         - **`description: string`** - (Optional) Description of the field.
@@ -555,13 +570,13 @@ await admin.projects.rebuildSource({
             - **Input/Output Schema**:
               ```json
               {
-                "input": "020 1234567",                       // Required. Raw input in string format
-                "defaultCountry": "nl",                       // Required if only a national number is provided, ISO 3166-1 alpha-2 country code. Only set if explicitly set by the user.
-                "internationalFormatted": "+31 20 1234567",   // Read-only string
-                "countryCode": 31,                            // Read-only unsigned integer, numerical country code
-                "national": 201234567,                        // Read-only unsigned integer, numerical representation of the national number
-                "nationalFormatted": "020 1234567",           // Read-only string
-                "valid": true                                 // Read-only boolean. Whether the parser recognized the phone number as valid
+                "input": "020 1234567", // Required. Raw input in string format
+                "defaultCountry": "nl", // Required if only a national number is provided, ISO 3166-1 alpha-2 country code. Only set if explicitly set by the user.
+                "internationalFormatted": "+31 20 1234567", // Read-only string
+                "countryCode": 31, // Read-only unsigned integer, numerical country code
+                "national": 201234567, // Read-only unsigned integer, numerical representation of the national number
+                "nationalFormatted": "020 1234567", // Read-only string
+                "valid": true // Read-only boolean. Whether the parser recognized the phone number as valid
               }
               ```
           - **`geoCoordinates` field**:
@@ -584,7 +599,18 @@ await admin.projects.rebuildSource({
               - `AudioFile`'s `document` field
               - `VideoFile`'s `document` field
 
+    - **extend**: (Optional) An array of collection and field definitions to extend the built-in schema.
+      - **name**: The name of the collection to extend. Allowed values are:
+        - `ImageBlock`
+        - `AudioFile`
+        - `VideoFile`
+        - `TextDocument`
+        - `SpreadsheetDocument`
+        - `SubtitleFile`
+      - **fields**: An array of field definitions to add to the collection. These definitions follow the same format as custom collections. Extra field names must be in camelCase format and prefixed with an `x` (e.g., `xCustomField`).
+
 ### Example Configuration
+
 Here’s an example of configuring project settings with various options:
 
 ```json
@@ -699,6 +725,17 @@ Here’s an example of configuring project settings with various options:
             {
               "name": "addressCoordinates",
               "type": "geoCoordinates"
+            }
+          ]
+        }
+      ],
+      "extend": [
+        {
+          "name": "TextDocument",
+          "fields": [
+            {
+              "name": "xExtraField",
+              "type": "text"
             }
           ]
         }
