@@ -1,6 +1,8 @@
 import { NumberField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
 import { IDiscordMessage } from './DiscordMessage.interface'
+import { IGithubComment } from './GithubComment.interface'
+import { IGithubThread } from './GithubThread.interface'
 import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IGoogleDoc } from './GoogleDoc.interface'
 import { IMediaFile } from './MediaFile.interface'
@@ -11,6 +13,8 @@ export interface IVideoFile {
     GoogleDoc?: IGoogleDoc[]
     DiscordMessage?: IDiscordMessage[]
     GoogleCalendarEvent?: IGoogleCalendarEvent[]
+    GithubThread?: IGithubThread[]
+    GithubComment?: IGithubComment[]
 
     Beacon?: IBeacon[]
   }

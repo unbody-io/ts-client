@@ -1,5 +1,9 @@
 import { DateField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
+import { IDiscordMessage } from './DiscordMessage.interface'
+import { IGithubComment } from './GithubComment.interface'
+import { IGithubThread } from './GithubThread.interface'
+import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { ISpreadsheet } from './Spreadsheet.interface'
 
 export interface ISpreadsheetDocument {
@@ -21,6 +25,15 @@ export interface ISpreadsheetDocument {
 
   sheets?: {
     Spreadsheet?: ISpreadsheet[]
+
+    Beacon?: IBeacon[]
+  }
+
+  document?: {
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
+    DiscordMessage?: IDiscordMessage[]
+    GithubComment?: IGithubComment[]
+    GithubThread?: IGithubThread[]
 
     Beacon?: IBeacon[]
   }

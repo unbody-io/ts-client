@@ -6,6 +6,10 @@ import {
 } from '../types'
 import { IAudioFile } from './AudioFile.interface'
 import { IBeacon } from './Beacon.interface'
+import { IDiscordMessage } from './DiscordMessage.interface'
+import { IGithubComment } from './GithubComment.interface'
+import { IGithubThread } from './GithubThread.interface'
+import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { ISubtitleEntry } from './SubtitleEntry.interface'
 import { IVideoFile } from './VideoFile.interface'
 
@@ -31,6 +35,15 @@ export interface ISubtitleFile {
   pathString?: StringField
   sourceId?: StringField
   remoteId?: StringField
+
+  document?: {
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
+    DiscordMessage?: IDiscordMessage[]
+    GithubComment?: IGithubComment[]
+    GithubThread?: IGithubThread[]
+
+    Beacon?: IBeacon[]
+  }
 
   // auto-generated
   autoSummary?: StringField

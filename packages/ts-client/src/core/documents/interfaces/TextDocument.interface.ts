@@ -1,8 +1,12 @@
 import { DateField, StringArrayField, StringField } from '../types'
 import { IBeacon } from './Beacon.interface'
+import { IDiscordMessage } from './DiscordMessage.interface'
+import { IMention, IToc } from './fields'
+import { IGithubComment } from './GithubComment.interface'
+import { IGithubThread } from './GithubThread.interface'
+import { IGoogleCalendarEvent } from './GoogleCalendarEvent.interface'
 import { IImageBlock } from './ImageBlock.interface'
 import { ITextBlock } from './TextBlock.interface'
-import { IMention, IToc } from './fields'
 
 export interface ITextDocument {
   blocks?: {
@@ -29,6 +33,15 @@ export interface ITextDocument {
   properties?: StringField
   toc?: StringArrayField<IToc>
   authors?: StringArrayField<IMention>
+
+  document?: {
+    GoogleCalendarEvent?: IGoogleCalendarEvent[]
+    DiscordMessage?: IDiscordMessage[]
+    GithubComment?: IGithubComment[]
+    GithubThread?: IGithubThread[]
+
+    Beacon?: IBeacon[]
+  }
 
   // auto-generated
   autoSummary?: StringField
