@@ -1,5 +1,11 @@
 # @unbody-io/ts-client
 
+## 0.0.22
+
+### Patch Changes
+
+- Updated schema types
+
 ## 0.0.21
 
 ### Patch Changes
