@@ -80,10 +80,15 @@ export class WhereParamsAdapter<TDocumentType extends AnyObject> {
           if (!adapted) return null
 
           if (adapted instanceof WhereLogicalOperator)
-            adapted.operands.forEach(
-              (operation) =>
-                (operation.path = [param.key, prop, operation.path]),
-            )
+            adapted.operands.forEach((operation) => {
+              return (operation.path = [
+                param.key,
+                prop,
+                ...(Array.isArray(operation.path)
+                  ? operation.path
+                  : [operation.path]),
+              ])
+            })
           else
             adapted.path = [
               param.key,
