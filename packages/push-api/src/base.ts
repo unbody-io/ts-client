@@ -154,14 +154,23 @@ export class Client {
         ...config.params,
         ...(options.params || {}),
       },
-      data: {
-        ...(config.data || {}),
-        ...(options.data || {}),
-      },
       headers: {
         ...config.headers,
         ...(options.headers || {}),
       },
+    }
+
+    if (
+      !!config.data &&
+      typeof config.data === 'object' &&
+      typeof config.data.append === 'function'
+    ) {
+      if (typeof options.data !== 'undefined') config.data = options.data
+    } else {
+      config.data = {
+        ...(config.data || {}),
+        ...(options.data || {}),
+      }
     }
 
     return this.axios.request<T>(config)
