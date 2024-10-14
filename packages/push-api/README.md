@@ -51,6 +51,14 @@ const { data } = await pushApi.files.upload({
 console.log(data.data.collection) // E.g., 'ImageBlock' for image files
 console.log(data.data.id) // Unique file ID
 console.log(data.data.contentType) // File's content type
+
+// Or, with external URL
+const { data } = await pushApi.files.upload({
+  id: 'file-uuid',
+  filename: 'image.jpg', // required
+  url: 'https://example.com/image.jpg',
+  payload: {}, // Extra fields for the file (optional)
+})
 ```
 
 Alternatively, you can also upload a file using a `FormData` object:
