@@ -74,6 +74,12 @@ export type UploadFileParams =
       payload?: Record<string, any>
     }
   | {
+      id: string
+      url: string
+      filename: string
+      payload?: Record<string, any>
+    }
+  | {
       form: any
     }
 
@@ -185,13 +191,21 @@ export const endpoints = {
       params: {} as UploadFileParams,
       response: {} as ApiResponsePayload<UploadFileResPayload>,
       callback: function ({ params, setBody }) {
-        if ('form' in params) setBody(params.form)
-        else {
+        if ('form' in params && typeof params.form !== 'undefined')
+          setBody(params.form)
+        else if ('file' in params && typeof params.file !== 'undefined') {
           const form = toFormData({})
           form.append('id', params.id)
+          form.append('payload', JSON.stringify(params.payload || {}))
           form.append('file', params.file)
-          form.append('payload', JSON.stringify(params.payload))
 
+          setBody(form)
+        } else if ('url' in params && typeof params.url !== 'undefined') {
+          const form = toFormData({})
+          form.append('id', params.id)
+          form.append('url', 'true')
+          form.append('payload', JSON.stringify(params.payload || {}))
+          form.append('file', params.url, params.filename)
           setBody(form)
         }
       },
