@@ -1,0 +1,17 @@
+export enum DocumentType {
+  GoogleDoc = 'GoogleDoc',
+  GoogleCalendarEvent = 'GoogleCalendarEvent',
+  DiscordMessage = 'DiscordMessage',
+  TextDocument = 'TextDocument',
+  TextBlock = 'TextBlock',
+  ImageBlock = 'ImageBlock',
+  AudioFile = 'AudioFile',
+  VideoFile = 'VideoFile',
+  SubtitleFile = 'SubtitleFile',
+  SubtitleEntry = 'SubtitleEntry',
+  CsvRow = 'CsvRow',
+  Spreadsheet = 'Spreadsheet',
+  SpreadsheetDocument = 'SpreadsheetDocument',
+  GithubThread = 'GithubThread',
+  GithubComment = 'GithubComment',
+}

@@ -1,0 +1,7 @@
+export * from './AggregateBoolean.interface'
+export * from './AggregateDate.interface'
+export * from './AggregateGroupBy.interface'
+export * from './AggregateMeta.interface'
+export * from './AggregateNumber.interface'
+export * from './AggregateReference.interface'
+export * from './AggregateString.interface'
