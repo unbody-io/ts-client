@@ -1,5 +1,9 @@
 import { ProjectClient } from '../clients'
-import { ListProjectSourcesParams } from '../endpoints'
+import {
+  GetSourceIndexingJobParams,
+  ListProjectSourcesParams,
+  ListSourceIndexingJobsParams,
+} from '../endpoints'
 import { Project } from './Project'
 import { Source } from './Source'
 
@@ -121,4 +125,39 @@ export class ProjectSources {
         sourceId: source.id,
       })
       .then((res) => ({ res }))
+
+  listJobs = async (
+    params: Omit<ListSourceIndexingJobsParams, 'projectId'>,
+  ) => {
+    return this.client
+      .listJobs({
+        projectId: this.project.id,
+        ...params,
+      })
+      .then((res) => {
+        const { pagination, jobs } = res.data!.data
+
+        return {
+          res,
+          pagination,
+          jobs: jobs,
+        }
+      })
+  }
+
+  getJob = async (params: Omit<GetSourceIndexingJobParams, 'projectId'>) => {
+    return this.client
+      .getJob({
+        projectId: this.project.id,
+        ...params,
+      })
+      .then((res) => {
+        const { job } = res.data!.data
+
+        return {
+          res,
+          job,
+        }
+      })
+  }
 }

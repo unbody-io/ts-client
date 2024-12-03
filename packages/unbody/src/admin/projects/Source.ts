@@ -1,3 +1,4 @@
+import { ListSourceIndexingJobsParams } from '../endpoints'
 import { SourceEntity, SourceState, SourceType } from '../entities'
 import { ProjectSources } from './ProjectSources'
 
@@ -28,6 +29,20 @@ export class Source {
   update = async () => this._projectSources.update(this)
 
   rebuild = async () => this._projectSources.rebuild(this)
+
+  listJobs = async (
+    params: Omit<ListSourceIndexingJobsParams, 'projectId' | 'sourceId'>,
+  ) =>
+    this._projectSources.listJobs({
+      sourceId: this.id,
+      ...params,
+    })
+
+  getJob = async (params: { id: string }) =>
+    this._projectSources.getJob({
+      sourceId: this.id,
+      jobId: params.id,
+    })
 
   toJSON() {
     return {

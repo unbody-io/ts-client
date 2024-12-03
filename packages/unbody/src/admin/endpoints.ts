@@ -2,6 +2,7 @@ import { EndpointDefinition, Methods } from './base'
 import { ApiResponsePayload, buildQuery, QueryFilter } from './common'
 import {
   AdminApiKeyEntity,
+  IndexingJobEntity,
   ProjectApiKeyEntity,
   ProjectEntity,
   ProjectWebhookEntity,
@@ -172,6 +173,46 @@ export type UpdateSourceResPayload = {}
 export type RebuildSourceParams = {
   projectId: string
   sourceId: string
+}
+
+export type ListSourceIndexingJobsParams = {
+  projectId: string
+  sourceId: string
+
+  filter?: QueryFilter<
+    Pick<
+      IndexingJobEntity,
+      | 'id'
+      | 'type'
+      | 'status'
+      | 'failedCount'
+      | 'queuedCount'
+      | 'processedCount'
+      | 'processingCount'
+      | 'scheduledAt'
+      | 'startedAt'
+      | 'finishedAt'
+      | 'createdAt'
+      | 'updatedAt'
+    >
+  >
+} & PaginationRequestParams
+
+export type ListSourceIndexingJobsResPayload = {
+  jobs: Omit<
+    IndexingJobEntity,
+    'processing' | 'processed' | 'failed' | 'queued'
+  >[]
+} & PaginationRes
+
+export type GetSourceIndexingJobParams = {
+  projectId: string
+  sourceId: string
+  jobId: string
+}
+
+export type GetSourceIndexingJobResPayload = {
+  job: IndexingJobEntity
 }
 
 export type RebuildSourceResPayload = {}
@@ -425,6 +466,25 @@ export const endpoints = {
     } as EndpointDefinition<
       RebuildSourceParams,
       ApiResponsePayload<RebuildSourceResPayload>
+    >,
+    listJobs: {
+      method: Methods.GET,
+      path: '/projects/{projectId}/sources/{sourceId}/indexing/jobs',
+      params: {} as ListSourceIndexingJobsParams,
+      response: {} as ApiResponsePayload<ListSourceIndexingJobsResPayload>,
+      callback: buildQuery,
+    } as EndpointDefinition<
+      ListSourceIndexingJobsParams,
+      ApiResponsePayload<ListSourceIndexingJobsResPayload>
+    >,
+    getJob: {
+      method: Methods.GET,
+      path: '/projects/{projectId}/sources/{sourceId}/indexing/jobs/{jobId}',
+      params: {} as GetSourceIndexingJobParams,
+      response: {} as ApiResponsePayload<GetSourceIndexingJobResPayload>,
+    } as EndpointDefinition<
+      GetSourceIndexingJobParams,
+      ApiResponsePayload<GetSourceIndexingJobResPayload>
     >,
   },
 }

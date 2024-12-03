@@ -22,6 +22,8 @@ export type {
   DeleteProjectWebhookResPayload,
   DeleteSourceParams,
   DeleteSourceResPayload,
+  GetSourceIndexingJobParams,
+  GetSourceIndexingJobResPayload,
   InitializeSourceParams,
   InitializeSourceResPayload,
   ListProjectResPayload,
@@ -30,6 +32,8 @@ export type {
   ListProjectsParams,
   ListProjectWebhooksParams,
   ListProjectWebhooksResPayload,
+  ListSourceIndexingJobsParams,
+  ListSourceIndexingJobsResPayload,
   PaginationRequestParams,
   PaginationRes,
   PaginationResPayload,
@@ -50,6 +54,12 @@ export type {
   ProjectEntity,
   ProjectWebhookEntity,
   SourceEntity,
+  IndexingJobEntity,
+  IndexingJobStatus,
+  IndexingJobType,
+  ProjectState,
+  SourceState,
+  SourceType,
 } from './entities'
 export * from './project-settings'
 export * from './projects'
