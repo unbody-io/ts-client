@@ -53,3 +53,45 @@ export type SourceEntity = {
   createdAt: string
   updatedAt: string
 }
+
+export const IndexingJobStatus = {
+  Scheduled: 'scheduled' as 'scheduled',
+  Running: 'running' as 'running',
+  Finished: 'finished' as 'finished',
+  Cancelled: 'cancelled' as 'cancelled',
+}
+
+export type IndexingJobStatus =
+  (typeof IndexingJobStatus)[keyof typeof IndexingJobStatus]
+
+export const IndexingJobType = {
+  Init: 'init' as 'init',
+  Update: 'update' as 'update',
+}
+
+export type IndexingJobType =
+  (typeof IndexingJobType)[keyof typeof IndexingJobType]
+
+export type IndexingJobEntity = {
+  id: string
+  projectId: string
+  sourceId: string
+  type: IndexingJobType
+  status: IndexingJobStatus
+  processingCount: number
+  processedCount: number
+  failedCount: number
+  queuedCount: number
+  scheduledAt: Date
+  processing: string[]
+  failed: string[]
+  queued: string[]
+  processed: string[]
+  startedAt: Date
+  finishedAt: Date
+  cancellationDetails?: {
+    reason: string
+  } | null
+  createdAt: Date
+  updatedAt: Date
+}

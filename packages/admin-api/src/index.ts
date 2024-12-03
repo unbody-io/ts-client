@@ -21,6 +21,8 @@ export type {
   DeleteProjectWebhookResPayload,
   DeleteSourceParams,
   DeleteSourceResPayload,
+  GetSourceIndexingJobParams,
+  GetSourceIndexingJobResPayload,
   InitializeSourceParams,
   InitializeSourceResPayload,
   ListProjectResPayload,
@@ -29,6 +31,8 @@ export type {
   ListProjectsParams,
   ListProjectWebhooksParams,
   ListProjectWebhooksResPayload,
+  ListSourceIndexingJobsParams,
+  ListSourceIndexingJobsResPayload,
   PaginationRequestParams,
   PaginationRes,
   PaginationResPayload,
@@ -45,6 +49,9 @@ export type {
 } from './endpoints'
 export type {
   AdminApiKeyEntity,
+  IndexingJobEntity,
+  IndexingJobStatus,
+  IndexingJobType,
   ProjectApiKeyEntity,
   ProjectEntity,
   ProjectWebhookEntity,
