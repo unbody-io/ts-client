@@ -4,7 +4,7 @@ import { AdminKey } from './AdminKey'
 export class AdminKeys {
   constructor(public client: AdminKeyClient) {}
 
-  create = (params: Required<Pick<AdminKey, 'name'>>) => {
+  ref = (params: Partial<AdminKey>) => {
     return AdminKey.fromJSON(this, { ...params })
   }
 

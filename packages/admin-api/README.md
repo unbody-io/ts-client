@@ -1,81 +1,3 @@
-## Overview
-
-The `@unbody-io/admin-api` package provides a TypeScript client for interacting with the Unbody Admin API.
-
-## Installation
-
-To install the package, use npm or yarn:
-
-```bash
-# using npm
-npm install @unbody-io/admin-api
-
-# using yarn
-yarn add @unbody-io/admin-api
-```
-
-## Authentication
-
-To authenticate with the Unbody Admin API, you need an admin key, which can be generated from Unbody's dashboard under **Settings > Admin Keys**.
-
-The `UnbodyAdminAPI` class supports three methods for authentication:
-
-- Base64 encoded `adminKey`
-- Username and password (admin key ID and secret)
-- Access token (Bearer token)
-
-Example:
-
-```typescript
-import { UnbodyAdminAPI } from '@unbody-io/admin-api'
-
-const admin = new UnbodyAdminAPI({
-  auth: {
-    // Auth with base64 encoded admin key
-    adminKey: 'Basic ...',
-
-    // or Username & Password
-    username: 'admin-key-id',
-    password: 'admin-key-secret',
-
-    // or Access Token
-    accessToken: 'Bearer ...',
-  },
-})
-```
-
-### Example Usage
-
-To create a new project:
-
-```typescript
-const { data } = await admin.projects.create({
-  body: {
-    name: 'My New Project',
-    settings: {
-      textVectorizer: {
-        name: 'text2vec-contextionary',
-      },
-    },
-  },
-})
-```
-
-To list projects with filters:
-
-```typescript
-await admin.projects.list({
-  filter: {
-    state: {
-      $in: ['initialized', 'created'],
-    },
-    name: {
-      $like: '%something%',
-    },
-  },
-})
-```
-
 ## List of Endpoints
 
 Below is a list of endpoints available for interacting with Unbody entities such as projects, API keys, sources, and webhooks.
@@ -85,16 +7,14 @@ Below is a list of endpoints available for interacting with Unbody entities such
 #### List Projects
 
 ```typescript
-const response = await admin.projects.list({
+const { projects, pagination } = await admin.projects.list({
+  limit: 10,
   filter: {
     name: {
       $like: '%example%',
     },
   },
-  limit: 10,
-  offset: 0,
 })
-console.log(response.data)
 ```
 
 - **Method**: `GET`
@@ -105,17 +25,11 @@ console.log(response.data)
 #### Create Project
 
 ```typescript
-const response = await admin.projects.create({
-  body: {
-    name: 'New Project Name',
-    settings: {
-      textVectorizer: {
-        name: 'text2vec-contextionary',
-      },
-    },
-  },
-})
-console.log(response.data)
+const project = await admin.projects
+  .ref({ name: 'New Project', settings: new ProjectSettings() })
+  .save()
+
+console.log(project.id)
 ```
 
 - **Method**: `POST`
@@ -125,14 +39,16 @@ For more details on configuring project settings, see the [Project Settings Refe
 
 #### Update Project
 
+Currently, you can only update the `name` field of a project.
+
 ```typescript
-const response = await admin.projects.patch({
-  projectId: 'your-project-id',
-  body: {
-    name: 'Updated Project Name',
-  },
-})
-console.log(response.data)
+const project = await admin.projects
+  .ref({ name: 'New Project', settings: new ProjectSettings() })
+  .save()
+
+project.name = 'New Name'
+
+await project.save()
 ```
 
 - **Method**: `PATCH`
@@ -141,26 +57,17 @@ console.log(response.data)
 #### Delete Project
 
 ```typescript
+await admin.projects.delete(project)
+
+// or
+
 await admin.projects.delete({
-  projectId: 'your-project-id',
+  id: '[project id]',
 })
-console.log('Project deleted successfully')
 ```
 
 - **Method**: `DELETE`
 - **Path**: `/projects/{projectId}`
-
-#### Restore Project
-
-```typescript
-const response = await admin.projects.restore({
-  projectId: 'your-project-id',
-})
-console.log(response.data)
-```
-
-- **Method**: `POST`
-- **Path**: `/projects/{projectId}/restore`
 
 ### API Keys
 

@@ -5,7 +5,7 @@ import { ProjectWebhook } from './ProjectWebhook'
 export class ProjectWebhooks {
   constructor(public client: ProjectClient, private project: Project) {}
 
-  new = (params: Required<Pick<ProjectWebhook, 'url'>>) => {
+  ref = (params: Partial<ProjectWebhook>) => {
     return ProjectWebhook.fromJSON(this, { ...params })
   }
 
@@ -39,7 +39,7 @@ export class ProjectWebhooks {
 
         return {
           res,
-          apiKey: ProjectWebhook.fromJSON(this, data.webhook, webhook),
+          webhook: ProjectWebhook.fromJSON(this, data.webhook, webhook),
         }
       })
   }

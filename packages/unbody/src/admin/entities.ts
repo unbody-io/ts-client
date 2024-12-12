@@ -1,4 +1,4 @@
-export const ProjectState = {
+export const ProjectStates = {
   Created: 'created' as 'created',
   Initializing: 'initializing' as 'initializing',
   Initialized: 'initialized' as 'initialized',
@@ -7,7 +7,7 @@ export const ProjectState = {
   Restoring: 'restoring' as 'restoring',
 } as const
 
-export type ProjectState = (typeof ProjectState)[keyof typeof ProjectState]
+export type ProjectState = (typeof ProjectStates)[keyof typeof ProjectStates]
 
 export type ProjectEntity = {
   id: string
@@ -48,7 +48,7 @@ export type ProjectWebhookEntity = {
   updatedAt: Date
 }
 
-export const SourceState = {
+export const SourceStates = {
   Idle: 'idle' as 'idle',
   Initializing: 'initializing' as 'initializing',
   Updating: 'updating' as 'updating',
@@ -56,9 +56,9 @@ export const SourceState = {
   Paused: 'paused' as 'paused',
 }
 
-export type SourceState = (typeof SourceState)[keyof typeof SourceState]
+export type SourceState = (typeof SourceStates)[keyof typeof SourceStates]
 
-export const SourceType = {
+export const SourceTypes = {
   GoogleDrive: 'google_drive' as 'google_drive',
   GoogleCalendar: 'google_calendar' as 'google_calendar',
   Discord: 'discord' as 'discord',
@@ -67,7 +67,7 @@ export const SourceType = {
   PushApi: 'push_api' as 'push_api',
 }
 
-export type SourceType = (typeof SourceType)[keyof typeof SourceType]
+export type SourceType = (typeof SourceTypes)[keyof typeof SourceTypes]
 
 export type SourceEntity = {
   id: string

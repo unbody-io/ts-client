@@ -1,4 +1,4 @@
-import { ProjectEntity, ProjectState } from '../entities'
+import { ProjectEntity, ProjectState, ProjectStates } from '../entities'
 import { ProjectSettings } from '../project-settings'
 import { ApiKey } from './ApiKey'
 import { ProjectApiKeys } from './ProjectApiKeys'
@@ -9,7 +9,7 @@ import { ProjectWebhooks } from './ProjectWebhooks'
 import { Source } from './Source'
 
 export class Project {
-  static State = ProjectState
+  static State = ProjectStates
 
   static Source = Source
   static ApiKey = ApiKey

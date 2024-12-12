@@ -26,7 +26,8 @@
     "json-to-graphql-query": "^2.2.5",
     "lodash": "^4.17.21",
     "utility-types": "^3.11.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.24.1"
   },
   "jest": {
     "moduleFileExtensions": [

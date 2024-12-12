@@ -10,7 +10,7 @@ import { Source } from './Source'
 export class ProjectSources {
   constructor(public client: ProjectClient, private project: Project) {}
 
-  new = (
+  ref = (
     params: Omit<Partial<Source>, 'type'> & Required<Pick<Source, 'type'>>,
   ) => {
     return Source.fromJSON(this, { ...params, projectId: this.project.id })

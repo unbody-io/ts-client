@@ -1,14 +1,25 @@
-# Unbody Ts-client
+# Unbody
 
 This is the official Unbody client for typescript/javascript
 
 ## Installation
 
-Install unbody ts-client with npm
+You can install the Unbody client using npm or yarn:
 
 ```bash
-  npm i unbody
+# using npm
+npm install unbody
+
+# using yarn
+yarn add unbody
 ```
+
+## Sub-packages
+
+This package contains the following sub-packages:
+
+- [Unbody Admin API](./src/admin/README.md)
+- [Unbody Push API](./src/push/README.md)
 
 ## Usage/Examples
 
@@ -358,4 +369,3 @@ All the methods in `get` applies to this, except for `additional`
 ### Other methods in Get and Aggregate
 
 You can use `getGraphQuery` and `getJsonQuery` for debugging purposes
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)

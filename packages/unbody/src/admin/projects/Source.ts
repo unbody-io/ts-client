@@ -1,10 +1,16 @@
 import { ListSourceIndexingJobsParams } from '../endpoints'
-import { SourceEntity, SourceState, SourceType } from '../entities'
+import {
+  SourceEntity,
+  SourceState,
+  SourceStates,
+  SourceType,
+  SourceTypes,
+} from '../entities'
 import { ProjectSources } from './ProjectSources'
 
 export class Source {
-  static State = SourceState
-  static Type = SourceType
+  static State = SourceStates
+  static Type = SourceTypes
 
   public id!: string
   public name!: string

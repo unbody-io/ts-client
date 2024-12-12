@@ -10,6 +10,8 @@ export class ProjectWebhook {
 
   constructor(private _projectWebhooks: ProjectWebhooks) {}
 
+  save = async () => this._projectWebhooks.save(this).then((res) => res.webhook)
+
   toJSON() {
     return {
       id: this.id,

@@ -1,10 +1,13 @@
 import { EnhancementPipeline } from './EnhancementPipeline'
 import { EnhancementPipelineStep } from './EnhancementPipelineStep'
+import { EntityExtractorEnhancer } from './enhancers/EntityExtractor.enhancer'
+import { KeywordExtractorEnhancer } from './enhancers/KeywordExtractor.enhancer'
 import { RetrieverEnhancer } from './enhancers/Retriever.enhancer'
 import { StructuredGeneratorEnhancer } from './enhancers/StructuredGenerator.enhancer'
 import { SummarizerEnhancer } from './enhancers/Summarizer.enhancer'
 import { TextGeneratorEnhancer } from './enhancers/TextGenerator.enhancer'
 import { TextSplitterEnhancer } from './enhancers/TextSplitter.enhancer'
+import { TopicExtractorEnhancer } from './enhancers/TopicExtractor.enhancer'
 
 export class Enhancement {
   static Pipeline = EnhancementPipeline
@@ -12,10 +15,14 @@ export class Enhancement {
 
   static Action = {
     Retriever: RetrieverEnhancer,
-    Summarizer: SummarizerEnhancer,
     TextSplitter: TextSplitterEnhancer,
     TextGenerator: TextGeneratorEnhancer,
     StructuredGenerator: StructuredGeneratorEnhancer,
+
+    Summarizer: SummarizerEnhancer,
+    KeywordExtractor: KeywordExtractorEnhancer,
+    TopicExtractor: TopicExtractorEnhancer,
+    EntityExtractor: EntityExtractorEnhancer,
   }
 
   public name = 'enhancement'

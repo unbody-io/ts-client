@@ -50,16 +50,17 @@ export type {
 } from './endpoints'
 export type {
   AdminApiKeyEntity,
+  IndexingJobEntity,
+  IndexingJobStatus,
+  IndexingJobType,
   ProjectApiKeyEntity,
   ProjectEntity,
   ProjectWebhookEntity,
   SourceEntity,
-  IndexingJobEntity,
-  IndexingJobStatus,
-  IndexingJobType,
-  ProjectState,
   SourceState,
   SourceType,
+  ProjectState,
 } from './entities'
+export { ProjectStates, SourceTypes, SourceStates } from './entities'
 export * from './project-settings'
 export * from './projects'

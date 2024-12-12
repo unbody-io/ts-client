@@ -5,7 +5,7 @@ import { Project } from './Project'
 export class Projects {
   constructor(public client: ProjectClient) {}
 
-  new = (params: Partial<Project> = {}) => {
+  ref = (params: Partial<Project> = {}) => {
     return Project.fromJSON(this, params)
   }
 

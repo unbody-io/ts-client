@@ -5,7 +5,7 @@ import { Project } from './Project'
 export class ProjectApiKeys {
   constructor(public client: ProjectClient, private project: Project) {}
 
-  new = (params: Required<Pick<ApiKey, 'name'>>) => {
+  ref = (params: Partial<ApiKey>) => {
     return ApiKey.fromJSON(this, { ...params })
   }
 
