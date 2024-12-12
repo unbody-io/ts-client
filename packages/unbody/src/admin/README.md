@@ -1,5 +1,72 @@
 # Unbody Admin
 
+- [Unbody Admin](#unbody-admin)
+  - [Overview](#overview)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+    - [Authentication Methods](#authentication-methods)
+  - [Usage](#usage)
+    - [Creating a Project](#creating-a-project)
+    - [Creating a Source](#creating-a-source)
+    - [Creating a Project API Key](#creating-a-project-api-key)
+    - [Listing Resources](#listing-resources)
+      - [Optional Properties](#optional-properties)
+      - [Returned Values](#returned-values)
+    - [Endpoints](#endpoints)
+      - [Projects](#projects)
+      - [Project API Keys](#project-api-keys)
+      - [Project Webhooks](#project-webhooks)
+      - [Project Sources](#project-sources)
+      - [Admin API Keys](#admin-api-keys)
+    - [Filterable Fields](#filterable-fields)
+      - [Project Filterable Fields](#project-filterable-fields)
+      - [Project State Possible Values](#project-state-possible-values)
+      - [Source Filterable Fields](#source-filterable-fields)
+      - [Source State Possible Values](#source-state-possible-values)
+      - [Source Type Possible Values](#source-type-possible-values)
+      - [Webhook Filterable Fields](#webhook-filterable-fields)
+    - [Filter Operators](#filter-operators)
+      - [String and Enum Filter Operators](#string-and-enum-filter-operators)
+      - [Number Filter Operators](#number-filter-operators)
+      - [Boolean Filter Operators](#boolean-filter-operators)
+      - [Date Filter Operators](#date-filter-operators)
+  - [Project Settings Guide](#project-settings-guide)
+    - [Using `.set` Method](#using-set-method)
+    - [Using `.get` Method](#using-get-method)
+    - [`TextVectorizer` Configuration](#textvectorizer-configuration)
+    - [`ImageVectorizer` Configuration](#imagevectorizer-configuration)
+    - [`QnA` Configuration](#qna-configuration)
+    - [`Generative` Configuration](#generative-configuration)
+    - [`Reranker` Configuration](#reranker-configuration)
+    - [`Spellcheck` Configuration](#spellcheck-configuration)
+    - [`AutoSummary` Configuration](#autosummary-configuration)
+    - [`AutoKeywords` Configuration](#autokeywords-configuration)
+    - [`AutoEntities` Configuration](#autoentities-configuration)
+    - [`AutoTopics` Configuration](#autotopics-configuration)
+    - [`AutoVision` Configuration](#autovision-configuration)
+    - [`PdfParser` Configuration](#pdfparser-configuration)
+    - [`CustomSchema` Configuration](#customschema-configuration)
+      - [Usage Example](#usage-example)
+      - [Field Definition](#field-definition)
+      - [Supported Field Types](#supported-field-types)
+      - [Examples of Advanced Field Definitions](#examples-of-advanced-field-definitions)
+        - [`Cref` Field Example](#cref-field-example)
+        - [`Object` Field Example](#object-field-example)
+      - [Notes and Important Details](#notes-and-important-details)
+    - [`Enhancement` Configuration](#enhancement-configuration)
+      - [Defining a Custom Enhancement Pipeline](#defining-a-custom-enhancement-pipeline)
+      - [Optional Parameters for a Pipeline](#optional-parameters-for-a-pipeline)
+      - [Pipeline Context (`ctx`)](#pipeline-context-ctx)
+      - [Key Context Components](#key-context-components)
+      - [Steps in a Pipeline](#steps-in-a-pipeline)
+        - [Optional Parameters for a Step](#optional-parameters-for-a-step)
+      - [Step Example](#step-example)
+      - [Setting the Enhancement in Project Settings](#setting-the-enhancement-in-project-settings)
+      - [Available Actions](#available-actions)
+        - [`TextGenerator`](#textgenerator)
+        - [`StructuredGenerator`](#structuredgenerator)
+        - [`Summarizer`](#summarizer)
+
 ## Overview
 
 `UnbodyAdmin` is a TypeScript/JavaScript client for interacting with Unbody’s Admin API. It provides a convenient and unified interface to manage projects, sources, webhooks, keys, and more within your Unbody environment.
@@ -142,7 +209,7 @@ const project = admin.projects.ref({ id: ['project id'] })
 const { sources, pagination } = await project.sources.list({})
 ```
 
-### Optional Properties
+#### Optional Properties
 
 Both methods accept the following optional properties:
 
@@ -154,7 +221,7 @@ Both methods accept the following optional properties:
 - **`filter`**: `Object` - Filtering criteria specific to the resource type.
   See the [Filterable Properties for Projects](#project-filterable-fields) and [Filterable Properties for Sources](#source-filterable-fields).
 
-### Returned Values
+#### Returned Values
 
 Each method returns:
 
@@ -167,7 +234,7 @@ Each method returns:
 
 ### Endpoints
 
-### Projects
+#### Projects
 
 - **Create Project**
   ```tsx
@@ -191,7 +258,7 @@ Each method returns:
   - **Method**: `DELETE`
   - **Path**: `/projects/{projectId}`
 
-### Project API Keys
+#### Project API Keys
 
 - **Create API Key**
   ```tsx
@@ -206,7 +273,7 @@ Each method returns:
   - **Method**: `DELETE`
   - **Path**: `/projects/{projectId}/api-keys/{apiKeyId}`
 
-### Project Webhooks
+#### Project Webhooks
 
 - **Create Webhook**
   ```tsx
@@ -228,9 +295,10 @@ Each method returns:
   - **Method**: `DELETE`
   - **Path**: `/projects/{projectId}/webhooks/{webhookId}`
 
-### Project Sources
+#### Project Sources
 
 - **Create Source**
+
   ```tsx
   import { SourceTypes } from 'unbody/admin'
 
@@ -241,8 +309,10 @@ Each method returns:
     })
     .save()
   ```
+
   - **Method**: `POST`
   - **Path**: `/projects/{projectId}/sources`
+
 - **List Sources**
   ```tsx
   const { sources } = await project.sources.list({ ...params })
@@ -278,7 +348,7 @@ Each method returns:
   - **Method**: `POST`
   - **Path**: `/projects/{projectId}/sources/{sourceId}/indexing/rebuild`
 
-### Admin API Keys
+#### Admin API Keys
 
 - **Create Admin Key**
   ```tsx
@@ -293,9 +363,9 @@ Each method returns:
   - **Method**: `DELETE`
   - **Path**: `/api-keys/{apiKeyId}`
 
-## Filterable Fields
+### Filterable Fields
 
-### Project Filterable Fields
+#### Project Filterable Fields
 
 | Field                                     | Type   | Filter Operators                                             |
 | ----------------------------------------- | ------ | ------------------------------------------------------------ |
@@ -306,7 +376,7 @@ Each method returns:
 | `createdAt`                               | Date   | [Date Filter Operators](#date-filter-operators)              |
 | `updatedAt`                               | Date   | [Date Filter Operators](#date-filter-operators)              |
 
-### Project State Possible Values
+#### Project State Possible Values
 
 To use these states in your code, import the `ProjectStates` enum:
 
@@ -325,7 +395,7 @@ These are the possible states a project can be in, along with their correspondin
 | `pausing`      | `ProjectStates.Pausing`      |
 | `restoring`    | `ProjectStates.Restoring`    |
 
-### Source Filterable Fields
+#### Source Filterable Fields
 
 | Field                                    | Type    | Filter Operators                                             |
 | ---------------------------------------- | ------- | ------------------------------------------------------------ |
@@ -338,7 +408,7 @@ These are the possible states a project can be in, along with their correspondin
 | `createdAt`                              | Date    | [Date Filter Operators](#date-filter-operators)              |
 | `updatedAt`                              | Date    | [Date Filter Operators](#date-filter-operators)              |
 
-### Source State Possible Values
+#### Source State Possible Values
 
 To use these states in your code, import the `SourceStates` enum:
 
@@ -356,7 +426,7 @@ These are the possible states a source can be in, along with their corresponding
 | `paused`       | `SourceStates.Paused`       |
 | `idle`         | `SourceStates.Idle`         |
 
-### Source Type Possible Values
+#### Source Type Possible Values
 
 To use these types in your code, import the `SourceTypes` enum:
 
@@ -375,27 +445,27 @@ These are the possible source types, along with their corresponding TypeScript e
 | `google_drive`    | `SourceTypes.GoogleDrive`    |
 | `push_api`        | `SourceTypes.PushApi`        |
 
-### Webhook Filterable Fields
+#### Webhook Filterable Fields
 
 | Field       | Type | Filter Operators                                |
 | ----------- | ---- | ----------------------------------------------- |
 | `createdAt` | Date | [Date Filter Operators](#date-filter-operators) |
 
-## Filter Operators
+### Filter Operators
 
-### String and Enum Filter Operators
+#### String and Enum Filter Operators
 
 - `$eq`, `$ne`, `$in`, `$nin`, `$null`, `$like`
 
-### Number Filter Operators
+#### Number Filter Operators
 
 - `$eq`, `$ne`, `$gt`, `$lt`, `$gte`, `$lte`, `$null`
 
-### Boolean Filter Operators
+#### Boolean Filter Operators
 
 - `$eq`, `$ne`, `$null`
 
-### Date Filter Operators
+#### Date Filter Operators
 
 - `$gt`, `$gte`, `$lt`, `$lte`, `$null`
 
@@ -427,7 +497,7 @@ const textVectorizer = settings.get(TextVectorizer) // returns an instance of Te
 
 The `TextVectorizer` defines the text vectorization model used for representing text as vectors, which is essential for search operations.
 
-### Usage Example
+**Usage Example**
 
 To configure a project with the default `TextVectorizer`:
 
@@ -438,7 +508,7 @@ const textVectorizer = new TextVectorizer(TextVectorizer.Transformers.Default)
 console.log(textVectorizer.name) // "text2vec-transformers"
 ```
 
-### Available Models
+**Available Models**
 
 The table below lists the available text vectorization models, their providers, and the corresponding details:
 
@@ -460,7 +530,7 @@ The table below lists the available text vectorization models, their providers, 
 
 The `ImageVectorizer` sets the model used for representing images as vectors.
 
-### Usage Example
+**Usage Example**
 
 To configure a project with the `ImageVectorizer`:
 
@@ -473,7 +543,7 @@ const imageVectorizer = new ImageVectorizer(
 console.log(imageVectorizer.name) // "img2vec-neural"
 ```
 
-### Available Models
+**Available Models**
 
 The table below lists the available image vectorization model:
 
@@ -485,7 +555,7 @@ The table below lists the available image vectorization model:
 
 The `QnA` configuration defines the provider used for Q&A capabilities within the project.
 
-### Usage Example
+**Usage Example**
 
 To configure a project with the `QnA` provider:
 
@@ -496,7 +566,7 @@ const qna = new QnA(QnA.Transformers.Default)
 console.log(qna.name) // "qna-transformers"
 ```
 
-### Available Providers
+**Available Providers**
 
 The table below lists the available QnA providers:
 
@@ -509,7 +579,7 @@ The table below lists the available QnA providers:
 
 The `Generative` configuration enables RAG (Retrieval-Augmented Generation) capabilities within the project.
 
-### Usage Example
+**Usage Example**
 
 To configure a project with the `Generative` provider:
 
@@ -520,7 +590,7 @@ const generative = new Generative(Generative.OpenAI.GPT4o)
 console.log(generative.options.model) // "gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 The table below lists the available models for `Generative` configuration:
 
@@ -542,7 +612,7 @@ The table below lists the available models for `Generative` configuration:
 
 The `Reranker` specifies the reranking model used to prioritize search results, ensuring that the most relevant results appear at the top.
 
-### Usage Example
+**Usage Example**
 
 To configure a reranker for a project:
 
@@ -553,7 +623,7 @@ const reranker = new Reranker(Reranker.Transformers.Default)
 console.log(reranker.name) // "reranker-transformers"
 ```
 
-### Available Models
+**Available Models**
 
 The table below lists the available reranking models:
 
@@ -569,7 +639,7 @@ The table below lists the available reranking models:
 
 The `Spellcheck` configuration specifies the model used for text spellchecking within the project.
 
-### Usage Example
+**Usage Example**
 
 To configure spellchecking for a project:
 
@@ -580,7 +650,7 @@ const spellcheck = new Spellcheck(Spellcheck.TextSpellcheck.Default)
 console.log(spellcheck.name) // "text-spellcheck"
 ```
 
-### Available Models
+**Available Models**
 
 The table below lists the available spellchecking models:
 
@@ -592,7 +662,7 @@ The table below lists the available spellchecking models:
 
 Automatically generates summaries for text content.
 
-### Usage Example
+**Usage Example**
 
 ```tsx
 import { AutoSummary } from 'unbody/admin'
@@ -601,7 +671,7 @@ const autoSummary = new AutoSummary(AutoSummary.OpenAI.GPT4o)
 console.log(autoSummary.name) // "autosum-openai-gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 | TypeScript Type                  | Name                           | Model Provider | Model         |
 | -------------------------------- | ------------------------------ | -------------- | ------------- |
@@ -614,7 +684,7 @@ console.log(autoSummary.name) // "autosum-openai-gpt-4o"
 
 Generates keywords automatically from text content to enhance search and categorization.
 
-### Usage Example
+**Usage Example**
 
 ```tsx
 import { AutoKeywords } from 'unbody/admin'
@@ -623,7 +693,7 @@ const autoKeywords = new AutoKeywords(AutoKeywords.OpenAI.GPT4o)
 console.log(autoKeywords.name) // "autokeywords-openai-gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 | TypeScript Type                   | Name                                | Model Provider | Model         |
 | --------------------------------- | ----------------------------------- | -------------- | ------------- |
@@ -635,7 +705,7 @@ console.log(autoKeywords.name) // "autokeywords-openai-gpt-4o"
 
 Automatically identifies and extracts named entities from text.
 
-### Usage Example
+**Usage Example**
 
 ```tsx
 import { AutoEntities } from 'unbody/admin'
@@ -644,7 +714,7 @@ const autoEntities = new AutoEntities(AutoEntities.OpenAI.GPT4o)
 console.log(autoEntities.name) // "autoentities-openai-gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 | TypeScript Type                   | Name                                | Model Provider | Model         |
 | --------------------------------- | ----------------------------------- | -------------- | ------------- |
@@ -656,7 +726,7 @@ console.log(autoEntities.name) // "autoentities-openai-gpt-4o"
 
 Automatically generates topics from the content.
 
-### Usage Example
+**Usage Example**
 
 ```tsx
 import { AutoTopics } from 'unbody/admin'
@@ -665,7 +735,7 @@ const autoTopics = new AutoTopics(AutoTopics.OpenAI.GPT4o)
 console.log(autoTopics.name) // "autotopics-openai-gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 | TypeScript Type                 | Name                              | Model Provider | Model         |
 | ------------------------------- | --------------------------------- | -------------- | ------------- |
@@ -677,7 +747,7 @@ console.log(autoTopics.name) // "autotopics-openai-gpt-4o"
 
 Generates captions, labels, and extracts texts from image files.
 
-### Usage Example
+**Usage Example**
 
 ```tsx
 import { AutoVision } from 'unbody/admin'
@@ -686,7 +756,7 @@ const autoVision = new AutoVision(AutoVision.OpenAI.GPT4o)
 console.log(autoVision.name) // "autovision-openai-gpt-4o"
 ```
 
-### Available Models
+**Available Models**
 
 | TypeScript Type               | Name                            | Model Provider | Model       |
 | ----------------------------- | ------------------------------- | -------------- | ----------- |
@@ -694,11 +764,32 @@ console.log(autoVision.name) // "autovision-openai-gpt-4o"
 | `AutoVision.OpenAI.GPT4oMini` | `autovision-openai-gpt-4o-mini` | OpenAI         | GPT-4o Mini |
 | `AutoVision.OpenAI.GPT4Turbo` | `autovision-openai-gpt-4-turbo` | OpenAI         | GPT-4 Turbo |
 
+### `PdfParser` Configuration
+
+The `PdfParser` configuration enables parsing and extracting content from PDF files.
+
+**Usage Example**
+
+```typescript
+import { PdfParser } from 'unbody/admin'
+
+settings.set(new PdfParser(PdfParser.NlmSherpa.Default))
+
+console.log(settings.get(PdfParser).name) // "pdfparser-nlmsherpa"
+```
+
+**Available Parsers**
+
+| TypeScript Type               | Name                  | Description                               |
+| ----------------------------- | --------------------- | ----------------------------------------- |
+| `PdfParser.NlmSherpa.Default` | `pdfparser-nlmsherpa` | NLM Sherpa; extracts text from PDF files. |
+| `PdfParser.Pdf2Image.Default` | `pdfparser-pdf2image` | pdf2image; converts PDF files to images.  |
+
 ### `CustomSchema` Configuration
 
 The `CustomSchema` configuration allows defining custom data schemas for projects. It enables the creation of custom collections and fields, which can be used to store, organize, and extend data structures within a project. This section provides an updated guide with clear examples and detailed explanations.
 
-### Usage Example
+#### Usage Example
 
 Below is a comprehensive example that demonstrates how to define a `CustomSchema`, add collections and fields, and extend built-in schemas:
 
@@ -732,7 +823,7 @@ settings.set(customSchema)
 
 ---
 
-### Field Definition
+#### Field Definition
 
 When defining fields, the following arguments are used:
 
@@ -742,7 +833,7 @@ When defining fields, the following arguments are used:
 - **`tokenization?: "field" | "word" | "lowercase" | "whitespace"`** – Tokenization strategy for text fields.
 - **`skipVectorization?: boolean`** – If `true`, skips vectorization for the field.
 
-### Supported Field Types
+#### Supported Field Types
 
 The following field types are available for use:
 
@@ -761,9 +852,9 @@ The following field types are available for use:
 
 ---
 
-### Examples of Advanced Field Definitions
+#### Examples of Advanced Field Definitions
 
-### `Cref` Field Example
+##### `Cref` Field Example
 
 ```tsx
 // Define a cref field referencing the VideoFile collection's document field
@@ -774,7 +865,7 @@ const crefField = new CustomSchema.Field.Cref(
 crefField.add('VideoFile', 'document')
 ```
 
-### `Object` Field Example
+##### `Object` Field Example
 
 ```tsx
 // Define a complex object field for an address
@@ -786,7 +877,7 @@ objectField
   .add(new CustomSchema.Field.Text('zip', 'Zip'))
 ```
 
-### Notes and Important Details
+#### Notes and Important Details
 
 1.  **Naming Conventions**:
     - Custom collection names must follow PascalCase and end with `Collection` (e.g., `CustomCollection`).
@@ -802,6 +893,7 @@ objectField
 3.  **Extension Rules**:
     - Extended field names must start with `x` and use camelCase format (e.g., `xCustomField`).
 4.  **Field Specific Notes**:
+
     - **`Text` Field**:
       - Supports tokenization strategies: `word`, `field`, `lowercase`, `whitespace`.
       - Can skip vectorization using the `skipVectorization` flag.
@@ -832,7 +924,7 @@ objectField
       - Objects are not vectorized, and filter operators are unsupported.
     - **`Cref` Field**
       The `Cref` field enables creating cross-references between collections. It is crucial to understand the rules and requirements for using cross-references effectively: 1. **Built-in Collections**:
-              You can reference only the following built-in collections, and exclusively their `document` field:
+      You can reference only the following built-in collections, and exclusively their `document` field:
 
               - `ImageBlock` → `document`
               - `AudioFile` → `document`
@@ -849,7 +941,6 @@ objectField
 
               Built-in collections are an exception to this rule—they do not require you to define reciprocal references when referencing their `document` field.
 
-
 ### `Enhancement` Configuration
 
 The `Enhancement` configuration allows you to define custom pipelines to enrich your data with generated or transformed data. While Unbody provides built-in automatic enhancement pipelines, such as `AutoSummary`, `AutoVision`, `AutoKeywords`, and more, you can create custom pipelines tailored to your needs. These custom pipelines enable tasks like extracting or generating data using LLMs, crawling websites (coming soon), and customizing chunking strategies with different approaches.
@@ -858,7 +949,7 @@ Custom pipelines are defined to process records in specific collections and can 
 
 ---
 
-### Defining a Custom Enhancement Pipeline
+#### Defining a Custom Enhancement Pipeline
 
 Here’s how you can define a custom pipeline:
 
@@ -873,16 +964,19 @@ const enrichVideoPipeline = new Enhancement.Pipeline(
 
 This example defines a custom enhancement pipeline that will be run for records in the `VideoFile` collection.
 
-### Optional Parameters for a Pipeline
+#### Optional Parameters for a Pipeline
 
 - **`if`**: A condition that determines whether the pipeline should run for a given record. It should return `true` or `false`. If `false`, the pipeline will not execute for that record.
   **Example**:
+
   ```tsx
   if: (ctx) => ctx.source.type === 'google_drive'
 
   ```
+
 - **`vars`**: A reusable map of variables that can be accessed in the pipeline’s steps. These variables are helpful for injecting dynamic instructions or configurations into the pipeline.
   **Example**:
+
   ```tsx
   vars: {
     transcription: (ctx) =>
@@ -893,7 +987,7 @@ This example defines a custom enhancement pipeline that will be run for records 
 
 ---
 
-### Pipeline Context (`ctx`)
+#### Pipeline Context (`ctx`)
 
 The `ctx` object provides essential information about the current pipeline execution. Below is the structure of the context:
 
@@ -933,7 +1027,7 @@ export type EnhancementContext = {
 }
 ```
 
-### Key Context Components
+#### Key Context Components
 
 - **`record`**: The record being enhanced. Includes all GraphQL record properties.
 - **`steps`**: A map of step names to their `output`, `result`, and execution details (e.g., start and finish times).
@@ -943,7 +1037,7 @@ export type EnhancementContext = {
 
 ---
 
-### Steps in a Pipeline
+#### Steps in a Pipeline
 
 Each pipeline must include at least one step. A step is defined by:
 
@@ -952,14 +1046,14 @@ Each pipeline must include at least one step. A step is defined by:
 - An **`output`** map that defines how the results will be stored.
 - Optional parameters such as `if` and `onFailure` for advanced control.
 
-### Optional Parameters for a Step
+##### Optional Parameters for a Step
 
 - **`if`**: A condition that determines whether the step should run for a given record. It should return `true` or `false`. If `false`, the step will not execute. Example: `if: (ctx) => ctx.vars.transcription.length > 0`
 - **`onFailure`**: Specifies the behavior when the step fails. Possible values:
   - `"continue"`: Ignore errors and proceed to the next step.
   - `"stop"`: Stop the pipeline execution on failure.
 
-### Step Example
+#### Step Example
 
 ```tsx
 const action = new Enhancement.Action.StructuredGenerator({
@@ -991,14 +1085,14 @@ const extractChapters = new Enhancement.Step('extract_chapters', action, {
 enrichVideoPipeline.add(extractChapters)
 ```
 
-### Explanation of the Example
+**Explanation of the Example**
 
 1. **Action**: Specifies the operation to perform using a model (e.g., `openai-gpt-4o`) and includes parameters like a `prompt` and a `schema`.
 2. **Step**: Ties the action to the pipeline and specifies how the action’s result (`ctx.result`) is stored in the `output`.
 
 ---
 
-### Setting the Enhancement in Project Settings
+#### Setting the Enhancement in Project Settings
 
 Once the pipeline is defined, it can be added to the enhancement configuration and applied to the project settings:
 
@@ -1010,13 +1104,13 @@ enhancement.add(enrichVideoPipeline)
 settings.set(enhancement)
 ```
 
-### Available Actions
+#### Available Actions
 
 The `Enhancement` configuration supports various built-in actions. Each action performs specific operations based on the inputs provided and generates a result. This section details the `TextGenerator` action, its input parameters, and its result structure.
 
 ---
 
-### `TextGenerator`
+##### `TextGenerator`
 
 The `TextGenerator` action uses a language model to generate text based on the provided prompt. It accepts the following input parameters:
 
@@ -1034,7 +1128,7 @@ For all parameters, you can provide a literal value (e.g., `'openai-gpt-4'`) or 
 
 ---
 
-### Result Structure
+**Result Structure**
 
 The result object generated by the `TextGenerator` action contains the following property:
 
@@ -1044,7 +1138,7 @@ The result object generated by the `TextGenerator` action contains the following
 
 ---
 
-### Example: Summarizing Video Transcriptions
+**Example: Summarizing Video Transcriptions**
 
 Below is an example of using the `TextGenerator` action to summarize video transcriptions:
 
@@ -1067,13 +1161,13 @@ const summarizeVideo = new Enhancement.Step(
 )
 ```
 
-### `StructuredGenerator`
+##### `StructuredGenerator`
 
 The `StructuredGenerator` action generates structured JSON data based on a prompt and schema.
 
 ---
 
-### Input Parameters
+**Input Parameters**
 
 | Parameter          | Type                            | Required | Description |
 | ------------------ | ------------------------------- | -------- | ----------- |
@@ -1091,7 +1185,7 @@ For all parameters, you can provide a literal value (e.g., `'openai-gpt-4o'`) or
 
 ---
 
-### Result Structure
+**Result Structure**
 
 The result object generated by the `StructuredGenerator` action contains the following property:
 
@@ -1101,13 +1195,13 @@ The result object generated by the `StructuredGenerator` action contains the fol
 
 ---
 
-### Helpers
+**Helpers**
 
 The `z` (Zod) helper library is included to define and validate the schema for the output. Zod is a validation library that ensures the generated JSON matches the expected structure.
 
 ---
 
-### Example: Extracting Chapters from a Video Transcription
+**Example: Extracting Chapters from a Video Transcription**
 
 ```tsx
 const extractChapters = new Enhancement.Step(
@@ -1140,13 +1234,13 @@ const extractChapters = new Enhancement.Step(
 )
 ```
 
-### `Summarizer`
+##### `Summarizer`
 
 The `Summarizer` action is designed to summarize long texts using AI models. It employs a map-reduce method to efficiently handle large content by breaking it into smaller chunks and generating a cohesive summary.
 
 ---
 
-### Input Parameters
+**Input Parameters**
 
 | Parameter  | Type                 | Required | Description |
 | ---------- | -------------------- | -------- | ----------- |
@@ -1157,7 +1251,7 @@ The `Summarizer` action is designed to summarize long texts using AI models. It 
 
 ---
 
-### Prompt Guidelines
+**Prompt Guidelines**
 
 When providing a custom prompt, ensure it includes the `{text}` and `{metadata}` placeholders, which will be dynamically replaced during execution:
 
@@ -1175,7 +1269,7 @@ Metadata: {metadata}
 
 ---
 
-### Output Structure
+**Output Structure**
 
 The result object generated by the `Summarizer` action contains the following property:
 
@@ -1185,7 +1279,7 @@ The result object generated by the `Summarizer` action contains the following pr
 
 ---
 
-### Example: Summarizing a Long Text
+**Example: Summarizing a Long Text**
 
 ```tsx
 const summarizeText = new Enhancement.Step(
