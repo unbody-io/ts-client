@@ -1,4 +1,5 @@
 import { EnhancerArgs, GraphQLRecordType } from './Enhancement.types'
+import { serializeComputedArg } from './utils'
 
 export class Enhancer<
   T extends Record<string, any> = Record<string, any>,
@@ -24,7 +25,7 @@ export class Enhancer<
             typeof value === 'function'
               ? {
                   type: 'computed',
-                  value: value.toString(),
+                  value: serializeComputedArg(value),
                 }
               : {
                   type: 'literal',

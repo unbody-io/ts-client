@@ -1,5 +1,6 @@
 import { EnhancerCondition, EnhancerVar } from './Enhancement.types'
 import { EnhancementPipelineStep } from './EnhancementPipelineStep'
+import { serializeComputedArg } from './utils'
 
 type EnhancementPipelineOptions = {
   if?: EnhancerCondition
@@ -35,7 +36,9 @@ export class EnhancementPipeline {
       name: this.name,
       collection: this.collection,
       steps: this.steps.map((step) => step.toJSON()),
-      ...(this.options?.if ? { if: this.options.if.toString() } : {}),
+      ...(this.options?.if
+        ? { if: serializeComputedArg(this.options.if) }
+        : {}),
       ...(this.options?.vars
         ? {
             vars: Object.fromEntries(
@@ -45,7 +48,7 @@ export class EnhancementPipeline {
                   typeof value === 'function'
                     ? {
                         type: 'computed',
-                        value: value.toString(),
+                        value: serializeComputedArg(value),
                       }
                     : {
                         type: 'literal',

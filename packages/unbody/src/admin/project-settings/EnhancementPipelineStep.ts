@@ -4,6 +4,7 @@ import {
   GraphQLRecordType,
 } from './Enhancement.types'
 import { Enhancer } from './Enhancer'
+import { serializeComputedArg } from './utils'
 
 export class EnhancementPipelineStep<E extends Enhancer = Enhancer> {
   public name: string = 'step'
@@ -35,12 +36,12 @@ export class EnhancementPipelineStep<E extends Enhancer = Enhancer> {
             key,
             {
               type: 'computed',
-              value: value.toString(),
+              value: serializeComputedArg(value),
             },
           ]
         }),
       ),
-      ...(this.config.if ? { if: this.config.if.toString() } : {}),
+      ...(this.config.if ? { if: serializeComputedArg(this.config.if) } : {}),
       ...(this.config.onFailure ? { onFailure: this.config.onFailure } : {}),
     }
   }
