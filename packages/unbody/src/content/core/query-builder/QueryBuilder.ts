@@ -121,7 +121,10 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     // @ts-ignore
     const { query } = this
     if (typeof force === 'object' && !Array.isArray(force))
-      query.__args.group = force
+      query.__args.group = {
+        force: force.force,
+        type: new EnumType(force.type),
+      }
     else
       query.__args.group = {
         force,
@@ -134,24 +137,27 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
   groupBy<TThis>(this: TThis, params: IGroupBy): TThis
   groupBy<TThis>(
     this: TThis,
-    path: IGroupBy['path'],
+    params: IGroupBy['path'],
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
   ): TThis
   groupBy<TThis>(
     this: TThis,
-    path: IGroupBy['path'] | IGroupBy,
+    params: IGroupBy['path'] | IGroupBy,
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
   ): TThis {
     // @ts-ignore
     const { query } = this
-    if (typeof path === 'object' && !Array.isArray(path))
-      query.__args.groupBy = path
-    query.__args.groupBy = {
-      path,
-      ...(groups ? { groups } : {}),
-      ...(objectsPerGroup ? { objectsPerGroup } : {}),
+
+    if (typeof params === 'string' || Array.isArray(params)) {
+      query.__args.groupBy = {
+        path: params,
+        ...(groups ? { groups } : {}),
+        ...(objectsPerGroup ? { objectsPerGroup } : {}),
+      }
+    } else if (typeof params === 'object') {
+      query.__args.groupBy = params
     }
 
     return this
@@ -185,6 +191,12 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         ...(alpha ? { alpha } : {}),
       }
     thisQuery._additional.score = true
+
+    if (thisQuery.__args.hybrid.fusionType) {
+      thisQuery.__args.hybrid.fusionType = new EnumType(
+        thisQuery.__args.hybrid.fusionType,
+      )
+    }
 
     return this
   }
