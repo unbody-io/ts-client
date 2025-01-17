@@ -131,6 +131,13 @@ export class Unbody {
   get get() {
     const { httpClient } = this
     return {
+      collection<T extends {} = any>(collection: string): GetQueryBuilder<T> {
+        return new GetQueryBuilder<T>({
+          httpClient: httpClient,
+          queryType: QueryType.Get,
+          documentType: collection as DocumentType,
+        })
+      },
       schema<T extends {} = any>(collection: string): GetQueryBuilder<T> {
         return new GetQueryBuilder<T>({
           httpClient: httpClient,
