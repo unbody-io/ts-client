@@ -50,6 +50,10 @@ export class Source {
       jobId: params.id,
     })
 
+  setEntrypoint = async (params: { entrypoint: Record<string, any> }) => {
+    return this._projectSources.setEntrypoint(this, params.entrypoint)
+  }
+
   toJSON() {
     return {
       id: this.id,

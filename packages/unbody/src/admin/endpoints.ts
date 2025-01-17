@@ -271,6 +271,17 @@ export type DeleteSourceParams = {
 
 export type DeleteSourceResPayload = {}
 
+export type SetSourceEntrypointParams = {
+  projectId: string
+  sourceId: string
+  sourceType: string
+  body: {
+    entrypoint: Record<string, any>
+  }
+}
+
+export type SetSourceEntrypointResPayload = {}
+
 export const endpoints = {
   apiKeys: {
     create: {
@@ -466,6 +477,18 @@ export const endpoints = {
     } as EndpointDefinition<
       RebuildSourceParams,
       ApiResponsePayload<RebuildSourceResPayload>
+    >,
+    setEntrypoint: {
+      method: Methods.PATCH,
+      path: '/projects/{projectId}/sources/{sourceId}/set-entry-point/{sourceType}',
+      params: {} as SetSourceEntrypointParams,
+      response: {} as ApiResponsePayload<SetSourceEntrypointResPayload>,
+      callback: ({ params, setBody }) => {
+        setBody(params.body.entrypoint)
+      },
+    } as EndpointDefinition<
+      SetSourceEntrypointParams,
+      ApiResponsePayload<SetSourceEntrypointResPayload>
     >,
     listJobs: {
       method: Methods.GET,

@@ -64,6 +64,7 @@ export const SourceTypes = {
   Discord: 'discord' as 'discord',
   GithubBranch: 'github_branch' as 'github_branch',
   GithubIssues: 'github_issues' as 'github_issues',
+  WebCrawler: 'web_crawler' as 'web_crawler',
   PushApi: 'push_api' as 'push_api',
 }
 

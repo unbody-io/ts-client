@@ -4,6 +4,7 @@ import {
   ListProjectSourcesParams,
   ListSourceIndexingJobsParams,
 } from '../endpoints'
+import { SourceType } from '../entities'
 import { Project } from './Project'
 import { Source } from './Source'
 
@@ -125,6 +126,20 @@ export class ProjectSources {
         sourceId: source.id,
       })
       .then((res) => ({ res }))
+
+  setEntrypoint = async (
+    source: { id: string; type: SourceType } | Source,
+    entrypoint: Record<string, any>,
+  ) => {
+    return this.client.setEntrypoint({
+      projectId: this.project.id,
+      sourceId: source.id,
+      sourceType: source.type,
+      body: {
+        entrypoint,
+      },
+    })
+  }
 
   listJobs = async (
     params: Omit<ListSourceIndexingJobsParams, 'projectId'>,
