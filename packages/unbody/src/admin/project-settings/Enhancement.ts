@@ -8,6 +8,7 @@ import { SummarizerEnhancer } from './enhancers/Summarizer.enhancer'
 import { TextGeneratorEnhancer } from './enhancers/TextGenerator.enhancer'
 import { TextSplitterEnhancer } from './enhancers/TextSplitter.enhancer'
 import { TopicExtractorEnhancer } from './enhancers/TopicExtractor.enhancer'
+import { WebCrawlerEnhancer } from './enhancers/WebCrawler.enhancer'
 
 export class Enhancement {
   static Pipeline = EnhancementPipeline
@@ -23,6 +24,7 @@ export class Enhancement {
     KeywordExtractor: KeywordExtractorEnhancer,
     TopicExtractor: TopicExtractorEnhancer,
     EntityExtractor: EntityExtractorEnhancer,
+    WebCrawler: WebCrawlerEnhancer,
   }
 
   public name = 'enhancement'
