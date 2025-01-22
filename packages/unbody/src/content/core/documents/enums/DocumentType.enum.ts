@@ -14,4 +14,6 @@ export enum DocumentType {
   SpreadsheetDocument = 'SpreadsheetDocument',
   GithubThread = 'GithubThread',
   GithubComment = 'GithubComment',
+  Website = 'Website',
+  WebPage = 'WebPage',
 }

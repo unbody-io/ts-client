@@ -357,6 +357,48 @@ export const DEFAULT_SELECTED_FIELDS = {
     autoTopics: true,
     autoEntities: true,
   },
+  Website: {
+    url: true,
+    title: true,
+    description: true,
+    locale: true,
+    type: true,
+    keywords: true,
+    properties: true,
+
+    remoteId: true,
+    sourceId: true,
+
+    createdAt: true,
+    modifiedAt: true,
+
+    autoSummary: true,
+    autoKeywords: true,
+    autoTopics: true,
+    autoEntities: true,
+  },
+  WebPage: {
+    url: true,
+    title: true,
+    description: true,
+    locale: true,
+    type: true,
+    keywords: true,
+    properties: true,
+
+    remoteId: true,
+    sourceId: true,
+
+    path: true,
+    pathString: true,
+    createdAt: true,
+    modifiedAt: true,
+
+    autoSummary: true,
+    autoKeywords: true,
+    autoTopics: true,
+    autoEntities: true,
+  },
   AggregateAudioFile: {
     meta: aggregateMeta,
     document: aggregateDocument,
@@ -459,6 +501,12 @@ export const DEFAULT_SELECTED_FIELDS = {
     meta: aggregateMeta,
   },
   AggregateGithubComment: {
+    meta: aggregateMeta,
+  },
+  AggregateWebsite: {
+    meta: aggregateMeta,
+  },
+  AggregateWebPage: {
     meta: aggregateMeta,
   },
 }

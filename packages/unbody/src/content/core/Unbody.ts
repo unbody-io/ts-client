@@ -32,6 +32,10 @@ import {
   ITextBlock,
   ITextDocument,
   IVideoFile,
+  IWebPage,
+  IWebsite,
+  IAggregateWebPage,
+  IAggregateWebsite,
 } from './documents'
 import { Generative } from './Generative'
 import {
@@ -250,6 +254,20 @@ export class Unbody {
           documentType: DocumentType.GithubComment,
         })
       },
+      get website(): GetQueryBuilder<IWebsite> {
+        return new GetQueryBuilder<IWebsite>({
+          httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.Website,
+        })
+      },
+      get webPage(): GetQueryBuilder<IWebPage> {
+        return new GetQueryBuilder<IWebPage>({
+          httpClient,
+          queryType: QueryType.Get,
+          documentType: DocumentType.WebPage,
+        })
+      },
     }
   }
 
@@ -404,6 +422,20 @@ export class Unbody {
             documentType: DocumentType.GithubThread,
           },
         )
+      },
+      get website(): AggregateQueryBuilder<IWebsite, IAggregateWebsite> {
+        return new AggregateQueryBuilder<IWebsite, IAggregateWebsite>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.Website,
+        })
+      },
+      get webPage(): AggregateQueryBuilder<IWebPage, IAggregateWebPage> {
+        return new AggregateQueryBuilder<IWebPage, IAggregateWebPage>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: DocumentType.WebPage,
+        })
       },
     }
   }
