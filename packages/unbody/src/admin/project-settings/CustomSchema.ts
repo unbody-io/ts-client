@@ -92,7 +92,7 @@ class FieldBase {
       case FieldTypes.boolean:
         return new BooleanField(data.name, data.description, data.array)
       case FieldTypes.object: {
-        const field = new ObjectField(data.name, data.description)
+        const field = new ObjectField(data.name, data.description, data.array)
         for (const f of data.fields) {
           field.add(FieldBase.fromJSON(f))
         }
