@@ -37,6 +37,7 @@ import {
   IAggregateWebPage,
   IAggregateWebsite,
 } from './documents'
+import { IAggregateMeta } from './documents/interfaces/fields'
 import { Generative } from './Generative'
 import {
   AggregateQueryBuilder,
@@ -274,6 +275,25 @@ export class Unbody {
   get aggregate() {
     const { httpClient } = this
     return {
+      collection<
+        T extends {} = any,
+        A extends { meta?: IAggregateMeta } = { meta: IAggregateMeta },
+      >(collection: string): AggregateQueryBuilder<T, A> {
+        return new AggregateQueryBuilder<T, A>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: collection as DocumentType,
+        })
+      },
+      schema<T extends {} = any, A extends {} = any>(
+        collection: string,
+      ): AggregateQueryBuilder<T, A> {
+        return new AggregateQueryBuilder<T, A>({
+          httpClient: httpClient,
+          queryType: QueryType.Aggregate,
+          documentType: collection as DocumentType,
+        })
+      },
       get googleDoc(): AggregateQueryBuilder<IGoogleDoc, IAggregateGoogleDoc> {
         return new AggregateQueryBuilder<IGoogleDoc, IAggregateGoogleDoc>({
           httpClient: httpClient,

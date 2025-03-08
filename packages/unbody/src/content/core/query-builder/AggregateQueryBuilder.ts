@@ -1,5 +1,7 @@
 import { AnyObject } from '../../types'
+import { IAggregateMeta } from '../documents/interfaces/fields'
 import { IAggregateAsk, INearText } from '../filters'
+import { AggregateQueryResult } from '../query-builder/types/QueryResult.type'
 import { objectPathToQueryAdapter } from './adapters'
 import { DEFAULT_SELECTED_FIELDS } from './DefaultSelectedFields'
 import { QueryBuilderOptions } from './interfaces'
@@ -10,8 +12,11 @@ import { ObjectPath } from './types'
 
 export class AggregateQueryBuilder<
   TDocumentType extends AnyObject,
-  TAggregateDocumentType,
-> extends QueryBuilder<TDocumentType, any> {
+  TAggregateDocumentType extends { meta?: IAggregateMeta },
+> extends QueryBuilder<
+  TDocumentType,
+  AggregateQueryResult<TAggregateDocumentType>
+> {
   public search: SearchQuery<
     TDocumentType,
     any,

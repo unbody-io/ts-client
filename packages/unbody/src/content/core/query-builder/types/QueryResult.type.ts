@@ -1,7 +1,12 @@
 import { DeepPartial } from 'utility-types'
 import { HasArrayMember } from '../../../types'
-import { AdditionalProps, StringArrayField } from '../../documents'
+import {
+  AdditionalProps,
+  IAggregateAudioFile,
+  StringArrayField,
+} from '../../documents'
 import { IBeacon } from '../../documents/interfaces/Beacon.interface'
+import { IAggregateMeta } from '../../documents/interfaces/fields'
 
 export type ResponseError = {
   locations: {
@@ -76,3 +81,9 @@ export type GetQueryGenerativeGroupedResult<Q extends GetQueryResult<any>> =
       metadata: GetQueryGenerativeResultMetadata
     }
   }
+
+export type AggregateQueryResult<T extends { meta?: IAggregateMeta }> = {
+  data: any
+  payload: Array<DeepPartial<T>>
+  errors?: ResponseError[]
+}
