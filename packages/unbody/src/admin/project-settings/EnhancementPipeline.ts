@@ -1,6 +1,6 @@
 import { EnhancerCondition, EnhancerVar } from './Enhancement.types'
 import { EnhancementPipelineStep } from './EnhancementPipelineStep'
-import { serializeComputedArg } from './utils'
+import { deserializeComputedArg, serializeComputedArg } from './utils'
 
 type EnhancementPipelineOptions = {
   if?: EnhancerCondition
@@ -68,13 +68,18 @@ export class EnhancementPipeline {
     }
 
     const pipeline = new EnhancementPipeline(data.name, data.collection, {
-      if: typeof data.if === 'string' ? eval(data.if) : undefined,
+      if:
+        typeof data.if === 'string'
+          ? (deserializeComputedArg(data.if) as any)
+          : undefined,
       vars: Object.fromEntries(
         Object.entries(data.vars || {}).map((entry) => {
           const [key, value] = entry as [string, any]
           return [
             key,
-            value.type === 'computed' ? eval(value.value) : value.value,
+            value.type === 'computed'
+              ? deserializeComputedArg(value.value)
+              : value.value,
           ]
         }),
       ),

@@ -1,5 +1,5 @@
 import { EnhancerArgs, GraphQLRecordType } from './Enhancement.types'
-import { serializeComputedArg } from './utils'
+import { serializeComputedArg, deserializeComputedArg } from './utils'
 
 export class Enhancer<
   T extends Record<string, any> = Record<string, any>,
@@ -48,7 +48,9 @@ export class Enhancer<
 
           return [
             key,
-            value.type === 'computed' ? eval(value.value) : value.value,
+            value.type === 'computed'
+              ? deserializeComputedArg(value.value)
+              : value.value,
           ]
         }),
       ),

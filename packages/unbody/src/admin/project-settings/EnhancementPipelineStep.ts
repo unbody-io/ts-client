@@ -4,7 +4,7 @@ import {
   GraphQLRecordType,
 } from './Enhancement.types'
 import { Enhancer } from './Enhancer'
-import { serializeComputedArg } from './utils'
+import { deserializeComputedArg, serializeComputedArg } from './utils'
 
 export class EnhancementPipelineStep<E extends Enhancer = Enhancer> {
   public name: string = 'step'
@@ -55,12 +55,15 @@ export class EnhancementPipelineStep<E extends Enhancer = Enhancer> {
 
     return new EnhancementPipelineStep(data.name, enhancer, {
       output: Object.fromEntries(
-        Object.entries(data.output || {}).map(([key, value]) => [
+        Object.entries(data.output || {}).map(([key, value]: [string, any]) => [
           key,
-          eval((value as any).value as string),
+          deserializeComputedArg(value.value) as any,
         ]),
       ),
-      if: typeof data.if === 'string' ? eval(data.if) : undefined,
+      if:
+        typeof data.if === 'string'
+          ? (deserializeComputedArg(data.if) as any)
+          : undefined,
       onFailure: data.onFailure,
     })
   }
