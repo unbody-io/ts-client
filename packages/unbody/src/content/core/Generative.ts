@@ -1,4 +1,5 @@
-import { AxiosResponse } from 'axios'
+import { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios'
+import { EventIterator } from 'event-iterator'
 import omit from 'lodash/omit'
 import type { infer as ZodInfer, ZodObject } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
@@ -12,10 +13,26 @@ export type IGenerateTextOptions = {
   temperature?: number
   presencePenalty?: number
   frequencyPenalty?: number
+  stream?: false
+}
+
+export type IGenerateTextOptionsStream = Omit<
+  IGenerateTextOptions,
+  'stream'
+> & {
+  stream: true
 }
 
 export type IGenerateJsonOptions<T = any> = IGenerateTextOptions & {
   schema?: T
+  stream?: false
+}
+
+export type IGenerateJsonOptionsStream<T = any> = Omit<
+  IGenerateJsonOptions<T>,
+  'stream'
+> & {
+  stream: true
 }
 
 export type IGenerateMessageCommon = {
@@ -63,6 +80,21 @@ type ChatCompletionApiRes<T = string> = {
   }
 }
 
+type ChatCompletionApiResStream<T = string> =
+  | {
+      content: T
+    }
+  | {
+      content: T
+      finished: true
+      usageMetadata: {
+        inputTokens: number
+        outputTokens: number
+        totalTokens: number
+      }
+      finishReason: string
+    }
+
 export type IGenerateTextRes = AxiosResponse<{
   data: ChatCompletionApiRes
   payload: IGenerateTextResPayload
@@ -73,6 +105,31 @@ export type IGenerateJsonRes<T = Record<string, any>> = AxiosResponse<{
   payload: IGenerateTextResPayload<T>
 }>
 
+export type IGenerateResStreamPayload<T> =
+  | {
+      content: T
+      finished: false
+    }
+  | {
+      content: T
+      finished: true
+      metadata: {
+        finishReason: string
+        usage: {
+          inputTokens: number
+          outputTokens: number
+          totalTokens: number
+        }
+      }
+    }
+
+export type IGenerateTextResStreamPayload<T = string> =
+  IGenerateResStreamPayload<T>
+export type IGenerateJsonResStreamPayload<T = Record<string, any>> =
+  IGenerateResStreamPayload<T>
+
+export type GenerativeResStream<T> = EventIterator<T>
+
 export class Generative {
   constructor(public httpClient: HttpClient) {}
 
@@ -81,15 +138,25 @@ export class Generative {
     options?: IGenerateTextOptions,
   ): Promise<IGenerateTextRes>
   public async text(
+    prompt: string,
+    options?: IGenerateTextOptionsStream,
+  ): Promise<GenerativeResStream<IGenerateTextResStreamPayload>>
+  public async text(
     messages: IGenerateMessage[],
     options?: IGenerateTextOptions,
   ): Promise<IGenerateTextRes>
   public async text(
+    messages: IGenerateMessage[],
+    options?: IGenerateTextOptionsStream,
+  ): Promise<GenerativeResStream<IGenerateTextResStreamPayload>>
+  public async text(
     prompt: string | IGenerateMessage[],
-    options?: IGenerateTextOptions,
-  ): Promise<IGenerateTextRes> {
+    options?: IGenerateTextOptions | IGenerateTextOptionsStream,
+  ): Promise<
+    IGenerateTextRes | GenerativeResStream<IGenerateTextResStreamPayload>
+  > {
     const messages = typeof prompt === 'string' ? [{ content: prompt }] : prompt
-    const res = await this.httpClient.instance!.request<ChatCompletionApiRes>({
+    const requestConfig = {
       method: 'POST',
       url: `${UNBODY_GENERATIVE_API_ENDPOINT}chat/completions`,
       data: {
@@ -99,49 +166,86 @@ export class Generative {
         vars: [],
         params: omit(options || {}, 'model'),
       },
-    })
+    } satisfies AxiosRequestConfig
 
-    const {
-      data: { content, finishReason, usageMetadata },
-    } = res.data
+    const text = () => {
+      return this.httpClient
+        .instance!.request<ChatCompletionApiRes>(requestConfig)
+        .then((res) => {
+          const {
+            data: { content, finishReason, usageMetadata },
+          } = res.data
 
-    return {
-      ...res,
-      data: {
-        data: res.data,
-        payload: {
-          content,
-          metadata: {
-            finishReason,
-            usage: usageMetadata,
-          },
-        },
-      },
+          return {
+            ...res,
+            data: {
+              data: res.data,
+              payload: {
+                content,
+                metadata: {
+                  finishReason,
+                  usage: usageMetadata,
+                },
+              },
+            },
+          }
+        })
     }
+
+    if (options?.stream) {
+      return this._stream<string>(requestConfig)
+    }
+
+    return text()
   }
 
   public async json<T extends ZodObject<any> = ZodObject<any>>(
     prompt: string,
     options?: IGenerateJsonOptions<T>,
   ): Promise<IGenerateJsonRes<ZodInfer<T>>>
+  public async json<T extends ZodObject<any> = ZodObject<any>>(
+    prompt: string,
+    options?: IGenerateJsonOptionsStream<T>,
+  ): Promise<GenerativeResStream<IGenerateJsonResStreamPayload<ZodInfer<T>>>>
   public async json<T = Record<string, any>>(
     prompt: string,
     options?: IGenerateJsonOptions,
   ): Promise<IGenerateJsonRes<T>>
+  public async json<T = Record<string, any>>(
+    prompt: string,
+    options?: IGenerateJsonOptionsStream,
+  ): Promise<GenerativeResStream<IGenerateJsonResStreamPayload<T>>>
   public async json<T extends ZodObject<any> = ZodObject<any>>(
     messages: IGenerateMessage[],
     options?: IGenerateJsonOptions<T>,
   ): Promise<IGenerateJsonRes<ZodInfer<T>>>
+  public async json<T extends ZodObject<any> = ZodObject<any>>(
+    messages: IGenerateMessage[],
+    options?: IGenerateJsonOptionsStream<T>,
+  ): Promise<GenerativeResStream<IGenerateJsonResStreamPayload<ZodInfer<T>>>>
   public async json<T = Record<string, any>>(
     messages: IGenerateMessage[],
     options?: IGenerateJsonOptions,
   ): Promise<IGenerateJsonRes<T>>
+  public async json<T = Record<string, any>>(
+    messages: IGenerateMessage[],
+    options?: IGenerateJsonOptionsStream,
+  ): Promise<GenerativeResStream<IGenerateJsonResStreamPayload<T>>>
   public async json<T>(
     prompt: string | IGenerateMessage[],
-    options?: IGenerateJsonOptions<
-      T extends ZodObject<any> ? T : Record<string, any>
-    >,
-  ): Promise<IGenerateJsonRes<T extends ZodObject<any> ? ZodInfer<T> : T>> {
+    options?:
+      | IGenerateJsonOptions<T extends ZodObject<any> ? T : Record<string, any>>
+      | IGenerateJsonOptionsStream<
+          T extends ZodObject<any> ? T : Record<string, any>
+        >,
+  ): Promise<
+    | IGenerateJsonRes<T extends ZodObject<any> ? ZodInfer<T> : T>
+    | GenerativeResStream<
+        IGenerateJsonResStreamPayload<
+          T extends ZodObject<any> ? ZodInfer<T> : T
+        >
+      >
+  > {
     const messages = typeof prompt === 'string' ? [{ content: prompt }] : prompt
 
     const schema = options?.schema
@@ -150,9 +254,7 @@ export class Generative {
         : options.schema
       : undefined
 
-    const res = await this.httpClient.instance!.request<
-      ChatCompletionApiRes<T>
-    >({
+    const requestConfig = {
       method: 'POST',
       url: `${UNBODY_GENERATIVE_API_ENDPOINT}chat/completions`,
       data: {
@@ -170,23 +272,154 @@ export class Generative {
             : {}),
         },
       },
-    })
+    } satisfies AxiosRequestConfig
 
-    const {
-      data: { content, finishReason, usageMetadata },
-    } = res.data
+    const json = async () => {
+      const res = await this.httpClient.instance!.request<
+        ChatCompletionApiRes<T>
+      >(requestConfig)
 
-    return {
-      ...res,
-      data: {
-        data: res.data as any,
-        payload: {
-          content: content as any,
-          metadata: {
-            finishReason,
-            usage: usageMetadata,
+      const {
+        data: { content, finishReason, usageMetadata },
+      } = res.data
+
+      return {
+        ...res,
+        data: {
+          data: res.data as any,
+          payload: {
+            content: content as any,
+            metadata: {
+              finishReason,
+              usage: usageMetadata,
+            },
           },
         },
+      }
+    }
+
+    const stream = () =>
+      this._stream<T extends ZodObject<any> ? ZodInfer<T> : T>(requestConfig)
+
+    if (options?.stream) return stream()
+
+    return json()
+  }
+
+  private _stream<T>(requestConfig: AxiosRequestConfig) {
+    return this.httpClient
+      .instance!.request({
+        ...requestConfig,
+        data: {
+          ...requestConfig.data,
+          stream: true,
+        },
+        responseType: 'stream',
+        headers: {
+          ...(requestConfig.headers || {}),
+          Accept: 'text/event-stream',
+        },
+      })
+      .then((res) => {
+        const stream = res.data as any
+        const parser = this._jsonStreamParser()
+        return new EventIterator<IGenerateResStreamPayload<T>>(
+          ({ push, stop, fail }) => {
+            stream
+              .on('end', stop)
+              .on('close', stop)
+              .on('error', fail)
+              .on('data', (chunk: any) =>
+                parser
+                  .parse<ChatCompletionApiResStream<T>>(chunk)
+                  .map(this._transformStreamData<T>)
+                  .forEach(push),
+              )
+          },
+        )
+      })
+      .catch(async (err: any) => {
+        const error = await new Promise((resolve) => {
+          let data: string = ''
+          if (isAxiosError(err) && err.response) {
+            err.response.data.setEncoding('utf-8')
+            err.response.data.on('data', (chunk: string) => {
+              data += chunk
+            })
+            err.response.data.on('end', () => {
+              if (data) {
+                try {
+                  const parsed = JSON.parse(data)
+                  err.response!.data = parsed
+                } catch (e) {
+                  throw e
+                }
+              }
+              resolve(err)
+            })
+
+            return
+          }
+
+          return resolve(err)
+        })
+
+        throw error
+      })
+  }
+
+  private _transformStreamData<T = string>(
+    data: ChatCompletionApiResStream<T>,
+  ): IGenerateResStreamPayload<T> {
+    if ('finished' in data && data.finished) {
+      return {
+        content: data.content,
+        finished: true,
+        metadata: {
+          finishReason: data.finishReason,
+          usage: {
+            inputTokens: data.usageMetadata.inputTokens,
+            outputTokens: data.usageMetadata.outputTokens,
+            totalTokens: data.usageMetadata.totalTokens,
+          },
+        },
+      }
+    }
+
+    return { content: data.content, finished: false }
+  }
+
+  private _jsonStreamParser() {
+    const decoder = new TextDecoder('utf-8')
+
+    let chunks: string[] = []
+
+    return {
+      parse: <T>(chunk: any) => {
+        const value = decoder.decode(chunk, { stream: true })
+        chunks.push(...value.split('\n'))
+
+        const result: T[] = []
+        let buffer: string = ''
+        let lastIndex = 0
+
+        for (let i = 0; i < chunks.length; i++) {
+          const chunk = chunks[i]
+          buffer += chunk
+
+          try {
+            const json = JSON.parse(buffer)
+            result.push(json)
+            buffer = ''
+            lastIndex = i
+          } catch (error) {
+            if (!(error instanceof SyntaxError)) throw error
+          }
+        }
+
+        if (lastIndex > 0) chunks = chunks.slice(lastIndex + 1)
+
+        return result
       },
     }
   }

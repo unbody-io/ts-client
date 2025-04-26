@@ -33,6 +33,8 @@ export class HttpClient {
   }
 
   private handleResponse = (res: AxiosResponse) => {
+    if (res.config.responseType === 'stream') return res
+
     if (res?.data?.errors?.length) return Promise.reject(res?.data.errors)
     this.mapTransformers(res.data.data)
     return res
