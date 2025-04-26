@@ -3,7 +3,17 @@ import { EnhancerArgs, GraphQLRecordType } from '../Enhancement.types'
 import { Enhancer } from '../Enhancer'
 
 export type StructuredGeneratorEnhancerArgs<T extends ZodObject<any>> = {
-  model: 'openai-gpt-4o' | 'openai-gpt-4o-mini'
+  model:
+    | 'gpt-4o'
+    | 'gpt-4o-mini'
+    | 'gpt-4.1-nano'
+    | 'gpt-4.1-mini'
+    | 'gpt-4.1'
+    | 'openai-gpt-4o'
+    | 'openai-gpt-4o-mini'
+    | 'openai-gpt-4.1-nano'
+    | 'openai-gpt-4.1-mini'
+    | 'openai-gpt-4.1'
 
   prompt: string
   schema: T

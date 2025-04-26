@@ -2,7 +2,13 @@ import { EnhancerArgs } from '../Enhancement.types'
 import { Enhancer } from '../Enhancer'
 
 export type TopicExtractorEnhancerArgs = {
-  model: 'openai-gpt-4o' | 'openai-gpt-4o-mini' | 'openai-gpt-3.5-turbo'
+  model:
+    | 'openai-gpt-4o'
+    | 'openai-gpt-4o-mini'
+    | 'openai-gpt-3.5-turbo'
+    | 'openai-gpt-4.1-nano'
+    | 'openai-gpt-4.1-mini'
+    | 'openai-gpt-4.1'
 
   text: string
   metadata?: string
