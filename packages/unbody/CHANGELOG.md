@@ -1,5 +1,13 @@
 # unbody
 
+## 0.0.14
+
+### Patch Changes
+
+- feat: add new model options to enhancer settings
+- feat: add new generative models
+- feat: add support for streaming generative responses
+
 ## 0.0.7
 
 ### Patch Changes
