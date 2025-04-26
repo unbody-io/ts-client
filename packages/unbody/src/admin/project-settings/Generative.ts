@@ -5,6 +5,14 @@ export class Generative {
     GPT4Turbo: 'gpt-4-turbo',
     GPT4o: 'gpt-4o',
     GPT4oMini: 'gpt-4o-mini',
+    GPT4_1Nano: 'gpt-4.1-nano',
+    GPT4_1Mini: 'gpt-4.1-mini',
+    GPT4_1: 'gpt-4.1',
+    o1Mini: 'o1-mini',
+    o1: 'o1',
+    o3Mini: 'o3-mini',
+    o3: 'o3',
+    o4Mini: 'o4-mini',
   }
 
   static Cohere = {
@@ -12,6 +20,7 @@ export class Generative {
     CommandLight: 'command-light',
     CommandR: 'command-r',
     CommandRPlus: 'command-r-plus',
+    CommandA: 'command-a',
   }
 
   static Mistral = {
