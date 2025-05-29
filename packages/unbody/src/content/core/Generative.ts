@@ -16,6 +16,7 @@ export type IGenerateTextOptions = {
   presencePenalty?: number
   frequencyPenalty?: number
   stream?: false
+  signal?: AbortSignal
 }
 
 export type IGenerateTextOptionsStream = Omit<
@@ -168,6 +169,7 @@ export class Generative {
         vars: [],
         params: omit(options || {}, 'model'),
       },
+      signal: options?.signal,
     } satisfies AxiosRequestConfig
 
     const text = () => {
@@ -274,6 +276,7 @@ export class Generative {
             : {}),
         },
       },
+      signal: options?.signal,
     } satisfies AxiosRequestConfig
 
     const json = async () => {
