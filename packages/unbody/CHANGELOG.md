@@ -1,5 +1,12 @@
 # unbody
 
+## 0.0.15
+
+### Patch Changes
+
+- feat(unbody): support optional AbortController signal in generative request parameters
+- fix(unbody): support generative streaming responses in browser via axios fetch adapter
+
 ## 0.0.14
 
 ### Patch Changes
