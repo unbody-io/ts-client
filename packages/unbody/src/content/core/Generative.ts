@@ -1,10 +1,12 @@
 import { AxiosRequestConfig, AxiosResponse, isAxiosError } from 'axios'
 import { EventIterator } from 'event-iterator'
 import omit from 'lodash/omit'
+import type { ReadableStream } from 'node:stream/web'
 import type { infer as ZodInfer, ZodObject } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 import { UNBODY_GENERATIVE_API_ENDPOINT } from '../constants'
 import { HttpClient } from '../utils'
+import { isBrowserEnvironment } from '../utils/Environment'
 
 export type IGenerateTextOptions = {
   model?: string
@@ -307,6 +309,8 @@ export class Generative {
   }
 
   private _stream<T>(requestConfig: AxiosRequestConfig) {
+    const isBrowser = isBrowserEnvironment()
+
     return this.httpClient
       .instance!.request({
         ...requestConfig,
@@ -319,10 +323,47 @@ export class Generative {
           ...(requestConfig.headers || {}),
           Accept: 'text/event-stream',
         },
+        ...(isBrowser
+          ? {
+              adapter: 'fetch',
+            }
+          : {}),
       })
       .then((res) => {
-        const stream = res.data as any
         const parser = this._jsonStreamParser()
+        const stream = res.data
+
+        if (isBrowser) {
+          const reader = (stream as ReadableStream<Uint8Array>).getReader()
+          return new EventIterator<IGenerateResStreamPayload<T>>(
+            ({ push, stop, fail }) => {
+              const read = async () => {
+                try {
+                  while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) {
+                      stop()
+                      break
+                    }
+                    parser
+                      .parse<ChatCompletionApiResStream<T>>(value.buffer)
+                      .map(this._transformStreamData<T>)
+                      .forEach(push)
+                  }
+                } catch (error) {
+                  const err =
+                    error instanceof Error
+                      ? error
+                      : new Error('Unknown error', { cause: error })
+                  fail(err)
+                }
+              }
+
+              read()
+            },
+          )
+        }
+
         return new EventIterator<IGenerateResStreamPayload<T>>(
           ({ push, stop, fail }) => {
             stream

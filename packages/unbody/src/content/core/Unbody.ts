@@ -58,6 +58,14 @@ export type {
   IGenerateTextOptions,
   IGenerateTextRes,
   IGenerateTextResPayload,
+  IGenerateJsonOptions,
+  GenerativeResStream,
+  IGenerateJsonOptionsStream,
+  IGenerateJsonRes,
+  IGenerateJsonResStreamPayload,
+  IGenerateResStreamPayload,
+  IGenerateTextOptionsStream,
+  IGenerateTextResStreamPayload,
 } from './Generative'
 export * from './query-builder/types/QueryResult.type'
 
