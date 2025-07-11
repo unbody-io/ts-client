@@ -21,7 +21,7 @@ import { QueryBuilderOptions } from './interfaces'
 
 export class QueryBuilder<TDocumentType extends AnyObject, R> {
   protected query: AnyObject = { __args: {}, _additional: {} }
-  protected queryType: string
+  protected queryType: 'Aggregate' | 'Get'
   protected documentType: DocumentType
   protected httpClient: AxiosInstance
   protected whereParamsAdapter: WhereParamsAdapter<TDocumentType>
@@ -35,11 +35,11 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     this.whereParamsAdapter = new WhereParamsAdapter<TDocumentType>()
   }
 
-  where<TThis>(
+  where<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     params: DocumentFilterType<TDocumentType, true>,
   ): TThis
-  where<TThis>(
+  where<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     callback:
       | DocumentFilterType<TDocumentType, true>
@@ -52,11 +52,10 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
               | WhereOperators<DocumentFilterType<TDocumentType, true>>['Or']
             >),
   ): TThis
-  where<TThis>(
+  where<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     params: DocumentFilterType<TDocumentType, true>,
   ): TThis {
-    // @ts-ignore
     const { query, whereParamsAdapter } = this
 
     if (!params) {
@@ -78,21 +77,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  bm25<TThis>(this: TThis, params: IBm25<TDocumentType>): TThis
-  bm25<TThis>(
+  bm25<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: IBm25<TDocumentType>,
+  ): TThis
+  bm25<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     query: IBm25<TDocumentType>['query'],
     properties?: IBm25<TDocumentType>['properties'],
   ): TThis
-  bm25<TThis>(
+  bm25<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     query: IBm25<TDocumentType>['query'] | IBm25<TDocumentType>,
     properties?: IBm25<TDocumentType>['properties'],
   ): TThis {
-    // @ts-ignore
     this.removeSearchOperators()
 
-    // @ts-ignore
     const { query: thisQuery } = this
 
     if (typeof query === 'object' && !Array.isArray(query))
@@ -102,23 +102,26 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         query,
         ...(properties?.length ? { properties } : {}),
       }
+
     thisQuery._additional.score = true
 
     return this
   }
 
-  group<TThis>(this: TThis, params: IGroup): TThis
-  group<TThis>(
+  group<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: IGroup,
+  ): TThis
+  group<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     force: IGroup['force'],
     type?: IGroup['type'],
   ): TThis
-  group<TThis>(
+  group<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     force: IGroup['force'] | IGroup,
     type?: IGroup['type'],
   ): TThis {
-    // @ts-ignore
     const { query } = this
     if (typeof force === 'object' && !Array.isArray(force))
       query.__args.group = {
@@ -134,20 +137,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  groupBy<TThis>(this: TThis, params: IGroupBy): TThis
-  groupBy<TThis>(
+  groupBy<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: IGroupBy,
+  ): TThis
+  groupBy<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     params: IGroupBy['path'],
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
   ): TThis
-  groupBy<TThis>(
+  groupBy<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     params: IGroupBy['path'] | IGroupBy,
     groups?: IGroupBy['groups'],
     objectsPerGroup?: IGroupBy['objectsPerGroup'],
   ): TThis {
-    // @ts-ignore
     const { query } = this
 
     if (typeof params === 'string' || Array.isArray(params)) {
@@ -163,23 +168,24 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  hybrid<TThis>(this: TThis, params: IHybrid<TDocumentType>): TThis
-  hybrid<TThis>(
+  hybrid<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: IHybrid<TDocumentType>,
+  ): TThis
+  hybrid<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'],
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
   ): TThis
-  hybrid<TThis>(
+  hybrid<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     query: IHybrid<TDocumentType>['query'] | IHybrid<TDocumentType>,
     properties?: IHybrid<TDocumentType>['properties'],
     alpha?: IHybrid<TDocumentType>['alpha'],
   ): TThis {
-    // @ts-ignore
     this.removeSearchOperators()
 
-    // @ts-ignore
     const { query: thisQuery } = this
 
     if (typeof query === 'object' && !Array.isArray(query))
@@ -201,21 +207,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  nearText<TThis>(this: TThis, params: INearText): TThis
-  nearText<TThis>(
+  nearText<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: INearText,
+  ): TThis
+  nearText<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     concepts: INearText['concepts'],
     distance?: INearText['distance'],
   ): TThis
-  nearText<TThis>(
+  nearText<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     concepts: INearText['concepts'] | INearText,
     distance?: INearText['distance'],
   ): TThis {
-    // @ts-ignore
     this.removeSearchOperators()
 
-    // @ts-ignore
     const { query } = this
 
     if (typeof concepts === 'object' && !Array.isArray(concepts))
@@ -231,21 +238,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  nearImage<TThis>(this: TThis, params: INearImage): TThis
-  nearImage<TThis>(
+  nearImage<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: INearImage,
+  ): TThis
+  nearImage<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     image: INearImage['image'],
     distance?: INearImage['distance'],
   ): TThis
-  nearImage<TThis>(
+  nearImage<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     image: INearImage['image'] | INearImage,
     distance?: INearImage['distance'],
   ): TThis {
-    // @ts-ignore
     this.removeSearchOperators()
 
-    // @ts-ignore
     const { query } = this
 
     if (typeof image === 'object') query.__args.nearImage = image
@@ -261,21 +269,22 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  nearObject<TThis>(this: TThis, params: INearObject): TThis
-  nearObject<TThis>(
+  nearObject<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: INearObject,
+  ): TThis
+  nearObject<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     id: INearObject['id'],
     distance?: INearObject['distance'],
   ): TThis
-  nearObject<TThis>(
+  nearObject<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     id: INearObject['id'] | INearObject,
     distance?: INearObject['distance'],
   ): TThis {
-    // @ts-ignore
     this.removeSearchOperators()
 
-    // @ts-ignore
     const { query } = this
 
     if (typeof id === 'object' && !Array.isArray(id))
@@ -291,16 +300,17 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  nearVector<TThis>(this: TThis, params: INearVector): TThis
-  nearVector<TThis>(
+  nearVector<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    params: INearVector,
+  ): TThis
+  nearVector<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     vector: INearVector['vector'] | INearVector,
     distance?: INearVector['distance'],
   ): TThis {
-    // @ts-ignore
     removeSearchOperators()
 
-    // @ts-ignore
     const { query } = this
 
     if (typeof vector === 'object' && !Array.isArray(vector))
@@ -316,12 +326,11 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  sort<TThis>(
+  sort<TThis extends QueryBuilder<any, any>>(
     this: TThis,
     path: string | string[],
     order: keyof typeof SortType,
-  ) {
-    // @ts-ignore
+  ): TThis {
     const { query } = this
     query.__args.sort = {
       order: new EnumType(order),
@@ -330,16 +339,20 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     return this
   }
 
-  limit<TThis>(this: TThis, limit: number): TThis {
-    // @ts-ignore
+  limit<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    limit: number,
+  ): TThis {
     const { query } = this
     query.__args.limit = limit
 
     return this
   }
 
-  offset<TThis>(this: TThis, offset: number): TThis {
-    // @ts-ignore
+  offset<TThis extends QueryBuilder<any, any>>(
+    this: TThis,
+    offset: number,
+  ): TThis {
     const { query } = this
     query.__args.offset = offset
     if (!query._additional) query._additional = {}
@@ -381,7 +394,6 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
   }
 
   protected removeSearchOperators() {
-    // @ts-ignore
     const { query } = this
 
     delete query?.__args?.ask
