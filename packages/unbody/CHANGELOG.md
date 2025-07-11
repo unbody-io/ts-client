@@ -1,5 +1,11 @@
 # unbody
 
+## 0.0.16
+
+### Patch Changes
+
+- Bugfixes and friendlier error messages
+
 ## 0.0.15
 
 ### Patch Changes
