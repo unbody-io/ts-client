@@ -309,7 +309,7 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
     vector: INearVector['vector'] | INearVector,
     distance?: INearVector['distance'],
   ): TThis {
-    removeSearchOperators()
+    this.removeSearchOperators()
 
     const { query } = this
 
