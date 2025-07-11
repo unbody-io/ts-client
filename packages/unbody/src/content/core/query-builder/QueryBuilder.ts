@@ -103,7 +103,9 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         ...(properties?.length ? { properties } : {}),
       }
 
-    thisQuery._additional.score = true
+    if (this.queryType !== 'Aggregate') {
+      thisQuery._additional.score = true
+    }
 
     return this
   }
@@ -232,6 +234,10 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
         concepts,
         ...(distance ? { distance } : {}),
       }
+
+    if (this.queryType === 'Aggregate') {
+      return this
+    }
     query._additional.certainty = true
     query._additional.distance = true
 
@@ -362,6 +368,9 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
 
   getGraphQuery({ pretty } = { pretty: false }) {
     this.query = { ...this.query, ...this.selectedFields }
+    if (this.queryType === 'Aggregate') {
+      delete this.query._additional
+    }
     return jsonToGraphQLQuery(
       { query: { [this.queryType]: { [this.documentType]: this.query } } },
       { pretty },
@@ -370,6 +379,9 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
 
   getJsonQuery() {
     this.query = { ...this.query, ...this.selectedFields }
+    if (this.queryType === 'Aggregate') {
+      delete this.query._additional
+    }
     return { [this.queryType]: { [this.documentType]: this.query } }
   }
 

@@ -98,8 +98,6 @@ export class AggregateQueryBuilder<
         concepts,
         ...(certainty ? { certainty } : {}),
       }
-    query._additional.certainty = true
-    query._additional.distance = true
 
     return this
   }
