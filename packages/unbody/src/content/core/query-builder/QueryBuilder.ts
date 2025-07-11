@@ -367,20 +367,39 @@ export class QueryBuilder<TDocumentType extends AnyObject, R> {
   }
 
   getGraphQuery({ pretty } = { pretty: false }) {
-    this.query = { ...this.query, ...this.selectedFields }
-    if (this.queryType === 'Aggregate') {
-      delete this.query._additional
-    }
-    return jsonToGraphQLQuery(
-      { query: { [this.queryType]: { [this.documentType]: this.query } } },
-      { pretty },
-    )
+    const jsonQuery = this.getJsonQuery()
+    return jsonToGraphQLQuery({ query: jsonQuery }, { pretty })
   }
 
   getJsonQuery() {
     this.query = { ...this.query, ...this.selectedFields }
     if (this.queryType === 'Aggregate') {
       delete this.query._additional
+      for (const searchOperator of ['nearText', 'nearVector', 'nearObject']) {
+        const operationArgs = this.query.__args[searchOperator]
+        if (
+          operationArgs &&
+          typeof operationArgs.certainty !== 'number' &&
+          typeof operationArgs.distance !== 'number'
+        ) {
+          throw new Error(
+            `You must provide a 'certainty' or 'distance' value when using the 'search', 'similar', 'nearText', 'nearVector', or 'nearObject' operators.
+
+Examples:
+
+     unbody.aggregate.textBlock.search
+      .about('hello', { certainty: 0.5 })
+
+     unbody.aggregate.textBlock.search
+      .about('hello', { distance: 0.5 })
+
+     unbody.aggregate.textBlock
+        .nearText(['hello'], 0.5)
+
+`,
+          )
+        }
+      }
     }
     return { [this.queryType]: { [this.documentType]: this.query } }
   }
